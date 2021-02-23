@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.CommonMapper">
+	
+	<!-- 등록된 사용자 건수 조회 -->
+	<select id="selectInsttCnt" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM USER
+	</select>
+	
+	<select id="selectInsttTotalCnt" resultType="int">
+		SELECT 
+			COUNT(1) AS CNT 
+		FROM INSTT_MANAGE
+		WHERE 1=1
+		<if test="searchValue != null and searchValue != ''">
+		AND INSTT_NM LIKE CONCAT('%', #{searchValue}, '%')
+		</if>
+	</select>
+	
+
+	<select id="selectInsttList" parameterType="map" resultType="map">
+		SELECT 
+			*
+		FROM 
+			(
+			SELECT 
+				INSTT_CODE AS insttCode
+				, INSTT_NM AS insttNm
+				, LWPRT_INSTT_NM AS lwprtInsttNm
+				, ZIP AS zip
+				, LNM AS lnm
+				, ADRES AS adres
+				, TELNO AS telno
+				, FXNUM AS fxnum
+				, 'Y' AS useBtn
+				,  @rownum := @rownum+1 AS RNUM
+			FROM 
+				INSTT_MANAGE,
+				(SELECT @rownum :=0) AS R
+			WHERE 1=1
+				<if test="searchValue != null and searchValue != ''">
+				AND INSTT_NM LIKE CONCAT('%', #{searchValue}, '%')
+				</if>
+			) T1
+		WHERE 1=1
+			AND rnum BETWEEN #{start_row} AND #{end_row}
+		ORDER BY insttCode
+	</select>
+
+	<insert id="insertUserInfo" parameterType="map">
+		INSERT INTO USER
+		(
+			INSTT_CODE
+			, AUTHOR_CODE 
+			, USER_ID 
+			, USER_PASSWORD 
+			, USER_NM 
+			, CHRG_DEPT
+			, RECENT_CONECT_DT
+			, RECENT_CONECT_IP
+			, RM
+			, USE_AT
+		)
+		VALUES
+		(
+			#{insttCode}
+			, #{authorCode} 
+			, #{userId}
+			, #{userPw}
+			, #{userNm} 
+			, #{lwprtInsttNm}
+			, now()
+			, #{recentConectIp}
+			, ''
+			, IF(#{useAt } = 'Y', 1, 0)
+		)
+	</insert>
+	
+	<select id="selectManageInsttList" parameterType="map" resultType="map">
+		SELECT 
+		    INSTT_CODE AS insttCode
+			, INSTT_NM AS insttNm
+			, DATE_FORMAT(BSNS_BGNDE, '%Y-%m-%d') AS bsnsBgnde
+   			, DATE_FORMAT(BSNS_ENDDE, '%Y-%m-%d') AS bsnsEndde
+			, CONCAT(BSNS_BGNDE, ' ~ ', BSNS_ENDDE) AS bsnsDt
+			, REPRSNT_TLPHON AS reprsntTlphon
+			, ADRES AS adres
+			, HMPG AS hmpg
+			, RM AS rm
+			, IF(USE_AT = true, 'Y', 'N') AS useAt
+			, CHARGER_NM AS chargerNm
+			, CHARGER_EMAIL AS chargerEmail
+			, CHARGER_TELNO AS chargerTelno
+			, CHARGER_MBTLNUM AS chargerMbtlnum
+		FROM INSTT
+		WHERE 1=1
+			AND INSTT_CODE = #{loginInsttCode }
+	</select>
+	
+	<insert id="insertInsttInfo" parameterType="map">
+		INSERT INTO INSTT
+		(
+			INSTT_CODE
+			, INSTT_NM
+			, BSNS_BGNDE
+			, BSNS_ENDDE
+			, REPRSNT_TLPHON
+			, HMPG
+			, RM
+			, USE_AT
+		)
+		VALUES
+		(
+			#{insttCode}
+			, #{insttNm} 
+			, ''
+			, ''
+			, #{telno} 
+			, ''
+			, ''
+			, 1
+		)
+	</insert>
+	
+	<update id="updateAnalsInssttCode" parameterType="map" > 
+		UPDATE ANALS SET
+			INSTT_CODE = #{insttCode}
+	</update>
+	
+	<select id="selectUserIdChk" parameterType="map" resultType="map">
+		SELECT USER_ID FROM USER WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="selectMenuList" parameterType="map" resultType="map">
+		SELECT 
+			T2.INQIRE_ORDR AS inqireOrdr
+			, T2.MENU_SN AS menuSn
+			, T2.UPPER_MENU_SN AS upperMenuSn
+			, T2.MENU_DP_NO AS menuDp
+			, T2.MENU_NM AS menuNm
+			, T2.MENU_URL AS menuUrl
+			, IF( (SELECT COUNT(*) FROM MENU_MANAGE T0 WHERE T0.USE_AT = 1 AND T0.UPPER_MENU_SN = T2.MENU_SN) = 0, 'Y', 'N') AS isLast
+	        , IF(T2.USE_AT = true, 'Y', 'N') AS useAt
+			, T1.MENU_GROUP_SN AS menuGroupSn
+			, T1.MENU_GROUP_NM AS menuGroupNm
+			, IF(T1.USE_AT = true, 'Y', 'N') AS groupUseAt
+			, T2.MENU_ICON AS menuIcon
+			, T2.MENU_LANG AS menuLang
+            , T3.AUTHOR_CODE 
+            , T3.USE_AT
+		FROM 
+			MENU_GROUP T1 
+	        LEFT OUTER JOIN MENU_MANAGE T2 ON T1.MENU_GROUP_SN = T2.MENU_GROUP_SN AND T2.USE_AT = 1 AND T2.MENU_LANG = #{menuLang}
+	        LEFT JOIN MENU_AUTHOR T3 ON T2.MENU_SN = T3.MENU_SN AND T3.AUTHOR_CODE = #{authCode }
+		WHERE 1=1
+			<if test="auth != 'ROLE_ADMIN'">
+			AND T1.USE_AT = 1
+			</if>
+			AND (T3.USE_AT = 1 OR T3.USE_AT IS NULL) 
+		ORDER BY CAST(T1.MENU_GROUP_SN AS UNSIGNED), CAST(T2.MENU_DP_NO AS UNSIGNED), CAST(T2.INQIRE_ORDR AS UNSIGNED)
+	</select>
+	
+	<select id="selectUpMenuList" parameterType="map" resultType="map">
+		SELECT 
+			MENU_SN AS menuSn,
+		    MENU_NM AS menuNm
+		FROM MENU_MANAGE
+		WHERE 1=1
+			AND USE_AT = 1
+			AND UPPER_MENU_SN = 0
+			AND MENU_LANG = #{menuLang}
+			AND MENU_GROUP_SN = #{menuGroupSn }
+	</select>
+	
+	<select id="selectMenuGroupList" parameterType="map" resultType="map">
+		SELECT 
+			MENU_GROUP_SN AS menuGroupSn,
+		    MENU_GROUP_NM AS menuGroupNm
+		FROM MENU_GROUP
+		WHERE 1=1
+			AND USE_AT = 1
+		ORDER BY MENU_GROUP_SN
+	</select>
+	
+	<insert id="insertGroupMenu" parameterType="map">
+		<selectKey resultType="Integer" keyProperty="menuGroupSn" order="BEFORE">
+			SELECT MAX(CAST(MENU_GROUP_SN AS UNSIGNED) + 1) AS menuGroupSn FROM MENU_GROUP
+		</selectKey>
+	
+		INSERT INTO MENU_GROUP 
+		(
+			MENU_GROUP_SN
+			, MENU_GROUP_NM
+			, USE_AT
+		) VALUES (
+			#{menuGroupSn }
+			, #{menuGroupNm }
+			, IF(#{useAt } = 'Y', 1, 0)
+		)
+	</insert>
+	
+		
+	<delete id="deleteGroupMenu" parameterType="map">
+		DELETE FROM MENU_GROUP WHERE MENU_GROUP_SN = #{menuGroupSn }
+	</delete>
+	
+	<delete id="deleteGroupMenuList" parameterType="map">
+		DELETE FROM MENU_MANAGE WHERE MENU_GROUP_SN = #{menuGroupSn }
+	</delete>
+	
+	<delete id="deleteMenu" parameterType="map">
+		DELETE FROM MENU_MANAGE WHERE 1=1
+		AND MENU_SN = #{selectTreeNode }
+	</delete>
+	
+	
+	<update id="updateGroupMenu" parameterType="map">
+		UPDATE MENU_GROUP SET
+			MENU_GROUP_NM = #{menuGroupNm }
+		WHERE 1=1
+			AND MENU_GROUP_SN = #{menuGroupSn }
+	</update>
+	
+	<insert id="insertMenu" parameterType="map">
+		<selectKey resultType="Integer" keyProperty="menuSn" order="BEFORE">
+			SELECT MAX(CAST(MENU_SN AS UNSIGNED) + 1) AS menuSn FROM MENU_MANAGE 
+		</selectKey>
+	
+		INSERT INTO MENU_MANAGE 
+		(
+			MENU_SN
+			, MENU_DP_NO
+			, INQIRE_ORDR
+			, MENU_NM
+			, MENU_URL
+			, MENU_ICON
+			, USE_AT
+			, UPPER_MENU_SN
+			, MENU_GROUP_SN
+			, MENU_LANG
+		) VALUES (
+			#{menuSn }
+			, #{menuDp }
+			, #{inqireOrdr }
+			, #{menuNm }
+			, #{menuUrl }
+			, #{menuIcon }
+			, IF(#{useAt } = 'Y', 1, 0)
+			, #{upperMenuSn }
+			, #{menuGroupSn }
+			, #{menuLang }
+		)
+	</insert>
+	
+	<update id="updateMenu" parameterType="map">
+		UPDATE MENU_MANAGE SET
+			INQIRE_ORDR = #{inqireOrdr }
+			, MENU_NM = #{menuNm }
+			, MENU_URL = #{menuUrl }
+			, MENU_ICON = #{menuIcon }
+			, USE_AT = IF(#{useAt } = 'Y', 1, 0)
+		WHERE 1=1
+			AND MENU_SN = #{menuSn }
+	</update>
+	
+	<select id="selectCommonCode" parameterType="map" resultType="map">
+		SELECT 
+			GROUP_CODE AS groupCode
+			, GROUP_CODE_NM AS groupCodeNm
+			, IF(USE_AT = true, 'Y', 'N') AS useAt
+		FROM 
+			CMMN_CODE
+		WHERE 1=1
+		<if test="searchValue != 'null' || searchValue != ''">
+			<if test="searchType == 'groupCode'">
+			AND GROUP_CODE LIKE CONCAT('%', #{searchValue} ,'%')
+			</if>
+			
+			<if test="searchType == 'groupCodeNm'">
+			AND GROUP_CODE_NM LIKE CONCAT('%', #{searchValue} ,'%')
+			</if>
+		</if>
+	</select>
+	
+	<select id="selectDetailCommonCode" parameterType="map" resultType="map">
+		SELECT
+			GROUP_CODE AS groupCode
+			, CMMN_CODE AS cmmnCode
+			, CMMN_CODE_NM AS cmmnCodeNm
+			, CMMN_CODE_DC AS cmmnCodeDc
+			, INQIRE_ORDR AS inqireOrdr
+			, IF(USE_AT = true, 'Y', 'N') AS useAt
+		FROM 	
+			CMMN_CODE_DETAIL
+		WHERE 1=1
+			AND GROUP_CODE = #{groupCode }
+		ORDER BY INQIRE_ORDR
+	</select>
+	
+	<update id="updateCommonCode" parameterType="map">
+		UPDATE CMMN_CODE SET
+			GROUP_CODE_NM = #{groupCodeNm } 
+			, USE_AT = IF(#{useAt } = 'Y', 1, 0)
+		WHERE 1=1
+			AND GROUP_CODE = #{groupCode }
+	</update>
+	
+	<insert id="insertCommonCode" parameterType="map">
+		INSERT INTO CMMN_CODE(
+			GROUP_CODE
+			, GROUP_CODE_NM
+			, USE_AT 
+		) VALUES (
+			#{groupCode }
+			, #{groupCodeNm }
+			, IF(#{useAt } = 'Y', 1, 0)
+		)
+	</insert>
+	
+	<delete id="deleteCommonCode" parameterType="map">
+		DELETE FROM CMMN_CODE 
+		WHERE 1=1
+			AND GROUP_CODE = #{groupCode }
+	</delete>
+	
+	<insert id="insertDetailCommonCode" parameterType="map">
+		INSERT INTO CMMN_CODE_DETAIL(
+			GROUP_CODE
+			, CMMN_CODE
+			, CMMN_CODE_NM
+			, CMMN_CODE_DC
+			, CMMN_UPPER_CODE
+			, INQIRE_ORDR
+			, USE_AT
+		) VALUES (
+			#{detailGroupCode }
+			, #{detailCmmnCode }
+			, #{detailCmmnCodeNm }
+			, #{detailCmmnCodeDc }
+			, 0
+			, IF(#{inqireOrdr } = '', 1, #{inqireOrdr })
+			, IF(#{useAt } = 'Y', 1, 0)
+		)
+	 
+	</insert>
+	
+	<update id="updateDetailCommonCode" parameterType="map">
+		UPDATE CMMN_CODE_DETAIL SET
+			CMMN_CODE_NM = #{detailCmmnCodeNm } 
+			, CMMN_CODE_DC = #{detailCmmnCodeDc }
+			, CMMN_CODE = #{detailCmmnCode }
+			, INQIRE_ORDR = #{inqireOrdr }
+			, USE_AT = IF(#{useAt } = 'Y', 1, 0)
+		WHERE 1=1
+			AND GROUP_CODE = #{detailGroupCode }
+			AND CMMN_CODE = #{detailCmmnCode }
+	</update>
+	
+	<delete id="deleteDetailCommonCode" parameterType="map">
+		DELETE FROM CMMN_CODE_DETAIL 
+		WHERE 1=1
+			<if test="groupCode != null and groupCode != ''">
+			AND GROUP_CODE = #{groupCode }
+			</if>
+			<if test="detailCmmnCode == null and detailCmmnCode == ''">
+			AND GROUP_CODE = #{detailGroupCode }
+			</if>
+			<if test="detailCmmnCode != null and detailCmmnCode != ''">
+			AND GROUP_CODE = #{detailGroupCode }
+			AND CMMN_CODE = #{detailCmmnCode } 
+			</if>
+	</delete>
+	
+	<select id="selectCodeDoubleChk" parameterType="map" resultType="map">
+		SELECT 
+			T1.CODE_NM
+		    , T1.GUBUN
+		FROM ( 
+				SELECT GROUP_CODE AS CODE_NM, 'G' AS GUBUN FROM CMMN_CODE
+		        UNION ALL 
+		        SELECT CMMN_CODE AS CODE_NM, 'D' AS GUBUN FROM CMMN_CODE_DETAIL
+			) T1
+		WHERE 1=1
+			AND T1.GUBUN = #{gubun }
+			AND T1.CODE_NM = #{searchCode }
+	</select>
+	
+	<select id="selectManageList" parameterType="map" resultType="map">
+		SELECT 
+			T2.INSTT_CODE AS insttCode
+			, T2.INSTT_NM AS insttNm
+			, T1.USER_ID AS userId
+			, T1.USER_NM AS userNm
+			, T1.CHRG_DEPT AS chrgDept
+			, DATE_FORMAT(T1.RECENT_CONECT_DT, '%Y-%m-%d') AS recentConnectDt
+			, T1.RM AS rm
+			, IF(T1.USE_AT = true, 'Y', 'N') AS useAt
+			, T3.AUTHOR_CODE AS authorCode
+		    , T1.RNUM
+		FROM 
+			( 
+			SELECT
+				USER_ID, INSTT_CODE, USER_NM, CHRG_DEPT, RECENT_CONECT_DT,
+				RM, USE_AT, @rownum := @rownum+1 AS RNUM
+			FROM 
+				USER,
+				(SELECT @rownum :=0) AS R
+			WHERE 1=1
+			ORDER BY RECENT_CONECT_DT ASC
+			) T1 
+			LEFT OUTER JOIN INSTT_MANAGE T2 ON T1.INSTT_CODE = T2.INSTT_CODE
+			LEFT OUTER JOIN USER T3 ON T1.USER_ID = T3.USER_ID
+		WHERE 1=1
+		
+		ORDER BY RNUM
+	</select>
+	
+	<update id="updateManageInfo" parameterType="map">
+		UPDATE USER SET
+			CHRG_DEPT = #{chrgDept } 
+			, USER_NM = #{userNm }
+			, USE_AT = IF(#{useAt } = 'Y', 1, 0)
+			, USER_PASSWORD = #{userPw }
+		WHERE 1=1
+			AND USER_ID = #{userId }
+	</update>
+	
+	<update id="updateManageInsttInfo" parameterType="map">
+		UPDATE INSTT SET
+			BSNS_BGNDE = #{bsnsBgnde } 
+			, BSNS_ENDDE = #{bsnsEndde }
+			, REPRSNT_TLPHON = #{reprsntTlphon }
+			, HMPG = #{hmpg }
+			, CHARGER_NM  = #{chargerNm }
+			, CHARGER_EMAIL = #{chargerEmail } 
+			, CHARGER_TELNO = #{chargerTelno }
+			, CHARGER_MBTLNUM = #{chargerMbtlnum }
+		WHERE 1=1
+			AND INSTT_CODE = #{insttCode }
+	</update>
+	
+	<select id="selectUserAuthList" parameterType="map" resultType="map">
+		SELECT
+			T2.CMMN_CODE AS authorCode
+		    , T2.CMMN_CODE_NM AS authorCodeNm
+		FROM CMMN_CODE T1, CMMN_CODE_DETAIL T2
+		WHERE 1=1
+			AND T1.GROUP_CODE = T2.GROUP_CODE
+			AND T2.GROUP_CODE = 'DQ_AUTHOR_CODE'
+	</select>
+	
+	<select id="selectUserAuthMenuList" parameterType="map" resultType="map">
+		SELECT
+			T3.MENU_SN AS authMenuSn
+			, T2.MENU_SN AS menuSn
+			, T2.INQIRE_ORDR AS inqireOrdr
+			, T2.UPPER_MENU_SN AS upperMenuSn
+			, (SELECT MENU_NM FROM MENU_MANAGE T1 WHERE 1=1 AND T1.MENU_SN = (SELECT UPPER_MENU_SN FROM MENU_MANAGE T0 WHERE T0.MENU_SN = T2.MENU_SN)) AS upperMenuNm
+			, T2.MENU_DP_NO AS menuDp
+			, T2.MENU_NM AS menuNm
+			, IF( (SELECT COUNT(*) FROM MENU_MANAGE T0 WHERE T0.USE_AT = 1 AND T0.UPPER_MENU_SN = T2.MENU_SN) = 0, 'Y', 'N') AS isLast
+			, IF(T2.USE_AT = true, 'Y', 'N') AS useAt
+			, T1.MENU_GROUP_SN AS menuGroupSn
+			, T1.MENU_GROUP_NM AS menuGroupNm
+			, IF(T3.USE_AT = true, 'Y', 'N') AS authAt
+		FROM 
+			MENU_GROUP T1 
+			LEFT OUTER JOIN MENU_MANAGE T2 ON T1.MENU_GROUP_SN = T2.MENU_GROUP_SN AND T2.USE_AT = 1 AND T2.MENU_LANG = #{menuLang}
+		    LEFT JOIN MENU_AUTHOR T3 ON T2.MENU_SN = T3.MENU_SN AND T3.AUTHOR_CODE = #{authCode }
+		WHERE 1=1
+			
+		ORDER BY CAST(T1.MENU_GROUP_SN AS UNSIGNED), CAST(T2.MENU_DP_NO AS UNSIGNED), CAST(T2.INQIRE_ORDR AS UNSIGNED)
+	</select>
+	
+	<update id="updateMenuAuthList" parameterType="map">
+		UPDATE MENU_AUTHOR SET
+			USE_AT = IF(#{useAt } = 'Y', 1, 0)
+		WHERE 1=1
+			AND MENU_SN = #{menuSn }
+			AND AUTHOR_CODE = #{authCode }
+	</update>
+	
+	<insert id="insertMenuAuthList" parameterType="map" > 
+		INSERT INTO MENU_AUTHOR
+		(
+			MENU_SN, AUTHOR_CODE, USE_AT
+		)
+		SELECT 
+			#{menuSn} , AUTHOR_CODE, 1
+		FROM MENU_AUTHOR
+		WHERE 1=1
+		GROUP BY AUTHOR_CODE
+	</insert>
+	
+	<delete id="deleteAuthor" parameterType="map">
+		DELETE FROM MENU_AUTHOR WHERE 1=1
+		AND MENU_SN = #{selectTreeNode }
+	</delete>
+	
+	<delete id="deleteScheduler" parameterType="map">
+		DELETE FROM DQ_DATABASE.SCHEDULER
+	</delete>
+	
+	<delete id="deleteFrqAnals" parameterType="map">
+		DELETE FROM DQ_DATABASE.FRQ_ANALS
+	</delete>
+	
+	<delete id="deleteDgnssSave" parameterType="map">
+		DELETE FROM DQ_DATABASE.DGNSS_SAVE
+	</delete>
+	
+	<delete id="deleteDgnssError" parameterType="map">
+		DELETE FROM DQ_DATABASE.DGNSS_ERROR
+	</delete>
+	
+	<delete id="deleteDgnssColumnsRes" parameterType="map">
+		DELETE FROM DQ_DATABASE.DGNSS_COLUMNS_RES
+	</delete>
+	
+	<delete id="deleteDgnssColumns" parameterType="map">
+		DELETE FROM DQ_DATABASE.DGNSS_COLUMNS
+	</delete>
+	
+	<delete id="deleteDnssTables" parameterType="map">
+		DELETE FROM DQ_DATABASE.DGNSS_TABLES
+	</delete>
+	
+	<delete id="deleteDgnssDbms" parameterType="map">
+		DELETE FROM DQ_DATABASE.DGNSS_DBMS
+	</delete>
+	
+	<delete id="deleteUser" parameterType="map">
+		DELETE FROM DQ_DATABASE.`USER`
+	</delete>
+	
+	<delete id="deleteInstt" parameterType="map">
+		DELETE FROM DQ_DATABASE.INSTT
+	</delete>
+	
+	<!-- 메인화면 쿼리 -->
+	
+	<!-- 시스템 현황-진단 항목 현황 -->
+	<select id="selectAnalsCnt"  parameterType="map" resultType="map">
+		SELECT A.ANALS_SE, A.DBMS_KND, C.CMMN_CODE_NM, COUNT(A.ANALS_ID ) ANALS_CNT
+		FROM ANALS A
+		JOIN CMMN_CODE_DETAIL C ON C.CMMN_CODE = A.ANALS_SE 
+		WHERE A.INSTT_CODE = #{insttCode }
+		<if test="dbmsKnd != null and dbmsKnd != ''">
+			AND A.DBMS_KND = #{dbmsKnd }
+		</if>
+		GROUP BY A.ANALS_SE, A.DBMS_KND, C.CMMN_CODE_NM 
+	</select>
+	
+	<select id="selectDbList" parameterType="map" resultType="String">
+		SELECT 
+			I.DBMS_KND as dbmsKnd
+		FROM DGNSS_DBMS D, INSTT_DBMS I
+		WHERE D.DBMS_ID = I.DBMS_ID
+		<if test="dgnssDbmsId != null and dgnssDbmsId != ''">
+		AND DGNSS_DBMS_ID =  #{dgnssDbmsId}
+		</if>
+		LIMIT 1
+	</select>
+	
+	<!-- 진단 현황-기본정보 -->
+	<select id="selectBasicInfoCnt"  parameterType="map" resultType="map">
+		SELECT 
+			INSTT_CODE , COUNT(DGNSS_INFO_ID) AS TABLE_CNT, SUM(CNT1) AS COLUM_CNT, SUM(CNT2) AS ANALS_CNT 
+		FROM (
+			SELECT 
+				R.INSTT_CODE , 
+				R.DGNSS_DBMS_ID , 
+				R.DGNSS_INFO_ID , 
+				COUNT(DISTINCT R.COLUMN_NM) AS CNT1 , 
+				COUNT(DISTINCT R.ANALS_ID) AS CNT2,
+				T.ALL_CO 
+			FROM DQ_DATABASE.DGNSS_COLUMNS_RES R
+				JOIN DGNSS_TABLES T ON R.DGNSS_INFO_ID = T.DGNSS_INFO_ID 
+			WHERE R.INSTT_CODE = #{insttCode }
+			GROUP BY R.INSTT_CODE , R.DGNSS_DBMS_ID , R.DGNSS_INFO_ID ,T.ALL_CO 
+			) A
+		GROUP BY INSTT_CODE
+	</select>
+	
+	<!-- 진단 현황-진단률 -->
+	<select id="selectResTotCnt"  parameterType="map" resultType="map">
+		SELECT 
+			INSTT_CODE, SUM(MT) AS M_CNT, SUM(DATA_COUNT ) AS T_CNT 
+		FROM RES_COUNT_VIEW
+		WHERE 1=1
+		AND INSTT_CODE = #{insttCode }
+		<if test="dgnssInfoId != null and dgnssInfoId != ''">
+		AND DGNSS_INFO_ID = #{dgnssInfoId}
+		</if>
+		GROUP BY INSTT_CODE
+	</select>	
+	
+	
+	<!-- 진단 현황-항목별 불일치 건수 -->
+	<select id="selectResNotMatchCntToAnalsNm"  parameterType="map" resultType="map">
+		SELECT 
+			R.INSTT_CODE, R.CMMN_CODE, R.ANALS_NM, SUM(R.F_CNT) F_CNT 
+		FROM (
+			SELECT 
+				V.INSTT_CODE ,A.ANALS_NM, C.CMMN_CODE, C.CMMN_CODE_NM , (T.ALL_CO - V.MT ) AS F_CNT
+			FROM RES_COUNT_VIEW V 
+			JOIN ANALS A ON A.ANALS_ID = V.ANALS_ID 
+			JOIN CMMN_CODE_DETAIL C ON C.CMMN_CODE = A.PTTRN_SE 
+			JOIN DGNSS_TABLES T ON T.DGNSS_INFO_ID = V.DGNSS_INFO_ID
+			WHERE V.INSTT_CODE = #{insttCode }
+			<if test="dgnssInfoId != null and dgnssInfoId != ''">
+			AND V.DGNSS_INFO_ID = #{dgnssInfoId}
+			</if>
+		) R
+		GROUP BY R.INSTT_CODE, R.CMMN_CODE, R.ANALS_NM
+		ORDER BY SUM(R.F_CNT) DESC
+		LIMIT 5
+	</select>
+	
+	<!-- 월별 진단 현황 -->
+	<select id="selectMonthResCnt"  parameterType="map" resultType="map">
+		SELECT DATE_FORMAT(D.YYYYMMDD, '%Y.%m.') AS YYYYMM, IFNULL(T.CNT,0) AS CNT
+		FROM (
+			SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 0 MONTH) AS  YYYYMMDD 
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH)  
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 2 MONTH)  
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 3 MONTH)  
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 4 MONTH) 
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 5 MONTH) 
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 6 MONTH) 
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 7 MONTH) 
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 8 MONTH) 
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 9 MONTH)
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 10 MONTH)
+			UNION ALL SELECT DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)
+		) D 
+		LEFT OUTER JOIN  
+		(
+			SELECT DATE_FORMAT(REGIST_DT, '%Y-%m-01') AS ORDER_MONTH ,  COUNT(distinct DGNSS_INFO_ID) AS CNT FROM DGNSS_COLUMNS_RES WHERE INSTT_CODE = #{insttCode }  GROUP BY ORDER_MONTH 
+		) T ON D.YYYYMMDD = T.ORDER_MONTH
+		ORDER BY D.YYYYMMDD ASC
+	</select>
+	
+	
+	<!-- 결과 view check -->
+	<select id="selectViewCnt"  parameterType="map" resultType="int">
+		SELECT
+			COUNT(*) AS CNT 
+		FROM INFORMATION_SCHEMA.TABLES
+		WHERE TABLE_TYPE  = 'VIEW'
+		AND TABLE_NAME =#{tableName}
+	</select>
+	
+	<!-- 결과 view drop -->
+	<update id="dropResView" parameterType="map">
+		DROP VIEW RES_COUNT_VIEW
+	</update>
+	<!-- 결과 view create -->
+	<update id="createResView" parameterType="map"> 
+		CREATE VIEW RES_COUNT_VIEW AS
+		SELECT R.INSTT_CODE, R.DGNSS_INFO_ID, R.COLUMN_NM, R.ANALS_ID, SUM(R.MTCHG_CO) MT
+		 , (SELECT C.MTCHG_CO FROM DGNSS_COLUMNS_RES C WHERE  C.ANALS_ID LIKE '%01' AND C.DGNSS_INFO_ID = R.DGNSS_INFO_ID AND C.COLUMN_NM = R.COLUMN_NM ) DATA_COUNT
+		FROM DGNSS_COLUMNS_RES R
+		JOIN ANALS A ON R.ANALS_ID  = A.ANALS_ID AND A.ANALS_TY = 'AT000200'
+		GROUP BY INSTT_CODE, DGNSS_INFO_ID , R.COLUMN_NM,ANALS_ID
+		ORDER BY R.DGNSS_INFO_ID DESC
+	</update>
+
+</mapper>

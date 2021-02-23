@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+<head>
+<style type="text/css">
+	.tb_type99 { width : 50% !important }
+	.table-layout { table-layout : inherit}
+	.tb_type99 .tui-grid-cell { width : 50% }
+	.tui-column-chart { display : inherit }
+	.tui-bar-chart { display : inherit }
+	.tui-grid-rside-area {width : 100% !important}		
+</style>
+</head>
+
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><img src="/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROFILING &gt; 프로파일링 결과</span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23 font_slim" style="color: gray; font-weight: 100;"> 프로파일링 결과</h1>
+		</div>
+  
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<span class="mb-0 text-gray-600">
+							<i class="fas fa-square" style="float:left; margin-top:9px; margin-right:5px;font-size:15px; color:#4e73df; "></i><h3>분석 개요</h3>
+						</span>
+						<button type="button" class="btn btn-primary" onclick="$('#frm1').submit();" style="float:right;">보고서 다운로드</button>
+						<div class="input_table" style="border: none; padding: 0 50px;">
+							<table>
+								<tbody id= "profilingResult">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>	
+				</div>
+
+				<form id="frm1" name="frm1" action="download/report.do" target="hiddenFrame" method="get">
+					<input type="hidden" name="dgnssDbmsId" th:value="${table.dgnssDbmsId}" />
+					<input type="hidden" name="dgnssInfoId" th:value="${table.dgnssInfoId}" />
+				</form>
+
+				<form id="frm2" name="frm2" action="download/notMatch.do" target="hiddenFrame" method="get">
+					<input type="hidden" name="dgnssDbmsId" th:value="${table.dgnssDbmsId}" />
+					<input type="hidden" name="dgnssInfoId" th:value="${table.dgnssInfoId}" />
+					<input type="hidden" name="tableNm"  th:value="${table.tableNm}" />
+					<!-- <input type="hidden" name="columnNm" th:value="${column.columnNm}" /> -->
+					<input type="hidden" name="columnNm" id="columnNm" value="" />
+					<input type="hidden" id="fileType" name="fileType" value="csv" />
+					<input type="hidden" id="csvFileName" name="csvFileName" th:value="${dbms.csvFileName}" />
+					<input type="hidden" id="matchMm" name="matchMm" value="" />
+				</form>
+
+				<!-- 내용 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<i class="fas fa-square" style="float:left; margin-top:9px; margin-right:5px; font-size:15px; color:#4e73df;"></i><h3>분석 결과</h3>
+						<div style="clear: both"></div>
+
+						<div style="margin-left:50px;">
+							<form id="frm" name="frm" action="view.do" method="get">
+								<input type="hidden" name="dgnssDbmsId" th:value="${table.dgnssDbmsId}" />
+								<input type="hidden" name="dgnssInfoId" th:value="${table.dgnssInfoId}" />
+								<input type="hidden" name="pageIndex" value="" th:value="${param.pageIndex}" />
+								<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="1" />
+								
+							</form>
+
+							<div id="innerGridDiv"></div>
+							
+						</div>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+					
+
+		<div id="noMatchModal" class="modal fade" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="download-title">불일치 정보 다운로드</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <p id="downloadmsg" style="text-align:center;">다운로드 형식을 선택하세요.</p>
+		      </div>
+		      <div class="modal-footer">
+		      	<button type="button" onclick="javascript:fn_modalClose();" class="btn btn-primary"  id="downloadclose">확인</button>
+		        <button type="button" onclick="downloadNotMatch('csv')" class="btn btn-primary" id="csvDown">CSV</button>
+		        <button type="button" onclick="downloadNotMatch('xlsx')" class="btn btn-success" id="excelDown">Excel</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<iframe name="hiddenFrame" hidden="" width="0" height="0"></iframe>
+
+<!-- TUI 차트 js -->
+<script th:src="@{/js/tui/core.js}"></script>
+<script th:src="@{/js/tui/raphael.js}"></script>
+<script th:src="@{/js/tui/tui-chart.js}"></script>
+
+<!-- Page level plugins -->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+	<script th:inline="javascript" class="code-js">
+
+		var groupList = /*[[${groupList}]]*/;		
+		var column = /*[[${column}]]*/;
+		var columnData = /*[[${columnData}]]*/;
+		var columnList = /*[[${columnList}]]*/; 
+		var resultData =   /*[[${bodyMap}]]*/;
+		var frqListAll = /*[[${frqlList}]]*/;
+		var columnCmt = /*[[${columnCmt}]]*/;
+		var csvAt = /*[[${csvAt}]]*/;
+		var listCntPerPage = /*[[${listCntPerPage}]]*/;
+		//DB정보
+		var dbms = /*[[${dbms}]]*/;
+		
+		//table 정보
+		var table = /*[[${table}]]*/;
+		
+		var checkBtn = false;
+		
+		console.log("groupList : "+groupList.length);
+		console.log("column : "+column);
+		console.log("columnData : "+columnData.length);
+		console.log("columnList : "+columnList.length);
+		console.log("resultData : "+resultData.body.length);
+		console.log("frqListAll : "+frqListAll.frqAnalList.length);
+		console.log("columnCmt : "+columnCmt);
+		console.log("csvAt : "+csvAt);
+		console.log("listCntPerPage : "+listCntPerPage);
+		console.log("dbms : "+dbms);
+		console.log("table : "+table);
+		
+		
+		$(function() {
+
+
+			var list = resultData.body;
+			$('#itemsPerPage').val(listCntPerPage);
+			
+			var startTr = "<tr style='border-bottom: 1px solid #e3e6f0;'>";
+			var endTr= "</tr>";
+			var innerTable = "";
+			
+	
+			//접속된 정보에 따른 분석개요 정보화면 변경
+			if(dbms.ip != 'localhost' && dbms.fileType != 'CSV'){
+				
+				//DB 분석 후 결과 출력 시 
+				// 첫번째
+				innerTable += startTr;
+				innerTable += "<td><label>접속 DBMS</label></td>";
+				innerTable += "<td><input type='text' value='"+dbms.ip+":"+dbms.sid+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += "<td><label>작업명</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.dgnssNm+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += endTr;
+				
+				// 두번째
+				innerTable += startTr;
+				innerTable += "<td><label>데이터베이스</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+dbms.database+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += "<td><label>작업 시작 시간</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.excBeginTime+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += endTr;
+				
+				// 세번째
+				innerTable += startTr;
+				innerTable += "<td><label>테이블</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.tableNm+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += "<td><label>작업 수행 시간</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.workTime+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += endTr;
+				
+				$("#profilingResult").append(innerTable);
+					
+			}else {
+				
+				//CSV 파일 분석 후 결과 출력 시 
+				// 첫번째
+				innerTable += startTr;
+				innerTable += "<td><label>접속 파일명</label></td>";
+				innerTable += "<td><input type='text' value='"+dbms.csvFileName+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += "<td><label>작업명</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.dgnssNm+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += endTr;
+				
+				// 두번째
+				innerTable += startTr;
+				innerTable += "<td><label>작업 시작 시간</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.excBeginTime+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += "<td><label>작업 수행 시간</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.workTime+"' style='border:none; background-color: #fff' disabled></td>";
+				innerTable += endTr;
+				
+				$("#profilingResult").append(innerTable);	
+			}
+			
+
+			girdView();
+			freqView();
+		
+			/* 페이징 function 호출 */
+			$('#pageIndex').val($('#frm').find('input[name=pageIndex]').val()); // 페이지 초기에 pageIndex 파라메터 값을 전달
+			$('#itemsPerPage').val($('#frm').find('input[name=itemsPerPage]').val());
+			fn_pagination(columnList.length);
+		});
+			
+			
+		function girdView(){
+			var idx=0;
+			var count = 0;
+			var count2 = 0;
+			var listData = resultData.body;
+			var arrNumber = "";
+
+			
+			for( var key in Object.keys(listData) ) {
+ 				 var shtml ="";
+ 				 arrNumber = listData[Object.keys(listData)[key]];
+ 				 
+ 				
+ 				 
+				 shtml += "<div id='col_div"+idx+"'>";
+				 shtml += "<div id='top_div"+idx+"'>";
+				 shtml += "<i class='fas fa-circle' style='float:left; margin-top:9px; margin-left:10px; margin-right:5px; font-size:1px; color:#4e73df;'></i><h5 style='display : inline-block; width:50%'><label id='columnNM_"+idx+"' ></label></h5>";
+				 shtml += "<button type='button' class='btn btn-primary' data-toggle='modal' onclick='infoDown("+idx+",this)' value='m' name='matchY' id='matchY"+idx+"' data-target='#noMatchModal' style='float: right; '>일치 정보 다운로드</button>";
+				 shtml += "<button type='button' class='btn btn-primary' data-toggle='modal' onclick='infoDown("+idx+",this)' value='mis' name='matchN' id='matchN"+idx+"' data-target='#noMatchModal' style='float: right; margin-right: 20px;'>불일치 정보 다운로드</button>";
+				 shtml += "<input type='hidden' name='colNm' id='colNm_"+idx+"' value=''/>";
+				 $("#innerGridDiv").append(shtml); 			
+				 
+				 
+
+ 				 if(csvAt){
+					 $('#columnNM_'+idx).text(columnCmt[idx]);		
+				 }else{					 
+					 $('#columnNM_'+idx).text(columnData[idx].columnNm);			
+				 }
+ 		
+ 				 $('#colNm_'+idx).val(columnData[idx].columnNm);
+ 				 
+ 				 
+				$.each(groupList, function(index,value){
+
+		    		var chk = 0; 
+					var data = [];
+					var html = "";
+					console.log("groupCode : "+value.groupCode);
+					if(value.groupCode == "AG000200"){	// value Frq		
+						html += "<strong style='display:none;'>* Value Frequency</strong>";
+						html += "<div id='ca_div_"+count2+"' style='margin-bottom:30px; display:none;'>";
+						html += "<div id='fre_grid_"+count2+"' class='tb_type99' float=left; vertical-align:top;'></div>";
+						html += "<div id='fre_chart_"+count2+"' class='tb_type99' style='margin-bottom:30px;  vertical-align:top;'></div>";
+						html += "</div>";
+						count2++;
+					}else { // value Frq 외
+						html += "<strong style='display:none;'>* "+value.groupNm+"</strong>";
+						html += "<div id='gc_div_"+count+"' style= 'margin-bottom:30px; '>";
+						html += "<div id='grid_"+count+"' class='tb_type99' style=' float=left; vertical-align:top;'></div>";
+						html += "<div id='chart_"+count+"' class='tb_type99' style='margin-bottom:30px;'></div>";
+						html += "</div>";
+						
+					}
+					
+					html += "<br/><br/>";
+					$("#innerGridDiv").append(html);
+					
+ 			       for(var i = 0; i < arrNumber.length; i++){
+						if(value.groupNm.indexOf("패턴") != -1 || value.groupNm.indexOf("사용자정의") != -1){	
+							var columns = [
+								{header: '항목', name: 'name', width:242, align: 'center'},
+								{header: 'Match Count', name: 'mCount', align: 'right'},
+								{header: 'Match %', name: 'mPer', align: 'right'} ,
+								{header: 'misMatch Count', name: 'mmCount', align: 'right'},
+								{header: 'misMatch %', name: 'mmPer', align: 'right'} 
+		
+							];
+						}else {
+							var columns = [
+								{header: '항목', name: 'name', width:250, align: 'center'},
+								{header: 'Count', name: 'mCount', align: 'right'},
+								{header: '%', name: 'mPer', align: 'right'} 
+		
+							];
+						}
+			    	  
+						
+						
+
+					var inputData = {};
+						
+						
+					if(value.groupCode == arrNumber[i].groupCode){
+							if(value.groupCode != "AG000100") checkBtn = true;
+							
+							inputData.name = arrNumber[i].analsNm;
+							inputData.mCount =arrNumber[i].mtchgCo;
+							inputData.mPer = arrNumber[i].perCo+'%';
+							
+							if(value.groupNm.indexOf("패턴") != -1 || value.groupNm.indexOf("사용자정의") != -1){	
+								inputData.mmCount =arrNumber[i].miscnt;
+								inputData.mmPer = arrNumber[i].misperCo+'%';
+							}	
+							
+							
+							inputData._attributes = "{className: {column: {name: ['headB']}}}";
+	
+							
+							data.push(inputData);
+							
+							chk ++;
+							
+						}
+					
+						
+							    	  
+			       }  // i 
+						
+						if(chk > 0 && data != null){						
+							
+							var id =  document.getElementById('grid_'+count);
+							
+							
+							var grid = new tui.Grid({
+								el : id,
+								data : data,
+								scrollX : false,
+								scrollY : false,
+								rowHeight : 40,
+								minBodyHeight: 'auto',
+								//bodyHeight : 349,
+								header: {
+								  height: 50
+								},
+								columns : columns
+							});
+		
+							var extOptions = {
+								cell: {
+									focused: {
+										border: 0 // 선택 셀 강조 표시 x
+									}
+								}
+							};
+							tui.Grid.applyTheme('default', extOptions);
+			
+						
+							$('#columnNM_'+count).show();
+							$('#gc_div_'+count).prev('strong').show();
+							id.style.display='inline-block';	
+							
+
+						}
+							count ++;						
+		
+				}); 
+
+				
+			shtml ="";	
+			shtml += "</div>";
+			$("#innerGridDiv").append(shtml); 
+				
+			idx++;
+			}					
+			frechartView();
+			
+		}
+	
+		
+		
+		function freqView(){
+		  	var frqData = frqListAll.frqAnalList; 	
+			var arrNumber ="";
+			var cnt = 0;
+			
+			for( var key in Object.keys(frqData) ) {	    
+			      
+				$.each(columnData, function(index, value){
+    				arrNumber = frqData[Object.keys(frqData)[key]];
+    				var data = [];
+    				var chk = 0;
+   
+					var columns = [
+						{header: '항목', name: 'name', width:300, align: 'center'},
+						{header: 'Count', name: 'mCount', align: 'right'},
+						{header: '%', name: 'mPer', align: 'right'} ,
+					];
+    
+					for(var i = 0; i < arrNumber.length; i++){ 
+						if(arrNumber[i].columnNm == value.columnNm){
+							var inputData = {};
+							var dataVal = arrNumber[i].dataValue;
+							if(dataVal != null){
+								if(dataVal.length > 15){
+									dataVal = dataVal.substring(0,12)+"...";
+								}
+							}
+							inputData.name = dataVal;
+							inputData.mCount = arrNumber[i].dataCo;
+							inputData.mPer =  arrNumber[i].perCo+'%';
+						 	inputData._attributes = "{className: {column: {name: ['headB']}}}"; 
+							data.push(inputData);			
+							chk ++;
+						}
+					}
+				       
+					if(chk > 0 && data != null){
+						//id = $('#ca_div_'+cnt);
+						id = document.getElementById('fre_grid_'+cnt);
+						
+						var grid = new tui.Grid({
+							el : id,
+							data : data,
+							scrollX : false,
+							scrollY : false,
+							rowHeight : 40,
+							minBodyHeight: 'auto',
+							//bodyHeight : 349,
+							header: {
+							  height: 50
+							},
+							columns : columns
+						});
+					
+						var extOptions = {
+							cell: {
+								focused: {
+									border: 0 // 선택 셀 강조 표시 x
+								}
+							}
+						};
+						
+						tui.Grid.applyTheme('default', extOptions);
+						$('#ca_div_'+cnt).show();
+						$('#ca_div_'+cnt).prev('strong').show();
+					    id.style.display='inline-block';
+						cnt++;
+					}
+				});
+			}
+			chartView();
+		}
+		
+	
+		function chartView() {
+		
+			var chartData = {};	//Root
+			var series = [];	//Depth2
+			var seriesDetail = {};	//Depth3
+			var options;
+			var frqData = frqListAll.frqAnalList; 	
+			var arrNumber = "";
+			var count = 0;
+		
+			for( var key in Object.keys(frqData) ) {
+	 			
+				
+	 			
+			    $.each(columnData, function(index,value){
+					var data = {};
+					var seriesData = {};
+					var chart_id = document.getElementById('fre_chart_'+count);
+					var chk = 0;
+
+					arrNumber = frqData[Object.keys(frqData)[key]];
+						
+					data.categories = [];
+					data.series = [];
+					
+					seriesData.name ='Value';
+					seriesData.data = [];
+		
+			        for(var i = 0; i < arrNumber.length; i++){
+			        	
+			        	 if(arrNumber[i].columnNm == value.columnNm){
+							var dataVal = arrNumber[i].dataValue;
+							if(dataVal != null){
+								if(dataVal.length > 15){
+									dataVal = dataVal.substring(0,12)+"...";
+								}
+							}
+							data.categories.push(dataVal);			
+							seriesData.data.push(arrNumber[i].dataCo);
+							chk ++;
+			        	 }
+			        }
+			        
+			        data.series.push(seriesData);
+			        if(chk > 0 && data != null){   
+				        options = {
+				                chart: {
+				                    width: 500,
+				                    height: 300
+	
+				                },
+				                yAxis: {
+				                    title: 'Value' 
+				                },
+				                xAxis: {
+				                    title: 'Data' 
+				                },
+				                chartExportMenu: {
+									visible: false
+								},
+								legend: {
+									visible: false
+								},
+				            };
+			            
+				        
+				        //var theme = {
+				        //	    series: {
+				        //	        colors: [
+				        //	            '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399', '#617178'
+				        //	        ]
+				        //	    }
+				        //	};
+				     	// 테마 등록
+				        //tui.chart.registerTheme('newTheme', theme);
+				        //options.theme = 'newTheme';
+
+						tui.chart.columnChart(chart_id, data, options);
+						chart_id.style.display  = 'inline-block';
+						count++;
+			        }
+			    });
+			}
+		} 
+		
+		function frechartView() {
+			var cnt = 0;
+			var count = 0;
+			var listData = resultData.body;
+			var arrNumber;
+			var data = {};
+			var max = 0;
+		
+			
+			for( var key in Object.keys(listData) ) {
+
+    			$.each(groupList, function(index,value){
+					var seriesData = {};
+					var misSeriesData = {};
+					var chk = 0;
+				
+					data.categories = [];
+					data.series = [];
+					seriesData.data = [];
+					misSeriesData.data = [];	
+	    			arrNumber = listData[Object.keys(listData)[key]];
+	    			
+       				for(var i = 0; i < arrNumber.length; i++){
+				
+						if(value.groupCode == arrNumber[i].groupCode){
+							data.categories.push(arrNumber[i].analsNm);	
+							seriesData.data.push(arrNumber[i].mtchgCo);
+								
+							if(value.groupNm.indexOf("패턴") != -1 || value.groupNm.indexOf("사용자정의") != -1){		
+								seriesData.name ='Match Count';
+								misSeriesData.name ='misMatch Count';
+								misSeriesData.data.push(arrNumber[i].miscnt);
+							}else {
+								seriesData.name ='Count';
+							
+							}
+							if(value.dataCo > max) { max = value.dataCo;}	
+							chk ++;
+					
+				        	options = {
+				                chart: {width: 500, height: 300},
+				                yAxis: {title: 'Value'},
+				                xAxis: {title: 'Data' },
+				                chartExportMenu: {visible: false},
+								legend: {visible: false},
+				            };
+					        chk++;
+						}
+	    		   
+	       			}// for
+				 
+					if(value.groupNm.indexOf("패턴") != -1 || value.groupNm.indexOf("사용자정의") != -1){							
+						data.series.push(misSeriesData);
+					}
+					data.series.push(seriesData);
+									       
+					if(chk > 0){				  	
+						var chart_id =  document.getElementById('chart_'+cnt);
+				        var id_chart = $('#chart_'+cnt).attr('id'); 
+				        if(value.groupNm.indexOf("기본패턴") != -1 && chk > 10){	
+				        	options = {
+					                chart: {width: 500, height: chk*21 },
+					                yAxis: {title: 'Value'},
+					                xAxis: {title: 'Data' },
+					                chartExportMenu: {visible: false},
+									legend: {visible: false},
+					            };
+				        	
+							tui.chart.barChart(chart_id, data, options);
+							//chart_id.style.margin = '0px 50px';
+				        }else{
+				        	tui.chart.columnChart(chart_id, data, options);	
+				        }
+						chart_id.style.display  = 'inline-block';
+				
+					}
+					cnt ++;
+			
+				});	
+
+			}	
+		
+		}		
+		
+		function fn_search() {
+			$('#frm').find('input[name=pageIndex]').val($('#pageIndex').val()); // 페이지 전환 전 pageIndex 폼에 전달
+			$('#frm').find('input[name=itemsPerPage]').val($('#itemsPerPage').val());
+			$('#frm').submit();
+		}
+			
+		function downloadNotMatch(type) {
+			$('#frm2 > #fileType').val(type);
+			$('#frm2').submit();
+			fn_modalClose();
+		}
+			
+			
+		function infoDown(col, data){
+			if(checkBtn==false){
+				// 모달창 버튼 메시지 처리
+				$('#downloadclose').show();
+				$('#csvDown').hide();
+				$('#excelDown').hide();
+ 			    $('#downloadmsg').text('다운로드 대상 분석 정보가 없습니다.');
+			}else{
+				var val = data.value;
+				var colnm = $('#colNm_'+col).val();
+				$('#matchMm').val(val);				
+ 			    $('#columnNm').val(colnm);
+ 			    // 모달창 버튼 메시지 처리
+ 			    $('#excelDown').show();
+ 			    $('#downloadclose').hide();
+ 			    $('#downloadmsg').text('다운로드 형식을 선택하세요.');
+ 			    
+				if(val != 'mis'){
+					$('#download-title').text('일치 정보 다운로드');
+					$('#csvDown').show();
+				}else{
+					$('#download-title').text('불일치 정보 다운로드');
+					$('#csvDown').show();
+				} 
+			}
+		}
+		</script>
+	</div>
+</html>

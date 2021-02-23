@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>BASIC</li>
+	            <li>데이터 Lifecycle 관리</li>
+	            <li><label th:text="#{UIT0562}">Lifecycle 분석</label></li>
+            </ul>
+		</div>
+		
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="content_body">
+					<div class="input_table" style="border: none;">
+						<table>
+                            <colgroup>
+                                <col style="width:20%">
+                                <col style="width:25%">
+                                <col style="width:10%">
+                                <col style="width:25%">
+                                <col style="width:20%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        <span class="str">*</span><label for="data" th:text="#{UIT0264}">스키마명</label>
+                                    </th>
+                                    <td>
+                                    	<div class="selectbox" style="width: 230px;">
+	                                    	<label for="la_tableSchema"></label>
+	                                        <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+	                                        	<option value="" th:text="#{UIT0265}">선택해주세요</option>
+	                                        </select>
+                                        </div>
+                                    </td>
+                                    <th>
+                                        <label for="name" th:text="#{UIT0272}">테이블 수</label>
+                                    </th>
+                                    <td>
+                                        <input id="tableCnt" name="tableCnt" type="text" value="" readonly="readonly" >
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+						</table>
+					</div>
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="card shadow mb-4  margint10">
+					<div class="content_body">
+						<section class="pad100 txt_right">
+							<button type='button' data-toggle="modal" data-target="#analysisModal" data-backdrop="static" data-keyboard="false" class='btn btn-s blue in_wp100' th:text="#{UIT0337}" onclick="fn_openModalLayer();">분석시작</button>
+						</section>
+						<form id="frm" name="frm">
+							<input type="hidden" id="schemaName" name="tableSchema" value="" />
+							<input type="hidden" id="tableAll" name="tableAll" value="1" />
+							<input type="hidden" id="tableTotalCnt" name="tableTotalCnt" value="" />
+							<input type="hidden" id="analysisSaveName" name="analysisSaveName" value="" />
+							<!-- <div id="tableGrid" class="tb_type99" style="clear: both; min-height: 440px;"></div> -->
+							<div style="height:500px; overflow-y: auto;">
+								<div id="columnGrid" class="tb_type99" ></div>
+							</div>
+						</form>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 분석설정 저장 모달창-->
+		<div class="modal fade" id="analysisModal" tabindex="-1" role="dialog" aria-labelledby="analysisModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel" th:text="#{UIT0339}">분석설정등록</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="menuListDiv" style="display: block;">
+							<section class="l_box_type02">
+								 <div class="table_area">
+									<table class="write fixed">
+										<colgroup>
+											<col style="width: 25%;" />
+                                    		<col style="width: auto" />
+										</colgroup>
+										<tbody>
+											<tr>
+												<th th:text="#{UIT0340}">분석명</th>
+												<td><input type="text" id="analysisSaveNm" name="analysisSaveNm" class="in_w100" value="" /></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<div class="button_area alignc">
+						    <button class="btn btn-s blue in_wp100" type="button" data-dismiss="modal" onclick="fn_executeAnalys()" th:text="#{UIT0088}">저장</button>
+						</div>
+						<a class="btn btn-secondary" data-dismiss="modal" href="#none" th:text="#{UIT0341}">닫기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+					
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+		var Schema = /*[[ ${schema} ]]*/; //: 스키마명
+		var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		var UIT0267 = /*[[ #{UIT0267} ]]*/; //: 검색결과가 없습니다.
+		var UIT0273 = /*[[ #{UIT0273} ]]*/; //: 테이블 명
+		var UIT0274 = /*[[ #{UIT0274} ]]*/; //: Row 수
+		var UIT0275 = /*[[ #{UIT0275} ]]*/; //: Row 평균길이
+		var UIT0276 = /*[[ #{UIT0276} ]]*/; //: Index 수
+		var UIT0277 = /*[[ #{UIT0277} ]]*/; //: PK 컬럼수
+		var UIT0278 = /*[[ #{UIT0278} ]]*/; //: 테이블 설명
+		var UIT0500 = /*[[ #{UIT0500} ]]*/; //: 도메인
+		var UIT0501 = /*[[ #{UIT0501} ]]*/; //: 표준 용어
+		var UIT0514 = /*[[ #{UIT0514} ]]*/; //: 표준화 분석
+		var UIT0562 = /*[[ #{UIT0562} ]]*/; //: Lifecycle 분석
+		var UIT0563 = /*[[ #{UIT0563} ]]*/; //: Lifecycle
+		/*]]*/
+		
+		$(document).ready(function(){
+		
+			$("#showCnt").hide();
+			// sessionCon 체크
+			isSessionConChk(sessionCon);
+			isCsvFileCheck(sessionCon);
+			
+			fn_selectTableSchema();
+			
+			$("label[for='la_tableSchema']").text(Schema);
+			
+		});
+		
+		var tableGrid = {};
+		
+		// 분석명 입력 팝업
+		function fn_openModalLayer(){
+			var today = new Date();
+			$('#analysisSaveNm').val(UIT0562.replace(" ", "") + '_' + today.getFullYear() + today.getMonth() + today.getDate() + '_' + today.getMilliseconds());
+		}
+		
+		// 분석 저장
+		function fn_executeAnalys(){
+			var tableSchema = $("#tableSchema").val();
+			var tableTotalCnt = $("#tableTotalCnt").val(); 
+			var arr = [];
+			var chk = false;
+			var tableCnt = 0;
+			var cnt = 0;
+			if(tableSchema ==""){
+				tableSchema =/*[[ ${schema} ]]*/;
+			}
+			$('#schemaName').val(tableSchema);
+			$('#itemsPageIndex').val($('#pageIndex').val());
+			
+			console.log("tableTotalCnt == ",tableTotalCnt);
+			
+			for (var i = 0; i < tableTotalCnt; i++) {
+				var obj = {};
+				var colTableNm = $("#colTableNm_"+i).val();
+				var filedNm = $("#filedNm_"+i+" option:selected").val();
+				var colNm = $("#colNm_"+i+" option:selected").text();
+				var colType = $("#colNm_"+i+" option:selected").val();
+				
+				console.log("filedNm == ",filedNm);
+				
+				if(colType != 0 || filedNm != 0){
+					if(filedNm == 0){
+						alert("선택하지 않은 적용항목이 있습니다.");
+						chk = false;
+						return false;
+					}else if(colType == 0){
+						alert("선택하지 않은 기준컬럼이 있습니다.");
+						chk = false;
+						return false;
+					}else{
+						chk = true;
+					}
+					
+				}else{
+					cnt++;
+				}
+				
+				if(tableTotalCnt == cnt){
+					alert("항목을 하나 이상 선택해 주세요.");
+				}
+				
+				if(colNm != 0 && filedNm != 0){
+
+					obj.colTableNm = colTableNm;
+					obj.filedNm = filedNm;
+					obj.colNm = colNm;
+					obj.colType = colType;
+					
+					arr.push(obj);
+					
+					tableCnt++;
+				}
+			}
+			
+			if(chk == true){
+				$.ajax({
+					url: "/mngr/lifecycle/excuteLifecycleAnalysis",
+					data: {analsData : JSON.stringify(arr), tableCnt : tableCnt, tableSchema : tableSchema},
+					beforeSend: function() {
+						wrapWindowByMask();
+					},
+					method : 'post',
+					success:function(){
+						closeWindowByMask();
+						
+						// lifecycle 분석 결과 페이지로 이동
+						location.href = "/mngr/lifecycle/lifecycleResultList.do";
+					},
+					error:function() {
+						closeWindowByMask();
+		                alert(UIT0041);
+		                return;
+		            },
+		            complete:function(){
+		        	    closeWindowByMask();
+		            }
+				});
+			}
+			
+		}
+		
+		// 테이블 정보 그리드 세팅
+		function fn_setGrid(jsonData){
+			$("#tableGrid").empty();
+			$("#columnGrid").empty();
+			
+			var columns = [
+				{header: UIT0273,name: 'tableName', whiteSpace: 'normal', sortable: true,   width: 300,align:'center'}, 	 
+				{header: UIT0274,name: 'numRows', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0275,name: 'avgRowLen', whiteSpace: 'normal', sortable: true,  width: 140,align:'right'},
+				{header: UIT0276,name: 'indexCnt', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0277,name: 'pkCnt', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0278,name: 'comments', whiteSpace: 'normal', sortable: true, align:'left'}
+			
+			];
+			
+			var html ="";
+			html += "<div style= 'width: 100%; display:inline-block; float: left;' >";
+			html += "<div id='tableGrid' style= 'margin-bottom:30px; width: 70%; display:inline-block; float: left;'>";
+			html += "</div>";
+			html += "<div class='table_area' style= 'margin-bottom:30px; width: 30%; display:inline-block; '>";
+			html += "<table class='write fixed' id='tableId'>";
+			html +=	"<tr>";
+			html +=	"<th  style='height: 30px; text-align: center; font-size: 16px; border-right:1px solid #e3e6f0;'>기준컬럼</th>";
+			html +=	"<th  style='height: 30px; text-align: center; font-size: 16px; border-right:1px solid #e3e6f0;'>적용항목</th>";
+			html +=	"</tr>";
+			for(var i= 0; i < jsonData.length ; i++){
+				/* html +=	"<tr style='cursor:pointer;'  onclick='fn_click(this);'>"; */
+				html +=	"<tr>";
+	 			html +=	"<input type='hidden' id='colTableNm_"+ i +"' name='colTableNm_"+ i +"' class='in_w100' style='height: 29px' value='"+i+"'/>";
+	 			html +=	"<td style='border-right:1px solid #e3e6f0;'>";
+	 			html +=	"<div class='selectbox'>";
+	 			html +=	"<label for='la_colNm_"+i+"' th:text='#{UIT0265}'>선택해주세요</label>";
+	 			html +=	"<select id='colNm_"+i+"' class='colNm' onchange='fn_onchangeSelect(this)'>";
+	 			html +=	"<option value='0' th:text='#{UIT0265}' selected>선택해주세요</option>";
+	 			html +=	"</select>";
+	 			html +=	"</div>";
+				html +=	"</td>";
+				html +=	"<td style='border-right:1px solid #e3e6f0;'>";
+	 			html +=	"<div class='selectbox'>";
+	 			html +=	"<label for='la_filedNm_"+i+"' th:text='#{UIT0265}'>선택해주세요</label>";
+	 			html +=	"<select id='filedNm_"+i+"' class='filedNm' onchange='fn_onchangeSelect(this)'>";
+	 			html +=	"<option value='0' th:text='#{UIT0265}' selected>선택해주세요</option>";
+	 			html +=	"</select>";
+	 			html +=	"</div>";
+				html +=	"</td>";
+				html +=	"<input type='hidden' id='insChk_"+ i +"' name='insChk_"+ i +"' class='in_w100' style='height: 29px' value='0'/>";
+				html +=	"<input type='hidden' id='analsId_"+ i +"' name='analsId_"+ i +"' class='in_w100' style='height: 29px' value='0'/>";
+				html +=	"</tr>";
+			}
+			html +=	"</table>";
+			html += "</div>";
+			html += "</div>";
+			html += "</div>";
+			
+			$("#columnGrid").append(html);
+			fn_onSelect();
+			fn_onSelectCol(jsonData);
+			
+			tableGrid = new tui.Grid({
+		        el : document.getElementById("tableGrid"),
+		        data : jsonData,
+		        scrollX : false,
+		        scrollY : false,
+		        rowHeight : 53,
+		        minBodyHeight : 40,
+		        //bodyHeight : 500,
+		        header: {
+		            height: 49
+		        },
+		        columns : columns
+		    });
+
+		    const extOptions = {
+		        cell: {
+		            focused: {
+		                border: 0 // 선택 셀 강조 표시 x
+		            }
+		        }
+		    };
+
+		    tui.Grid.applyTheme('default', extOptions);
+		    tableGrid.resetData(jsonData);
+		}
+		
+		// 테이블 정보 조회
+		function fn_search(){
+			var tableSchema = $("#tableSchema").val();
+			var tableAll = $('#tableAll').val();
+			if(tableSchema ==""){
+				tableSchema =/*[[ ${schema} ]]*/;
+			}
+			
+			var data = {
+				"tableSchema":tableSchema,
+				"tableAll":tableAll
+			};
+			$.ajax({
+				url: "/mngr/analysis/selectTableAnalysis",
+				data : data,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var jsonData = obj.result;
+					var totalCnt = obj.totalCnt;
+					$("#tableCnt").val(totalCnt);
+					$("#tableTotalCnt").val(totalCnt);
+					$("#showCnt").show();
+					$("#tableSchema").val($("#tableSchema").val());
+					
+					// 그리드 세팅
+					fn_setGrid(jsonData);
+					
+				},
+		        error:function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();
+				} 
+			});
+		}
+		
+		// 스키마 변경 이벤트
+		function fn_changeSchema(){
+			$('#pageIndex').val('');
+			fn_search();
+		}
+		
+		// 스키마 정보 설정		
+		function fn_selectTableSchema(){
+			var option = "";
+			var Schema = /*[[ ${schema} ]]*/;
+			$.ajax({
+				url: "/mngr/analysis/selectTableAnalysis",
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var jsonData = obj.result;
+					
+					for(var i = 0; i < jsonData.length; i++){
+						var selected = "";
+						if(Schema.trim().toUpperCase() == jsonData[i].OWNER.toUpperCase()) {
+							selected = "selected=true";
+						}else{
+							if(jsonData.length == 1){
+								selected = "selected=true";
+							}else{
+								selected = "";
+							}
+						}
+						var option  = $("<option value="+jsonData[i].OWNER+" "+selected+">"+jsonData[i].OWNER+"</option>");
+						$("#tableSchema").append(option);
+													
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tableSchema").trigger("chosen:updated");
+						
+					}
+						// 선택된 스키마 정보로 테이블 정보 조회
+						fn_changeSchema();
+				},
+		        error:function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();
+				}
+			});
+		}
+		
+		function fn_onSelect(){
+			var params = {};
+			
+			$.ajax({
+				url: '/mngr/lifecycle/ajaxSelLifecycleFiledNm',
+				data: params,
+				success: function(data){
+					var obj = JSON.parse(data);
+					var jsonData = obj.dataList;
+					
+					for(var i = 0; i < jsonData.length; i++){
+						//적용항목 셀렉트박스 구성
+						var option = $("<option value='"+jsonData[i].analsId+"'>"+jsonData[i].fieldNm+"</option>");
+		                $('.filedNm').append(option);
+						
+					}
+				},
+		        error:function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();
+				}
+			});
+			
+		}
+		
+		function fn_onSelectCol(tableData){
+			var arr = [];
+			
+			for(var i = 0; i < tableData.length; i++){
+				var obj = {};
+				var tableName = tableData[i].tableName;
+				var tableSchema = $("#tableSchema").val();
+				
+				obj.tableSchema = tableSchema;
+				obj.tableName = tableName;
+				
+				arr.push(obj);
+			}
+			
+			$.ajax({
+				url: '/mngr/lifecycle/selectColumnAnalysis',
+				data: {tableData : JSON.stringify(arr)},
+				method: "POST",
+				success: function(data){
+					var obj = JSON.parse(data);
+					
+					for (var i = 0; i < obj.length; i++) {
+						var colList = obj[i].colList;
+						var tableNm = obj[i].tableName;
+						
+						$("#colTableNm_"+i).val(tableNm);
+						
+						for(var j = 0; j < colList.length; j++){
+							//기준컬럼 셀렉트박스 구성
+							var option = $("<option value='"+colList[j].dataType+"'>"+colList[j].columnName+"</option>");
+			                $('#colNm_'+i).append(option);
+						}
+					}
+					
+				},
+		        error:function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();
+				}
+			});
+		}
+		
+		function fn_onchangeSelect(data){
+			//select box 변경시 해당 label text 변경
+			$("label[for='la_"+data.id+"']").text($("#"+data.id+" option:selected").text());
+			
+		}
+		
+		</script>
+	</div>   
+</html>

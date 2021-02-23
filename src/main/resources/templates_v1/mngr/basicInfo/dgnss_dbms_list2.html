@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+	
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+  			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; BASIC &gt; <label th:text="#{UIT0322}">데이터연결</label></span>
+        </div>
+        
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0322}"> 데이터연결</h1>
+        </div>
+		
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="tab1" href="#none" onclick="fn_tabLink(this)">DBMS</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="tab2" href="#none" onclick="fn_tabLink(this)">CSV</a>
+			</li>
+		</ul>
+	                    
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 내용 -->
+				
+				<!-- DBMS 연결  -->
+					<div id="tab1_div" class="card-body">
+						<div id="dataTable_filter" class="dataTables_filter">
+                                                                          
+							<section class="mgn_b20 txt_right">
+								<button class="btn btn-secondary btn_wd100" th:text="#{UIT0190}" onclick="goList('list')" >목록보기</button>
+								<button class="btn btn-secondary btn_wd120" th:text="#{UIT0280}" onclick="connectTest('list')" >연결테스트</button>
+								<button class="btn btn-primary btn_wd100" id="btnSave" name="btnSave" th:text="#{UIT0088}"  onclick="connectSave('save');" >저장</button>
+							</section>
+							
+							<form action="">
+								<input type="hidden" id="conCheck" name="conCheck" value="N">
+								<input type="hidden" id="dbmsId" name="dbmsId" value="">
+								<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" th:value="${dgnssDbmsId}">
+								<section class="l_box_type02"> 
+									<!--                                   
+									<div id="dbmsDiv" class="tb_type03">
+										
+									</div>
+									-->
+									<div class="tb_type03">
+										<table>
+											<tbody>
+												<tr>
+											        <th><span class="str">*</span> <label for="dbmsKnd" th:text="#{UIT0281}">DB종류</label></th>
+											        <td colspan="3" style="text-align: left;">
+														<select class="inText" id="dbmsKnd" name="dbmsKnd" style="width: 140px;" onchange="onChangeDb();">
+															<option value="00"  th:text="#{UIT0045}">선택</option>
+														</select>
+											        </td>
+											    </tr>
+											    <tr>
+                                                    <th><span class="str">*</span> <label for="ip" th:text="#{UIT0282}">서버 IP</label></th>
+                                                    <td><input type="text" id="ip" name="ip" class="inText" th:value="${ip }" maxlength="20" ></td>
+                                                    <th><span class="str">*</span> <label for="port" th:text="#{UIT0283}">서버 Port</label></th>
+                                                    <td><input type="text" id="port" name="port" class="inText" th:value="${port }" maxlength="4" ></td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="str">*</span> <label for="id" th:text="#{UIT0284}"> 로그인 ID</label></th>
+                                                    <td><input type="text" id="id" name="id" class="inText" th:value="${id}" maxlength="20" ></td>
+                                                    <th><span class="str">*</span> <label for="pwd" th:text="#{UIT0285}">Password</label></th>
+                                                    <td><input type="password" id="pwd" name="pwd" value="" maxlength="20" ></td>
+                                                </tr>
+                                                <tr>
+	                                                
+                                                    <th>
+	                                                    <span class="str">*</span> <label for="database">Database</label>
+                                                    </th>
+                                                    <td id="optionCol1">
+	                                                    <input type="text" id="database" name="database" class="inText" th:value="${database }" maxlength="20" >
+                                                    </td>
+	                                                <th id="optionOrTiTh1">
+	                                                	<div id="optionOrTiLabel1" style="display: none;">
+                                                    	<span class="str">*</span> <label for="sid">SID</label>
+	                                                    </div>
+                                                    </th>
+                                                    <td id="optionOrTiTd1">
+                                                    	<div id="optionOrTiInput1" style="display: none;">
+                                                    	<input type="text" id="sid" name="sid" class="inText" th:value="${sid }" maxlength="30" >
+	                                                    </div>
+                                                    </td>
+                                                </tr>
+                                                <!-- <tr id="optionOrTiTr1">
+                                                	<th>
+	                                                	<div id="optionOrTiLabel1" style="display: none;">
+                                                    	<label for="sid"><span class="str">*</span> SID</label>
+	                                                    </div>
+                                                    </th>
+                                                    <td colspan="3">
+                                                    	<div id="optionOrTiInput1" style="display: none;">
+                                                    	<input type="text" id="sid" name="sid" class="inText" th:value="${sid }" maxlength="30" >
+	                                                    </div>
+                                                    </td>
+                                                </tr> -->
+                                                <tr>
+                                                    <th><label for="paramtr" th:text="#{UIT0286}">추가 적용 변수</label></th>
+                                                    <td colspan="3"><input type="text" id="paramtr" name="paramtr" maxlength="100" th:value="${paramtr }" ></td>
+
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="str">*</span> <label for="dgnssDbmsNm" th:utext="#{UIT0287}">진단대상<br>데이터베이스명</label></th>
+                                                    <td colspan="3"><input type="text" id="dgnssDbmsNm" name="dgnssDbmsNm" th:value="${dgnssDbmsNm }" maxlength="30" ></td>
+
+                                                </tr>
+                                                <tr>                                                                
+                                                    <td colspan="4" align="center"><input type="text" id="dbUrl" name="dbUrl" value="" style="text-align:center;border: none;"  readonly="readonly"></td>
+                                                </tr>
+											</tbody>
+										</table>
+									</div>
+								</section>
+							</form>                                       
+						</div>
+					</div>
+					
+					<!-- CSV 파일 등록  -->
+					<div id="tab2_div" class="card-body" style="display:none;">
+						<div id="dataTable_filter" class="dataTables_filter">
+							<section class="mgn_b20 txt_right">
+		                        <button id="csvFileInsert" class="btn btn-primary btn_wd100" th:text="#{UIT0289}" th:onclick="'javascript:fn_csvFileIns();'">파일등록</button>
+		                    </section>    
+		                    <span th:text="#{UIT0288}">※ CSV 파일만 등록 가능합니다. 파일명은 영문/숫자만으로 되어 있어야 등록이 가능합니다. 파일 내용의 컬럼은 250개 이하로 작성해야 등록이 가능 합니다.</span>
+		                    <form name="csvUploadFrm" id="csvUploadFrm"  method="post" action="" enctype="multipart/form-data">
+		                        <section class="l_box_type02">                                    
+		                            <div class="tb_type03">
+		                                <table style="margin-top:10px;">
+		                                    <tbody>
+		                                        <tr>
+		                                            <th><span class="str">*</span> <label th:text="#{UIT0290}">파일 업로드</label></th>
+		                                            <td style="text-align: left; width:600px;">
+		                                                <div class="filebox bs3-primary" style="text-align: left; width:600px;">
+		                                                    <input id="fileFullPath" name="fileFullPath" class="upload-name in_box_type01 in_length400" value="파일선택" style="width: 400px;" disabled="disabled">
+		                                                    <label for="fileName" class="mgn_b0" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+		                                                    <input type="file" name="fileName" id="fileName" style="width: 100px;" class="upload-hidden" onchange="get(event);"> 
+		                                                </div>
+		                                            </td>
+		                                        </tr>                                                                                                   
+		                                    </tbody>
+		                                </table>
+	                            	</div>
+	                       		</section>
+	                    	</form>
+						</div>
+					</div>
+				
+				
+				<div class="card shadow mb-4">
+					<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+                     <input type="hidden" id="ckBtn" name="ckBtn" value="" />
+                     
+                     <div class="card-body">
+                         <div id ="grid" class="tb_type99" style="clear: both; min-height: 440px;"></div>
+                         <div id="pagination" class="tui-pagination"></div>
+                     </div>
+                             
+	            </div>
+			</div>
+		</div>
+
+		<script th:inline="javascript"  class="code-js">
+		
+		/*<![CDATA[*/
+			var chkTabId = /*[[${tabId}]]*/;
+			var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+			var UIT0044 = /*[[ #{UIT0044} ]]*/; //: 비고
+			var UIT0323 = /*[[ #{UIT0323} ]]*/; //: 구분
+			var UIT0324 = /*[[ #{UIT0324} ]]*/; //: 진단대상데이터베이스명
+			var UIT0325 = /*[[ #{UIT0325} ]]*/; //: 서버IP
+			var UIT0326 = /*[[ #{UIT0326} ]]*/; //: 서버PORT
+			var UIT0327 = /*[[ #{UIT0327} ]]*/; //: 접속계정
+			var UIT0328 = /*[[ #{UIT0328} ]]*/; //: 접속
+			var UIT0329 = /*[[ #{UIT0329} ]]*/; //: 상세
+			var UIT0330 = /*[[ #{UIT0330} ]]*/; //: CSV 파일 명
+			var UIT0331 = /*[[ #{UIT0331} ]]*/; //: 선택하신 DBMS로 접속 설정을 하시겠습니까?
+			var UIT0332 = /*[[ #{UIT0332} ]]*/; //: 선택하신 CSV 파일로 접속 설정을 하시겠습니까?
+			var UIT0333 = /*[[ #{UIT0333} ]]*/; //: 선택한 DBMS 연결 중 오류가 발생하였습니다.
+		/*]]*/
+		
+			var tabType = "";
+			
+			// 페이지 로드시 적용 설정
+			$(document).ready(function() {
+				var startTab = $("#tab1");
+				if(chkTabId == 'tab2'){
+					startTab = $("#tab2");	
+				}
+				
+				fn_tabLink(startTab);
+			});
+			
+			// 텝 클릭시 이동
+			function fn_searchTab(tabId){
+				// 페이지 초기화
+				$('#pageIndex').val('');
+				// 페이지 설정
+				switch (tabId) {
+					case "tab1" : tabType="dbms";fn_selDataList();
+					break;
+				  	case "tab2" : tabType="csv";fn_selDataList();
+				    break;
+				}
+			}
+			
+			// 페이지 이동시 사용
+			function fn_search(){
+				fn_selDataList();
+			}
+			
+			// 목록 정보를 Ajax를 이용하여 가지고 온다.
+			function fn_selDataList(){
+				var pageIndex = $('#pageIndex').val();
+				var searchValue = $('#searchValue').val();
+				var itemsPerPage = $("#itemsPerPage").val();
+				
+				if('' == tabType){
+					tabType = 'dbms';
+				}
+				var params = {
+					"searchValue" : searchValue,
+					"pageIndex" : pageIndex,
+					"itemsPerPage" : itemsPerPage,
+					"tabType" : tabType
+				}
+				
+				$.ajax({
+					url: '/mngr/basicInfo/selectDbList',
+					data: params,
+					success: function(data){
+						var obj = JSON.parse(data);
+						var dataList = obj.result;
+						var totalCnt = obj.totalCnt;
+						tabType = obj.tabType;
+						fn_setDataListGrid(dataList);
+						/* 페이징 function 호출 */
+						fn_pagination(totalCnt);
+					}
+				});
+			}
+			
+			// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+			function fn_setDataListGrid(listData){
+				// 화면 초기화 처리
+				$("#grid").empty();
+				// 조회 컬럼 목록
+				
+				var columns = "";
+				
+				tabType = tabType === undefined ? 'dbms' : tabType;
+				
+				if(tabType == 'dbms'){
+					columns = [
+						{header : UIT0323, title : UIT0323, name : 'dbmsKnd', whiteSpace: 'normal', sortable: true,  width: 100, align: 'center'}, 
+						{header : UIT0324, title : UIT0324, name : 'dgnssDbmsNm', whiteSpace: 'normal', sortable: true}, 
+						{header : UIT0325, title : UIT0325, name : 'ip', whiteSpace: 'normal', sortable: true,  width: 100, align: 'center'}, 
+						{header : UIT0326, title : UIT0326, name : 'port', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'}, 
+						{header : 'Database', title : 'Database', name : 'database', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'},
+						{header : UIT0327, title : UIT0327, name : 'id', width: 100, whiteSpace: 'normal', sortable: true, align: 'center'},
+						{header : UIT0044, title : UIT0044, name : 'rm', width: 220, whiteSpace: 'normal', align: 'center', formatter : function(value, options){
+								var html  = "";
+								var display = "";
+								html += "<input type='button' class='btn btn_select btn_wd30' data-value='CON' value='"+UIT0328+"' />&nbsp;&nbsp;";
+								if(value.value == 'dq_database'){
+									//display = "disable='true'";
+								}
+								html += "<input type='button' class='btn btn_select btn_wd30' data-value='SEL' value='"+UIT0329+"' />";
+								return html;
+							}
+						}
+					];
+					
+				}else{
+					
+					columns = [
+						{header : UIT0323, title : UIT0323, name : 'dbmsKnd', whiteSpace: 'normal', sortable: true,  width: 100, align: 'center',}, 
+						{header : UIT0330, title : UIT0330, name : 'dgnssDbmsNm', whiteSpace: 'normal',  sortable: true,}, 
+						{header : UIT0044, title : UIT0044, name : 'rm', width: 220, whiteSpace: 'normal', align: 'center', formatter : function(value, options){
+								var html  = "";
+								var display = "";
+								html += "<input type='button' class='btn btn_select btn_wd30' data-value='CON' value='"+UIT0328+"' />&nbsp;&nbsp;";
+								if(value.value == 'dq_database'){
+									//display = "disable='true'";
+								}
+								return html;
+							},
+						}
+					];
+				}
+				
+				const dataListGrid = new tui.Grid({
+					el : document.getElementById("grid"),
+					data : listData,
+					rowHeaders: ['rowNum'],
+					scrollX : false,
+					scrollY : false,
+					rowHeight : 40,
+					minBodyHeight : 40,
+					header: {
+						height: 40
+					},
+					columns : columns
+				});
+				
+				const extOptions = {
+					cell: {
+						focused: {
+				            border: 1 // 선택 셀 강조 표시 x
+				        }
+					}
+				};
+				
+				tui.Grid.applyTheme('default', extOptions);
+				
+				dataListGrid.on('click', function(ev) {
+			  		var inText = ev.nativeEvent.target.innerText;
+			  		var obj = ev.nativeEvent.target;
+			  		var mode = $(obj).data("value");
+			  		
+			  		if(ev.columnName === 'rm'){
+			  			var item = dataListGrid.getRow(ev.rowKey);
+			  			
+			  			if(mode != undefined){
+			  	  			if(mode == 'CON'){
+			  	  				fn_connectDbms(item,tabType);
+			  	  	  		}
+			  	  	  		if(mode == 'SEL'){
+			  	  	  			location.href = "/mngr/basicInfo/dataConnProp.do?dgnssDbmsId="+item.dgnssDbmsId;
+			  	  	  	  	}
+			  			}
+			  		}
+			  	});
+				
+				dataListGrid.resetData(listData);
+			}
+			
+			
+			// 선택된 지정 DB 접속 정보를 세션에 등록한다.
+			function fn_setDbms(obj,tabType){
+				
+				var dgnssDbmsId = obj.dgnssDbmsId;
+				var param = "";
+				var massage = "";
+				if(tabType=="dbms"){
+					param = "?tabId=tab1";
+					massage = UIT0331;
+				}else{
+					param = "?tabId=tab2";
+					massage = UIT0332;
+				}
+				
+				if(confirm(massage)){
+					
+					$.ajax({
+						url: "/mngr/basicInfo/connectDbms",
+						data: {dgnssDbmsId : dgnssDbmsId} ,
+						success: function(data){
+							// 처리 완료시 페이지를 리로드 하여 세션에 저장된 접속 URL 정보를 확인 한다.
+							location.href = "/mngr/basicInfo/dgnssDbmsList"+param;
+						}
+					});
+				}
+			}
+			
+			
+			function fn_connectDbms(obj,tabType){
+				
+				if(tabType=="dbms"){
+					var arr = [];
+					obj.pwd = obj.password;
+					obj.type = "reCheck";
+					arr.push(obj);
+					if(arr != null){
+						$.ajax({
+							url: '/mngr/basicInfo/dataConnPropCheckDb.do',
+							method : 'POST',
+							data: {dataList : JSON.stringify(arr)},
+							success: function(data){
+								var objdata = $.parseJSON(data);
+								var result = objdata.result;
+								if(result == true){
+									fn_setDbms(obj,tabType);
+								}else{
+									alert(UIT0333);
+									return false;
+								}
+								
+					        }, error:function() {
+					        	alert(UIT0333);
+				                return false;
+				           }
+					    });
+					}
+				}else{
+					fn_setDbms(obj,tabType);
+				}
+			}
+
+		</script>
+	</div>	
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+<head>
+<style type="text/css">
+	.tb_type99 { width : 50% !important }
+	.table-layout { table-layout : inherit}
+	.tb_type99 .tui-grid-cell { width : 50% }
+	.tui-column-chart { display : inherit }
+	.tui-bar-chart { display : inherit }
+	.tui-grid-rside-area {width : 100% !important}		
+</style>
+</head>
+
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>PROFILING</li>
+	            <li><label th:text="#{UIT0071}">프로파일링 분석</label></li>
+            </ul>
+		</div>
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; PROFILING &gt; <label th:text="#{UIT0073}">프로파일링 결과</label></span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0073}"> 프로파일링 결과</h1>
+		</div> -->
+  
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<span class="mb-0 text-gray-600">
+							<i class="fas fa-square" style="float:left; margin-right:5px; font-size:16px; color:#4e73df; "></i><h3  th:text="#{UIT0376}">분석 개요</h3>
+						</span>
+						<div class="button_area alignr marginb5" id="searchDiv">
+                            <button class='btn btn-s blue in_wp120' type="button" id="btn_report" onclick="$('#frm1').submit();"  th:text="#{UIT0377}">보고서 다운로드</button>
+                        </div>
+						<!-- <button type="button" class="btn btn-primary" onclick="$('#frm1').submit();" style="float:right;"  th:text="#{UIT0377}">보고서 다운로드</button> -->
+						<div class="input_table" style="border: none; padding: 0 50px;">
+							<table>
+								<tbody id= "profilingResult">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>	
+				</div>
+
+				<form id="frm1" name="frm1" action="download/report.do" method="get">
+					<input type="hidden" name="dgnssDbmsId" th:value="${table.dgnssDbmsId}" />
+					<input type="hidden" name="dgnssInfoId" th:value="${table.dgnssInfoId}" />
+				</form>
+
+				<form id="frm2" name="frm2" action="download/notMatch.do" method="get">
+					<input type="hidden" name="dgnssDbmsId" th:value="${table.dgnssDbmsId}" />
+					<input type="hidden" name="dgnssInfoId" th:value="${table.dgnssInfoId}" />
+					<input type="hidden" name="tableNm"  th:value="${table.tableNm}" />
+					<input type="hidden" name="schemaNm"  th:value="${dbms.database}" />
+					<!-- <input type="hidden" name="columnNm" th:value="${column.columnNm}" /> -->
+					<input type="hidden" name="columnNm" id="columnNm" value="" />
+					<input type="hidden" id="fileType" name="fileType" value="csv" />
+					<input type="hidden" id="csvFileName" name="csvFileName" th:value="${dbms.csvFileName}" />
+					<input type="hidden" id="matchMm" name="matchMm" value="" />
+				</form>
+
+				<!-- 내용 -->
+				<div class="card shadow mb-4 margint10">
+					<div class="card-body">
+						<i class="fas fa-square" style="float:left; margin-right:5px; font-size:16px; color:#4e73df;"></i><h3  th:text="#{UIT0378}">분석 결과</h3>
+						<div style="clear: both"></div>
+
+						<div style="margin-left:50px;">
+							<form id="frm" name="frm" action="view.do" method="get">
+								<input type="hidden" name="dgnssDbmsId" th:value="${table.dgnssDbmsId}" />
+								<input type="hidden" name="dgnssInfoId" th:value="${table.dgnssInfoId}" />
+								<input type="hidden" name="pageIndex" value="" th:value="${param.pageIndex}" />
+								<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="1" />
+								
+							</form>
+
+							<div id="innerGridDiv"></div>
+							
+						</div>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+					
+
+		<div id="noMatchModal" class="modal fade" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="download-title"  th:text="#{UIT0379}">불일치 정보 다운로드</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <p id="downloadmsg" style="text-align:center; font-size: 18px;"  th:text="#{UIT0380}">다운로드 형식을 선택하세요.</p>
+		      </div>
+		      <div class="modal-footer">
+		      	<button type="button" onclick="javascript:fn_modalClose();" class="btn btn-s blue in_wp70"  id="downloadclose"  th:text="#{UIT0221}">확인</button>
+		        <button type="button" onclick="downloadNotMatch('csv')" class="btn btn-s gray in_wp70" id="csvDown">CSV</button>
+		        <button type="button" onclick="downloadNotMatch('xlsx')" class="btn btn-s gray in_wp70" id="excelDown">Excel</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<iframe name="hiddenFrame" hidden="" width="0" height="0"></iframe>
+
+		<!-- TUI 차트 js -->
+		<script th:src="@{/js/tui/core.js}"></script>
+		<script th:src="@{/js/tui/raphael.js}"></script>
+		<script th:src="@{/js/tui/tui-chart.js}"></script>
+		
+		<!-- Page level plugins -->
+		<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+		<script type="text/javascript"  class="code-js" th:inline="javascript">
+		
+		/*<![CDATA[*/
+	 	var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+	 	var UIT0055 = /*[[ #{UIT0055} ]]*/; //: 접속 DBMS
+	 	var UIT0367 = /*[[ #{UIT0367} ]]*/; //: 작업명
+	 	var UIT0379 = /*[[ #{UIT0379} ]]*/; //: 불일치 정보 다운로드
+	 	var UIT0381 = /*[[ #{UIT0381} ]]*/; //: 데이터베이스
+	 	var UIT0382 = /*[[ #{UIT0382} ]]*/; //: 작업 시작 시간
+	 	var UIT0383 = /*[[ #{UIT0383} ]]*/; //: 테이블
+	 	var UIT0384 = /*[[ #{UIT0384} ]]*/; //: 작업 수행 시간
+	 	var UIT0385 = /*[[ #{UIT0385} ]]*/; //: 접속 파일명
+	 	var UIT0386 = /*[[ #{UIT0386} ]]*/; //: 일치 정보 다운로드
+	 	var UIT0387 = /*[[ #{UIT0387} ]]*/; //: 패턴
+	 	var UIT0388 = /*[[ #{UIT0388} ]]*/; //: 사용자정의
+	 	var UIT0389 = /*[[ #{UIT0389} ]]*/; //: 항목
+	 	var UIT0390 = /*[[ #{UIT0390} ]]*/; //: 기본패턴
+	 	var UIT0391 = /*[[ #{UIT0391} ]]*/; //: 다운로드 대상 분석 정보가 없습니다.
+		var groupList = /*[[${groupList}]]*/;		
+		var column = /*[[${column}]]*/;
+		var columnData = /*[[${columnData}]]*/;
+		var columnList = /*[[${columnList}]]*/; 
+		var resultData =   /*[[${bodyMap}]]*/;
+		var userAdd =   /*[[${userAdd}]]*/;
+		var frqListAll = /*[[${frqlList}]]*/;
+		var columnCmt = /*[[${columnCmt}]]*/;
+		var csvAt = /*[[${csvAt}]]*/;
+		var listCntPerPage = /*[[${listCntPerPage}]]*/;
+		var dbms = /*[[${dbms}]]*/; //DB정보
+		var table = /*[[${table}]]*/; //table 정보
+		/*]]*/
+
+
+		
+		var checkBtn = false;
+		
+		$(function() {
+
+
+			var list = resultData.body;
+			$('#itemsPerPage').val(listCntPerPage);
+			
+			var startTr = "<tr style='border-bottom: 1px solid #e3e6f0;'>";
+			var endTr= "</tr>";
+			var innerTable = "";
+			
+	
+			//접속된 정보에 따른 분석개요 정보화면 변경
+			if(dbms.ip != 'localhost' && dbms.fileType != 'CSV'){
+				
+				//DB 분석 후 결과 출력 시 
+				// 첫번째
+				innerTable += startTr;
+				innerTable += "<td><label>"+UIT0055+"</label></td>";
+				innerTable += "<td><input type='text' value='"+dbms.ip+":"+dbms.sid+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += "<td><label>"+UIT0367+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.dgnssNm+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += endTr;
+				
+				// 두번째
+				innerTable += startTr;
+				innerTable += "<td><label>"+UIT0381+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+dbms.database+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += "<td><label>"+UIT0382+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.excBeginTime+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += endTr;
+				
+				// 세번째
+				innerTable += startTr;
+				innerTable += "<td><label>"+UIT0383+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.tableNm+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += "<td><label>"+UIT0384+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.workTime+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += endTr;
+				
+				$("#profilingResult").append(innerTable);
+					
+			}else {
+				
+				//CSV 파일 분석 후 결과 출력 시 
+				// 첫번째
+				innerTable += startTr;
+				innerTable += "<td><label>"+UIT0385+"</label></td>";
+				innerTable += "<td><input type='text' value='"+dbms.csvFileName+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += "<td><label>"+UIT0367+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.dgnssNm+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += endTr;
+				
+				// 두번째
+				innerTable += startTr;
+				innerTable += "<td><label>"+UIT0382+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.excBeginTime+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += "<td><label>"+UIT0384+"</label></td>";
+				innerTable += "<td><input type='text' class='' value='"+table.workTime+"' style='border:none; background-color: #fff; width: 100%' disabled></td>";
+				innerTable += endTr;
+				
+				$("#profilingResult").append(innerTable);	
+			}
+			
+
+			girdView();
+			freqView();
+		
+			/* 페이징 function 호출 */
+			$('#pageIndex').val($('#frm').find('input[name=pageIndex]').val()); // 페이지 초기에 pageIndex 파라메터 값을 전달
+			$('#itemsPerPage').val($('#frm').find('input[name=itemsPerPage]').val());
+			fn_pagination(columnList.length);
+			if(userAdd==false){   //분석시 사용자정의 항목이 한개라도 있으면 (일치,불일치,보고서)다운로드 버튼 모두 hide
+				$("button[id=btn_report]").hide(); 
+				$("button[name=matchN]").hide();
+				$("button[name=matchY]").hide();
+			} 
+		});
+			
+			
+		function girdView(){
+			var idx=0;
+			var count = 0;
+			var count2 = 0;
+			var listData = resultData.body;
+			var arrNumber = "";
+
+			
+			for( var key in Object.keys(listData) ) {
+ 				 var shtml ="";
+ 				 arrNumber = listData[Object.keys(listData)[key]];
+ 				 
+ 				
+ 				 
+				 shtml += "<div id='col_div"+idx+"'>";
+				 shtml += "<div id='top_div"+idx+"' class='padb10'>";
+				 shtml += "<i class='fas fa-circle' style='float:left; margin-top:9px; margin-right:5px; font-size:1px; color:#4e73df;'></i><h5 style='display : inline-block; width:50%'><label id='columnNM_"+idx+"' style='font-size: 20px;' ></label></h5>";
+				 shtml += "<div class='button_area alignr'>";
+				 shtml += "<button type='button' class='btn btn-s blue in_wp140' data-toggle='modal' onclick='infoDown("+idx+",this)' value='m' name='matchY' id='matchY"+idx+"' data-target='#noMatchModal' style='float: right; '>"+UIT0386+"</button>";
+				 shtml += "<button type='button' class='btn btn-s blue' data-toggle='modal' onclick='infoDown("+idx+",this)' value='mis' name='matchN' id='matchN"+idx+"' data-target='#noMatchModal' style='float: right; margin-right: 20px; width : 150px;'>"+UIT0379+"</button>";
+				 shtml += "</div>";
+				 shtml += "<input type='hidden' name='colNm' id='colNm_"+idx+"' value=''/>";
+				 $("#innerGridDiv").append(shtml); 		
+				 $("button[id=matchN"+idx+"]").hide();
+				 $("button[id=matchY"+idx+"]").hide();
+				 
+				 
+
+ 				 if(csvAt){
+					 $('#columnNM_'+idx).text(columnCmt[idx]);		
+				 }else{					 
+					 $('#columnNM_'+idx).text(columnData[idx].columnNm);			
+				 }
+ 		
+ 				 $('#colNm_'+idx).val(columnData[idx].columnNm);
+ 				 
+ 				 
+				$.each(groupList, function(index,value){
+
+		    		var chk = 0; 
+					var data = [];
+					var html = "";
+					if(value.groupCode == "AG000200"){	// value Frq		
+						html += "<strong style='display:none;'>* Value Frequency</strong>";
+						html += "<div id='ca_div_"+count2+"' style='margin-bottom:30px; display:none;'>";
+						html += "<div id='fre_grid_"+count2+"' class='tb_type99' float=left; vertical-align:top;'></div>";
+						html += "<div id='fre_chart_"+count2+"' class='tb_type99' style='margin-bottom:30px;  vertical-align:top;'></div>";
+						html += "</div>";
+						count2++;
+					}else { // value Frq 외
+						html += "<strong style='display:none;'>* "+value.groupNm+"</strong>";
+						html += "<div id='gc_div_"+count+"' style= 'margin-bottom:30px; margin-top:5px;'>";
+						html += "<div id='grid_"+count+"' class='tb_type99 float_left' style=' float=left; vertical-align:top;'></div>";
+						html += "<div id='chart_"+count+"' class='tb_type99' style='margin-bottom:30px;'></div>";
+						html += "</div>";
+						
+					}
+					
+					html += "<br/><br/>";
+					$("#innerGridDiv").append(html);
+					
+					//console.log("arrNumber:::"+arrNumber);
+					
+ 			       for(var i = 0; i < arrNumber.length; i++){
+						if(value.groupNm.indexOf(UIT0387) != -1 || value.groupNm.indexOf(UIT0388) != -1){	
+							var columns = [
+								{header: UIT0389, name: 'name', width:220, align: 'center'},
+								{header: 'Match Count', name: 'mCount', align: 'right'},
+								{header: 'Match %', name: 'mPer', align: 'right'} ,
+								{header: 'misMatch Count', name: 'mmCount', align: 'right'},
+								{header: 'misMatch %', name: 'mmPer', align: 'right'} 
+		
+							];
+						}else {
+							var columns = [
+								{header: UIT0389, name: 'name', width:250, align: 'center'},
+								{header: 'Count', name: 'mCount', align: 'right'},
+								{header: '%', name: 'mPer', align: 'right'} 
+		
+							];
+						}
+			    	  
+						
+						
+
+					var inputData = {};
+					//console.log("arrNumber[i]:::"+JSON.stringify(arrNumber[i]));	
+
+					if(value.groupCode == arrNumber[i].groupCode){
+							if(value.groupCode != "AG000100") checkBtn = true;
+							inputData.name = arrNumber[i].analsNm;
+							inputData.mCount =arrNumber[i].mtchgCo;
+							inputData.mPer = arrNumber[i].perCo+'%';
+							
+							if(value.groupNm.indexOf(UIT0387) != -1 || value.groupNm.indexOf(UIT0388) != -1){	
+								inputData.mmCount =arrNumber[i].miscnt;
+								inputData.mmPer = arrNumber[i].misperCo+'%';
+							}	
+							
+							
+							inputData._attributes = "{className: {column: {name: ['headB']}}}";
+	
+							//console.log("inputData:::"+JSON.stringify(inputData));
+							data.push(inputData);
+							
+							chk ++;
+							
+			 		if(value.groupCode=="AG000300" ){ /* (value.groupCode!="AG000100" && value.groupCode!="AG000200") */
+			 																				/*AG000100 = 기본분석 , AG000200=Value Frequency , AG000300=기본패턴 , AG0004xx=사용자정의 */								
+						$("button[id=matchN"+idx+"]").show();
+						$("button[id=matchY"+idx+"]").show();
+					}			 				 				 				 	 		
+					}
+			 	 			 				 				 				 				 	 					 	 	 			 	 					 	
+ 			   
+			       }  // i 
+						
+						if(chk > 0 && data != null){						
+							//console.log("data::"+JSON.stringify(data));
+							var id =  document.getElementById('grid_'+count);
+							
+							
+							var grid = new tui.Grid({
+								el : id,
+								data : data,
+								scrollX : false,
+								scrollY : false,
+								rowHeight : 40,
+								minBodyHeight: 'auto',
+								//bodyHeight : 349,
+								header: {
+								  height: 50
+								},
+								columns : columns
+							});
+		
+							var extOptions = {
+								cell: {
+									focused: {
+										border: 0 // 선택 셀 강조 표시 x
+									}
+								}
+							};
+							tui.Grid.applyTheme('default', extOptions);
+			
+						
+							$('#columnNM_'+count).show();
+							$('#gc_div_'+count).prev('strong').show();
+							id.style.display='inline-block';	
+							
+
+						}
+							count ++;						
+		
+				}); 
+
+				
+			shtml ="";	
+			shtml += "</div>";
+			$("#innerGridDiv").append(shtml); 
+				
+			idx++;
+			}					
+			frechartView();
+			
+		}
+	
+		
+		
+		function freqView(){
+		  	var frqData = frqListAll.frqAnalList; 	
+			var arrNumber ="";
+			var cnt = 0;
+			
+			for( var key in Object.keys(frqData) ) {	    
+			      
+				$.each(columnData, function(index, value){
+    				arrNumber = frqData[Object.keys(frqData)[key]];
+    				var data = [];
+    				var chk = 0;
+   
+					var columns = [
+						{header: UIT0389, name: 'name', width:300, align: 'center'},
+						{header: 'Count', name: 'mCount', align: 'right'},
+						{header: '%', name: 'mPer', align: 'right'} ,
+					];
+    
+					for(var i = 0; i < arrNumber.length; i++){ 
+						if(arrNumber[i].columnNm == value.columnNm){
+							var inputData = {};
+							var dataVal = arrNumber[i].dataValue;
+							if(dataVal != null){
+								if(dataVal.length > 15){
+									dataVal = dataVal.substring(0,12)+"...";
+								}
+							}
+							inputData.name = dataVal;
+							inputData.mCount = arrNumber[i].dataCo;
+							inputData.mPer =  arrNumber[i].perCo+'%';
+						 	inputData._attributes = "{className: {column: {name: ['headB']}}}"; 
+							data.push(inputData);			
+							chk ++;
+						}
+					}
+				       
+					if(chk > 0 && data != null){
+						//id = $('#ca_div_'+cnt);
+						id = document.getElementById('fre_grid_'+cnt);
+						
+						var grid = new tui.Grid({
+							el : id,
+							data : data,
+							scrollX : false,
+							scrollY : false,
+							rowHeight : 40,
+							minBodyHeight: 'auto',
+							//bodyHeight : 349,
+							header: {
+							  height: 50
+							},
+							columns : columns
+						});
+					
+						var extOptions = {
+							cell: {
+								focused: {
+									border: 0 // 선택 셀 강조 표시 x
+								}
+							}
+						};
+						
+						tui.Grid.applyTheme('default', extOptions);
+						$('#ca_div_'+cnt).show();
+						$('#ca_div_'+cnt).prev('strong').show();
+					    id.style.display='inline-block';
+						cnt++;
+					}
+				});
+			}
+			chartView();
+		}
+		
+	
+		function chartView() {
+		
+			var chartData = {};	//Root
+			var series = [];	//Depth2
+			var seriesDetail = {};	//Depth3
+			var options;
+			var frqData = frqListAll.frqAnalList; 	
+			var arrNumber = "";
+			var count = 0;
+		
+			for( var key in Object.keys(frqData) ) {
+	 			
+				
+	 			
+			    $.each(columnData, function(index,value){
+					var data = {};
+					var seriesData = {};
+					var chart_id = document.getElementById('fre_chart_'+count);
+					var chk = 0;
+
+					arrNumber = frqData[Object.keys(frqData)[key]];
+						
+					data.categories = [];
+					data.series = [];
+					
+					seriesData.name ='Value';
+					seriesData.data = [];
+		
+			        for(var i = 0; i < arrNumber.length; i++){
+			        	
+			        	 if(arrNumber[i].columnNm == value.columnNm){
+							var dataVal = arrNumber[i].dataValue;
+							if(dataVal != null){
+								if(dataVal.length > 15){
+									dataVal = dataVal.substring(0,12)+"...";
+								}
+							}
+							data.categories.push(dataVal);			
+							seriesData.data.push(arrNumber[i].dataCo);
+							chk ++;
+			        	 }
+			        }
+			        
+			        data.series.push(seriesData);
+			        if(chk > 0 && data != null){   
+				        options = {
+				                chart: {width: 500,height: 300 },
+				                yAxis: {title: 'Value' },
+				                xAxis: {title: 'Data' },
+				                chartExportMenu: {visible: false },
+								legend: {visible: false },
+				            };
+			            
+				        //var theme = {
+				        //	    series: {
+				        //	        colors: [
+				        //	            '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399', '#617178'
+				        //	        ]
+				        //	    }
+				        //	};
+				     	// 테마 등록
+				        //tui.chart.registerTheme('newTheme', theme);
+				        //options.theme = 'newTheme';
+
+						tui.chart.columnChart(chart_id, data, options);
+						chart_id.style.display  = 'inline-block';
+						count++;
+			        }
+			    });
+			}
+		} 
+		
+		function frechartView() {
+			var cnt = 0;
+			var count = 0;
+			var listData = resultData.body;
+			var arrNumber;
+			var data = {};
+			var max = 0;
+		
+			
+			for( var key in Object.keys(listData) ) {
+
+    			$.each(groupList, function(index,value){
+					var seriesData = {};
+					var misSeriesData = {};
+					var chk = 0;
+				
+					data.categories = [];
+					data.series = [];
+					seriesData.data = [];
+					misSeriesData.data = [];	
+	    			arrNumber = listData[Object.keys(listData)[key]];
+	    			
+       				for(var i = 0; i < arrNumber.length; i++){
+				
+						if(value.groupCode == arrNumber[i].groupCode){
+							data.categories.push(arrNumber[i].analsNm);	
+							seriesData.data.push(arrNumber[i].mtchgCo);
+								
+							if(value.groupNm.indexOf(UIT0387) != -1 || value.groupNm.indexOf(UIT0388) != -1){		
+								seriesData.name ='Match Count';
+								misSeriesData.name ='misMatch Count';
+								misSeriesData.data.push(arrNumber[i].miscnt);
+							}else {
+								seriesData.name ='Count';
+							
+							}
+							if(value.dataCo > max) { max = value.dataCo;}	
+							chk ++;
+					
+				        	options = {
+				                chart: {width: 500, height: 300},
+				                yAxis: {title: 'Value'},
+				                xAxis: {title: 'Data' },
+				                chartExportMenu: {visible: false},
+								legend: {visible: false},
+				            };
+					        chk++;
+						}
+	    		   
+	       			}// for
+				 
+					if(value.groupNm.indexOf(UIT0387) != -1 || value.groupNm.indexOf(UIT0388) != -1){							
+						data.series.push(misSeriesData);
+					}
+					data.series.push(seriesData);
+									       
+					if(chk > 0){				  	
+						var chart_id =  document.getElementById('chart_'+cnt);
+				        var id_chart = $('#chart_'+cnt).attr('id'); 
+				        if(value.groupNm.indexOf(UIT0390) != -1 && chk > 10){	
+				        	options = {
+					                chart: {width: 500, height: chk*21 },
+					                yAxis: {title: 'Value'},
+					                xAxis: {title: 'Data' },
+					                chartExportMenu: {visible: false},
+									legend: {visible: false},
+					            };
+				        	
+				            var theme = {
+					        	    series: {
+					        	        colors: [
+					        	        	'#ec340e', '#03b3f8'
+					        	        ]
+					        	    }
+					        	};
+					     	// 테마 등록
+					        tui.chart.registerTheme('newTheme', theme);
+					        options.theme = 'newTheme';
+							tui.chart.barChart(chart_id, data, options);
+							//chart_id.style.margin = '0px 50px';
+				        }else{
+				        	if(value.groupNm.indexOf(UIT0390) != -1 ){
+				        		if(chk < 4){chk=4}
+				        		options = {
+					                chart: {width: 500, height: chk*28 },
+					                yAxis: {title: 'Value'},
+					                xAxis: {title: 'Data' },
+					                chartExportMenu: {visible: false},
+									legend: {visible: false},
+					            };
+				        		var theme = {
+						        	    series: {
+						        	        colors: [
+						        	        	'#ec340e', '#03b3f8'
+						        	        ]
+						        	    }
+						        	};
+						     	// 테마 등록
+						        tui.chart.registerTheme('newTheme', theme);
+						        options.theme = 'newTheme';
+						        tui.chart.barChart(chart_id, data, options);
+				        	}else{
+					        	tui.chart.columnChart(chart_id, data, options);	
+				        	}
+				        }
+						chart_id.style.display  = 'inline-block';
+				
+					}
+					cnt ++;
+			
+				});	
+
+			}	
+		
+		}		
+		
+		function fn_search() {
+			$('#frm').find('input[name=pageIndex]').val($('#pageIndex').val()); // 페이지 전환 전 pageIndex 폼에 전달
+			$('#frm').find('input[name=itemsPerPage]').val($('#itemsPerPage').val());
+			$('#frm').submit();
+		}
+			
+		function downloadNotMatch(type) {
+			$('#frm2 > #fileType').val(type);
+			$('#frm2').submit();
+			fn_modalClose();
+		}
+			
+			
+		function infoDown(col, data){
+			if(checkBtn==false){
+				// 모달창 버튼 메시지 처리
+				$('#downloadclose').show();
+				$('#csvDown').hide();
+				$('#excelDown').hide();
+ 			    $('#downloadmsg').text(UIT0391);
+			}else{
+				var val = data.value;
+				var colnm = $('#colNm_'+col).val();
+				$('#matchMm').val(val);				
+ 			    $('#columnNm').val(colnm);
+ 			    // 모달창 버튼 메시지 처리
+ 			    $('#excelDown').show();
+ 			    $('#downloadclose').hide();
+ 			    $('#downloadmsg').text(UIT0380);
+ 			    
+				if(val != 'mis'){
+					$('#download-title').text(UIT0386);
+					$('#csvDown').show();
+				}else{
+					$('#download-title').text(UIT0379);
+					$('#csvDown').show();
+				} 
+			}
+		}
+		</script>
+	</div>
+</html>

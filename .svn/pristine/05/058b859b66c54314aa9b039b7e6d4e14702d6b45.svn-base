@@ -1,0 +1,294 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+
+	<title>Insert title here</title>
+	
+	
+</head>
+<body id="page-top">
+	<div id="wrapper">
+		<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+		
+		<!-- Content Wrapper -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<!-- 메인 -->
+			<div id="content">
+				<!-- 상단영역 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />
+			
+				<!-- 본문 -->
+				<div class="container-fluid">
+
+					<!-- 상단 내비 / 타이틀 -->
+					<div class="d-sm-flex align-items-center justify-content-between">
+						<span class="mb-0 text-gray-600"><i class="fas fa-fw fa-home"></i> 패턴/지표 관리</span>
+					</div>
+					<div class="d-sm-flex align-items-center justify-content-between mb-4">
+						<h1 class="col_grey font_23 font_slim">패턴/지표 관리</h1>
+					</div>
+
+					<!-- 영역 -->
+					<div class="row">
+						<div class="col-lg mb-4">
+
+							<!-- 내용 -->
+							<div class="card shadow mb-4">
+                                <div class="card-body">
+                                	<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+                                	<input type="button" class="btn btn-primary mgn_b20" id="saveBtn" value="저장" onclick="fn_saveAt(this)" style="width:76px; float: right;">
+                                    <div id ="grid" class="tb_type99" style="clear: both;"></div>
+                                    <div id="pagination" class="tui-pagination"></div>
+                                </div>
+				            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 풋터 -->
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+		</div>
+	</div>
+	
+</body>
+	
+	
+	
+<script type="text/javascript"  class="code-js">
+var dataList = {};
+var aJsonArray = [];
+var updateCnt = 0;
+
+// 페이지 로드시 적용 설정
+$(document).ready(function() {
+	$("#detailDiv").hide();
+	fn_search();
+});
+
+// 목록 정보를 Ajax를 이용하여 가지고 온다.
+function fn_search(){
+
+	var insttData = null;
+	var pageIndex = $('#pageIndex').val();
+	var searchValue = $('#searchValue').val();
+	var itemsPerPage = $("#itemsPerPage").val();
+	
+	
+	var params = {
+		"searchValue" : searchValue,
+		"pageIndex" : pageIndex,
+		"itemsPerPage" : itemsPerPage
+	}
+
+	$.ajax({
+		url: '/mngr/analysis/selectPattern',
+		data: params,
+		success: function(data){
+			var obj = JSON.parse(data);
+			
+			var dataList = obj.result;
+			var totalCnt = obj.totalCnt;
+			
+			fn_setGrid(dataList);
+			
+			/* 페이징 function 호출 */
+			fn_pagination(totalCnt);
+		}
+	});
+}
+
+// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+function fn_setGrid(data){
+	$("#grid").empty();
+	// 조회 컬럼 목록
+	var columns = [
+		{header: '구분',name: 'groupNm', width:120, align:'center'},
+		{header: '패턴/지표 명',name: 'analsNm', width:120, align:'center'}, 	 
+		{header: '규칙',name: 'analsFrmla',align:'left'},
+		{header: '설명',name: 'rm', width:300, align:'left'},
+		{header: '사용여부',name: 'useAt', width:100, align:'center', formatter : function(value, options){
+			
+			var html  = "";
+			if(value.value == 1)	{
+				html += "<label class='switch'><input type='checkbox' class='chkItem' data-name='chkItem' name='chkItem' data-value='UDT' checked/><span class='slider round'></span></label>";
+				
+			}else if(value.value == 0){
+				html += "<label class='switch'><input type='checkbox' class='chkItem' data-name='chkItem' name='chkItem' data-value='UDT' /><span class='slider round'></span></label>";
+			}		
+			
+			return html;
+			}
+		},
+		{header: '비고',name: 'groupCode', width:200, align:'center', formatter : function(value, options){
+			var html  = "";
+			var groupCode = value.value;
+			var groupId = groupCode.substring(0,6);
+			if(groupId == 'AG0004' || groupId == 'AG0005' || groupId == 'AG0006' )
+				html += "<input type='button' class='btn_select' data-value='UDT' data-backdrop='static' data-keyboard='false' value='수정'/>";
+			return html;
+			}
+		}
+	];
+	
+	const grid = new tui.Grid({
+		el : document.getElementById("grid"),
+		data : data,
+		scrollX : false,
+		scrollY : false,
+		//rowHeight : 40,
+		//minBodyHeight : 40,
+		//bodyHeight : 'auto',
+		header: {
+		  height: 50
+		},
+		columns : columns
+	});
+	
+	const extOptions = {
+		cell: {
+			focused: {
+	            border: 0 // 선택 셀 강조 표시 x
+	        }
+		}
+	};
+	
+	tui.Grid.applyTheme('default', extOptions);
+	
+	grid.on('click', function(ev) {
+  		var obj = ev.nativeEvent.target;
+  		var mode = $(obj).data("value");
+  		
+  		if(ev.columnName === 'groupCode'){
+  			var item = grid.getRow(ev.rowKey);
+  			if(mode != undefined){
+  	  	  		if(mode == 'UDT'){
+  	  	  	  		// 수정
+  	  	  			//fn_openPatternLayer(mode, item);
+  	  	  			// 사용자 정의 패턴
+  	  	  			if(item.groupCode == 'AG000401'){
+  	  	  				location.href = "/mngr/ruleMng/ruleManagePatten.do?analsId="+item.analsId;
+  	  	  			}
+  	  	  			// 사용자 정의 SQL
+	  	  	  		if(item.groupCode == 'AG000402'){
+	  	  	  			location.href = "/mngr/ruleMng/ruleManageSql.do?analsId="+item.analsId;
+	  	  	  		}
+  	  	  			// 범주
+  	  	  			if(item.groupCode.substring(0,6) == 'AG0006'){
+  	  	  				location.href = "/mngr/ruleMng/ruleManageLimit.do?analsId="+item.analsId;
+  	  	  	  		}
+  	  	  	  	}
+  			}
+  		}
+  		if(ev.columnName === 'useAt'){
+  			var item = grid.getRow(ev.rowKey);
+  			var aJson = new Object();
+  			
+  			if(mode != undefined){
+	  			if (item.useAt == '1') {
+	  				item.useAt = "0";
+	  				aJson.useAt = item.useAt;
+	  				aJson.analsId = item.analsId;
+	  				
+	  			}
+	  			else {
+	  				item.useAt = "1";
+	  				aJson.useAt = item.useAt;
+	  				aJson.analsId = item.analsId;
+	  				
+	  			}
+	  			aJsonArray.push(aJson);
+  			}
+  		}
+  		
+  	});
+	
+	grid.resetData(data);
+}
+
+function fn_openPatternLayer(mode, item){
+    // 폼 초기화
+    $("#pattenUDTFrm")[0].reset();
+    
+    $("#analsId").val(item.analsId);
+    $("#groupNm").val(item.groupNm);
+    $("#analsNm").val(item.analsNm);
+    $("#beginValue").val(item.beginValue);
+    $("#endValue").val(item.endValue);
+    $("#analsFrmla").val(item.analsFrmla);
+    $("#rm").val(item.rm);
+
+    var option  = "";
+    $("#ptUseAt").empty();
+    if("0" == item.useAt){
+    	option  = $("<option value='1' >Y</option>");
+    	$("#ptUseAt").append(option);
+    	option  = $("<option value='0' selected=true >N</option>");
+    	$("#ptUseAt").append(option);
+    }else{
+    	option  = $("<option value='1' selected=true >Y</option>");
+    	$("#ptUseAt").append(option);
+    	option  = $("<option value='0' >N</option>");
+    	$("#ptUseAt").append(option);
+    }
+    
+}
+
+function fn_savePatten(obj){
+	var frm = $("#pattenUDTFrm").serialize();
+	
+	$.ajax({
+		url: "/mngr/analysis/UDTPattern",
+		type: 'POST',
+		data: $("#pattenUDTFrm").serialize(),
+		success: function(data){
+			var result = JSON.parse(data);
+			
+			var resultCnt = result.resultCnt;
+
+			if(resultCnt == 1){
+				alert("수정이 되었습니다.");
+				fn_modalClose();
+				
+			}else if(resultCnt == 0){
+				alert("수정에 실패하였습니다.");
+			}
+			location.reload(true);
+		}
+	});
+	
+}
+
+function fn_saveAt(){
+	
+	$.ajax({
+		url: "/mngr/analysis/UDTPatternUseAt",
+		data: {"arrayList" : JSON.stringify(aJsonArray)},
+		success: function(data){
+			var obj = JSON.parse(data);
+			var result = obj.result;
+
+			if(result > 0){
+				alert("저장되었습니다");
+			}else if(result == 0){
+				alert("수정된 내용이 없습니다.");
+			}else {
+				alert("저장에 실패하였습니다.");
+			}
+		}
+	});
+	location.reload(true);
+
+}
+
+</script>	
+	
+
+
+	
+</html>

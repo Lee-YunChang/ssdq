@@ -1,0 +1,4 @@
+분류,기간,기간구분,설명
+YYYYMMDD,1,Y,text
+YYYYMM,2,M,text
+YYMMDD,3,Y,text

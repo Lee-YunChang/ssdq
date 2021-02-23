@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html th:lang = "ko"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>:: 상상스토리 ::</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="shortcut icon" th:href="@{/img/icon/favicon.ico}"  type="image/x-icon" />
+<!-- 공통으로 쓰이는 css파일을넣는다.-->
+<link rel="stylesheet" th:href="@{/vendor/fontawesome-free/css/all.css}" />
+<link rel="stylesheet" th:href="@{/css/sb-admin-3.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-grid.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-chart.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-pagination.css}" />
+<link rel="stylesheet" th:href="@{/css/sub.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.css}" />
+<link rel="stylesheet" th:href="@{/css/chosen.css}" />
+
+<!-- DATATABLE -->
+<link rel="stylesheet" th:href="@{/css/dataTable/dataTables.bootstrap4.min.css}" />
+<link rel="stylesheet" th:href="@{/css/dataTable/fixedColumns.bootstrap4.min.css}" />
+
+<script th:src="@{/js/jquery-1.11.2.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+<script th:src="@{/js/tui/underscore.js}"></script>
+<script th:src="@{/js/tui/backbone.js}"></script>
+<script th:src="@{/js/tui/tui-code-snippet.js}"></script>
+<script th:src="@{/js/tui/tui-pagination.js}"></script>
+<script th:src="@{/js/tui-grid.js}"></script>
+<script th:src="@{/js/chosen.jquery.js}"></script>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<script th:src="@{/js/tree/bootstrap-treeview.js}"></script>
+
+<!-- DATATABLE -->
+<script th:src="@{/js/dataTable/jquery.dataTables.js}"></script>
+<script th:src="@{/js/dataTable/dataTables.fixedColumns.min.js}"></script>
+<script th:src="@{/js/dataTable/dataTables.rowsGroup.js}"></script>
+
+
+<script th:inline="javascript">
+	jQuery.browser = {};
+	(function () {
+	    jQuery.browser.msie = false;
+	    jQuery.browser.version = 0;
+	    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+	        jQuery.browser.msie = true;
+	        jQuery.browser.version = RegExp.$1;
+	    }
+	})();
+	
+</script>
+
+<style type="text/css">
+	#csvINS {margin:0 auto; padding:0;}
+	#csvINS li {display:none;}
+	#csvINS li:first-child {display:block;}
+	.btn_modal_box {text-align:center;margin-top:15px;}
+	.btn_modal_box button.off {cursor:default; opacity:0.5;}
+</style>
+
+<input type="hidden" id="pageIndex" name="pageIndex" value=""/>
+<input type="hidden" id="totalCnt" name="totalCnt" value=""/>
+<input type="hidden" id="searchCnt" name="searchCnt" value=""/>
+
+<body id="page-top" th:with="userNm = ${session.member.userNm}
+							, loginInsttCode = ${session.member.insttCode}
+							, conDbUrl = ${session.conDbUrl}
+							, sessionCon = ${session.DDId}
+							, conType = ${session.conType}
+							, conFileName = ${session.conFileName}"
+>
+	<div id="wrapper">
+		<div th:replace="fragments/left :: leftAsideFragment"></div>
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:replace="fragments/header :: headerFragment"></div>
+				<div class="container-fluid l_position_parent">
+					<div layout:fragment="content"></div>  <!-- 실제 콘텐츠  -->
+				</div>
+			</div>
+			<footer th:replace="fragments/footer :: footerFragment"></footer>
+		</div>
+	</div>
+	<div class="cover"></div>
+</body>
+
+<!-- 상위이동 버튼-->
+<a class="scroll-to-top rounded" href="#page-top">
+	<i class="fas fa-angle-up"></i>
+</a>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+</html>

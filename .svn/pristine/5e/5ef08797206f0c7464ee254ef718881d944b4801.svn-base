@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>PROFILING</li>
+	            <li><label th:text="#{UIT0071}">프로파일링 분석</label></li>
+            </ul>
+		</div>
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; PROFILING &gt; <label th:text="#{UIT0071}">프로파일링 분석</label></span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0071}">프로파일링 분석</h1>
+		</div> -->
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div id="dbmsDiv" class="content_body">
+					<div class="input_table">
+						<table>
+							<caption></caption>
+							<colgroup>
+								<col style="width:15%">
+								<col style="width:20%">
+								<col style="width:15%">
+								<col style="width:20%">
+								<col style="width:15%">
+								<col style="width:15%">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th><span class="str">*</span> <label for="data" th:text="#{UIT0264}">스키마명</label></th>
+									<td>
+										<div class="selectbox" style="width: 230px;">
+											<label for="la_tableSchema"></label>
+											<select id="schemaName" name="schemaName" onchange="fn_changeSchema()">
+												<option value="" th:text="#{UIT0335}">스키마 선택</option>
+											</select>
+										</div>
+									</td>
+									<th><span class="str">*</span> <label for="name" th:text="#{UIT0266}">테이블명</label></th>
+									<td>
+										<div class="selectbox" style="width: 230px;">
+											<label for="la_table"></label>
+											<select id="tableName" name="tableName">
+												<option value="" th:text="#{UIT0236}">테이블 선택</option>
+											</select>
+										</div>
+									</td>
+									<td>
+										<button class='btn btn-l blue in_wp100"' type="button" onclick="fn_getTableList();" th:text="#{UIT0084}">조회</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div id="csvDiv" class="card shadow mb-4">
+					<div class="input_table">
+						<table>
+	                        <colgroup>
+	                            <col style="width:20%">
+	                            <col style="width:25%">
+	                            <col style="width:10%">
+	                            <col style="width:25%">
+	                            <col style="width:20%">
+	                        </colgroup>
+	                        <tbody>
+	                            <tr>
+	                                <th>
+	                                	<label th:text="#{UIT0237}+' : '"> 파일명 : </label>
+	                                </th>
+	                                <td colspan=3 >
+	                                     <span id="fileName"></span>
+	                                </td>    
+	                            </tr>
+	                        </tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div id="div_1" class="card shadow mb-4">
+					<div class="card-body">
+						<button class='btn btn-l blue in_wp100' id="slectedColumn" type='button' onclick="fn_nextStep();" style="float: right;" th:text="#{UIT0336}">컬럼 선택</button>
+						<div id="grid" class="tb_type99" style="height:800px;overflow-x: auto;overflow-y: auto; clear: both;"></div>
+					</div>
+				</div>
+				
+				
+				<form id="frm" name="frm">
+					<input type="hidden" id="schemaNm" name="schemaName" value="" />
+					<input type="hidden" id="tableNm"  name="tableName" value="" />
+					<input type="hidden" id="dgnssSaveName" name="dgnssSaveNm" value="" />
+					<input type="hidden" id="scheduleDe" name="scheduleDe" value="" />
+					<input type="hidden" id="use" 		name="useAt" value="" />
+					
+					<div id="hiddenInput"></div>
+					
+					
+					<div id="div_2" class="card shadow mb-4" style="display:none;">
+						<div class="card-body table_type100">
+							<button type="button" data-toggle="modal" data-target="#diagnosisModal" data-backdrop="static" data-keyboard="false" class="btn btn-l blue in_wp100" style="float: right;" onclick="fn_startLayer()" th:text="#{UIT0337}">분석 시작</button>
+							<button class='btn btn-l gray in_wp100' type="button" onclick="fn_prev();" style="float: right; margin-right: 10px;" th:text="#{UIT0021}">이전</button>
+							<button class='btn btn-l gray in_wp100' type="button" onclick="fn_sampleDataHide();" style="float: left;" th:text="#{UIT0338}">샘플데이터 보기</button>
+							<table id="dataTable" class="table table-striped table-bordered"></table>
+						</div>
+					</div>
+				</form>	
+			</div>
+		</div>
+		
+		
+		<!-- 분석설정 저장 모달창-->
+		<div class="modal fade" id="diagnosisModal" tabindex="-1" role="dialog" aria-labelledby="diagnosisModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel" th:text="#{UIT0339}">분석설정등록</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="menuListDiv" style="display: block;">
+							<section class="l_box_type02">
+								 <div class="tb_type03">
+									 <table>
+										<tbody>
+											<tr>
+												<th th:text="#{UIT0340}">분석명</th>
+												<td colspan="2"><input type="text" id="dgnssSaveNm" name="dgnssSaveNm" value="" /></td>
+											</tr>
+											<tr>
+												<th>분석 예약</th>
+												<td colspan="2" style="text-align: left;" onchange="toggleBtn()">
+													<select name ="useAt" id="useAt" >
+														<option value="0" selected="selected" >사용 안함</option>
+														<option value="1">사용함</option>
+													</select>
+												</td>
+											</tr>
+											<tr id ="date" style="display:none;">
+												<th >실행 일자</th>
+												<td colspan="2" style="text-align: left;"><input type="text" id="bsnsBgnd" name="bsnsBgnd" style="width: 300px;" readonly="readonly"></td>
+											</tr>
+											<tr id= "time" style="display:none;">
+												<th >실행 시간 <br>(24시간 기준)</th>
+												<td>
+													<input type="text" id="startHour" name="startHour" placeholder="시간" maxlength ="2" numberOnly/>
+												</td>
+												<td>
+													<input type="text" id="startMin"  name="startMin" placeholder="분" maxlength ="2" numberOnly />
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-l blue in_wp100" type="button" data-dismiss="modal" onclick="fn_saveDiagnosis()" th:text="#{UIT0088}">저장</button>
+						<a class="btn btn-l gray in_wp100" data-dismiss="modal" href="#none" th:text="#{UIT0341}">닫기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<iframe name="hiddenFrame" hidden="" width="0" height="0"></iframe>
+		
+					
+		<script type="text/javascript"  class="code-js" th:inline="javascript">
+			/*<![CDATA[*/
+			var sessionCon = /*[[ ${sessionCon} ]]*/;
+		 	var fileName = /*[[ ${conFileName} ]]*/;
+		 	var Schema = /*[[ ${schema} ]]*/; //: 스키마명
+		 	var Table = /*[[ ${table} ]]*/; //: 스키마명
+		 	var conType = /*[[ ${conType} ]]*/;
+		 	var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+			var UIT0178 = /*[[ #{UIT0178} ]]*/; //: 메뉴그룹 혹은 상위메뉴를 선택해 하세요.
+			var UIT0236 = /*[[ #{UIT0236} ]]*/; //: 테이블 선택
+			var UIT0240 = /*[[ #{UIT0240} ]]*/; //: 컬럼명
+			var UIT0243 = /*[[ #{UIT0243} ]]*/; //: 스키마를 선택해 주세요.
+			var UIT0244 = /*[[ #{UIT0244} ]]*/; //: 테이블을 선택해 주세요.
+			var UIT0267 = /*[[ #{UIT0267} ]]*/; //: 검색결과가 없습니다.
+			var UIT0323 = /*[[ #{UIT0323} ]]*/; //: 구분
+			var UIT0343 = /*[[ #{UIT0343} ]]*/; //: 일요일
+			var UIT0344 = /*[[ #{UIT0344} ]]*/; //: 월요일
+			var UIT0345 = /*[[ #{UIT0345} ]]*/; //: 화요일
+			var UIT0346 = /*[[ #{UIT0346} ]]*/; //: 수요일
+			var UIT0347 = /*[[ #{UIT0347} ]]*/; //: 목요일
+			var UIT0348 = /*[[ #{UIT0348} ]]*/; //: 금요일
+			var UIT0349 = /*[[ #{UIT0349} ]]*/; //: 토요일
+			var UIT0350 = /*[[ #{UIT0350} ]]*/; //: 오전
+			var UIT0351 = /*[[ #{UIT0351} ]]*/; //: 오후
+			var UIT0352 = /*[[ #{UIT0352} ]]*/; //: 해당 테이블의 정보가 없습니다. 테이블명을 확인해주세요.
+			var UIT0353 = /*[[ #{UIT0353} ]]*/; //: 컬럼타입
+			var UIT0354 = /*[[ #{UIT0354} ]]*/; //: 데이터 없음
+			var UIT0355 = /*[[ #{UIT0355} ]]*/; //: 전체선택
+			var UIT0356 = /*[[ #{UIT0356} ]]*/; //: 분석할 컬럼을 선택해 주세요.
+			var UIT0357 = /*[[ #{UIT0357} ]]*/; //: 그룹
+			var UIT0358 = /*[[ #{UIT0358} ]]*/; //: 패턴/지표명
+			var UIT0359 = /*[[ #{UIT0359} ]]*/; //: 분석_
+			var UIT0360 = /*[[ #{UIT0360} ]]*/; //: 분석할 항목을 선택해 주세요.
+			/*]]*/
+		 	
+		 	var grid = null;
+		 	var rowCount = 10;
+		 	var colWidth = 200;
+		 	var analsId = "";
+		 	var stableName = "";
+			var stableSchema = "";
+		 	
+		 	var table = null;
+		 	var dataLength = null;
+		 	
+		 	
+			$(document).ready(function() {
+				
+				$("#bsnsBgnd").datepicker();
+				$("label[for='la_tableSchema']").text(Schema);
+				$("label[for='la_table']").text("테이블 선택");
+				
+			});
+		 	
+		 	
+			$(function() {
+				
+				// sessionCon 체크
+				isSessionConChk(sessionCon);
+				if(fileName == '' || fileName == null){
+					$('#dbmsDiv').css('display','block');
+					$('#csvDiv').css('display','none');
+					
+					/* $("#schemaName, #tableName").chosen({
+						search_contains : true,
+						no_results_text : UIT0178+" : "
+					}); */
+					
+					/*추가*/
+					fn_selectSchema();
+				}else{
+					$('#dbmsDiv').css('display','none');
+					$('#csvDiv').css('display','block');
+					$("#fileName").text(fileName);
+					fn_selectCsvInfo(sessionCon);
+				}
+				$('#slectedColumn').css('display','none');
+				
+				
+				
+				$("input:text[numberOnly]").on("keyup", function() {
+				    $(this).val($(this).val().replace(/[^0-9]/g,""));
+				});
+
+				
+			});
+			
+			
+			function formatDate(date) { 
+				return new Date(date).format('yyyy-MM-dd');
+			}
+			
+			function formatDateTime(date) { 
+				return new Date(date).format('yyyy-MM-dd HH:mm:ss');
+			}
+			
+			Date.prototype.format = function(f) {
+			    if (!this.valueOf()) return " ";
+			 
+			    var weekName = [UIT0343, UIT0344, UIT0345, UIT0346, UIT0347, UIT0348, UIT0349];
+			    var d = this;
+			     
+			    return f.replace(/(yyyy|yy|MM|dd|E|hh|mm|ss|a\/p)/gi, function($1) {
+			        switch ($1) {
+			            case "yyyy": return d.getFullYear();
+			            case "yy": return (d.getFullYear() % 1000).zf(2);
+			            case "MM": return (d.getMonth() + 1).zf(2);
+			            case "dd": return d.getDate().zf(2);
+			            case "E": return weekName[d.getDay()];
+			            case "HH": return d.getHours().zf(2);
+			            case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2);
+			            case "mm": return d.getMinutes().zf(2);
+			            case "ss": return d.getSeconds().zf(2);
+			            case "a/p": return d.getHours() < 12 ? UIT0350 : UIT0351;
+			            default: return $1;
+			        }
+			    });
+			};
+			 
+			String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
+			String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
+			Number.prototype.zf = function(len){return this.toString().zf(len);};
+			
+			function fn_selectCsvInfo(sessionCon){
+				
+				var data = {
+						"dgnssDbmsId":sessionCon,
+						"tabType":'csv'
+				};
+				$.ajax({
+					url: "/mngr/basicInfo/selectDbList",
+					data : data,
+					success: function(data){
+						var obj = JSON.parse(data);
+						var dataList = obj.result;
+						
+						
+						for(var i = 0; i < dataList.length; i++){
+							tableName = dataList[i].dgnssDbmsNm.replace(fileName, '');
+							stableName = tableName.replace('(', '').replace(')', '');
+							stableSchema = dataList[i].database;
+						}
+						
+						fn_getTableDataList(stableName, stableSchema);
+					}
+				});
+			}
+			
+			function fn_getTableDataList(stableName, stableSchema){
+				$("#grid").empty();
+				
+				var params = {
+					"schemaName" : stableSchema,
+					"tableName" : stableName,
+					"rowCount" : rowCount,
+					"conType" : conType
+				};
+				
+				$.ajax({
+					url: "/mngr/diagnosis/selectColumnAjax",
+					data : params,
+					method : 'post',
+					success: function(data){
+						var obj = data;
+						if(obj == null){
+							alert(UIT0352);
+						}else{
+							if(obj.dataList.length > 0){
+								$('#slectedColumn').css('display','block');
+							}
+							girdView(obj);
+						}
+					}, error:function() {
+						alert(UIT0041);
+						return;
+					}
+				});
+			}
+			
+			/*추가*/
+			function fn_selectSchema(){
+				var Schema = /*[[ ${schema} ]]*/;
+				
+				$.post('selectSchemaListAjax.do', {
+				}, function(list) {
+					for(var i = 0; i < list.length; i++){
+						var selected = "";
+						if(Schema.trim().toUpperCase() == list[i].OWNER.toUpperCase()) {
+							selected = "selected=true";
+						}else{
+							if(list.length == 1){
+								//selected = "selected=true";
+								//selDbmsTableListBox();
+							}else{
+								selected = "";
+							}
+						}
+						var option  = $("<option value="+list[i].OWNER+" "+selected+">"+list[i].OWNER+"</option>");
+						$("#schemaName").append(option);
+													
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#schemaName").trigger("chosen:updated");
+					}
+					
+					fn_changeSchema();
+				});
+			}
+			
+			function fn_changeSchema(){
+			
+				$('#tableName').empty();
+				$('#tableName').append($('<option />').val('').text(UIT0236));
+			
+				$.post('selectTableListAjax.do', {
+					schemaName: $('#schemaName').val()
+				}, function(list) {
+					for (var i in list) {
+						$('#tableName').append($('<option />').val(list[i]).text(list[i]));
+						$("#tableName").trigger("chosen:updated");
+					}
+				});
+			}
+
+			function fn_getTableList(){
+				$("#grid").empty();
+				
+				var schemaName = $("#schemaName").val();
+				var tableName = $('#tableName').val();
+				
+				if(conType == 'CSV'){
+					schemaName = stableSchema;
+					tableName = stableName;
+				}
+				
+				if(schemaName == null || schemaName == ""){
+					alert(UIT0243);
+					return false;
+				}
+				
+				if(tableName == null || tableName == ""){
+					alert(UIT0244);
+					return false;
+				}
+				
+				var params = {
+					"schemaName" : schemaName,
+					"tableName" : tableName,
+					"rowCount" : rowCount
+				};
+				
+				$.ajax({
+					url: "/mngr/diagnosis/selectColumnAjax",
+					data : params,
+					method : 'post',
+					success: function(data){
+						//var obj = JSON.parse(data);
+						var obj = data;
+						if(obj == null){
+							alert(UIT0352);
+						}else{
+							if(obj.dataList.length > 0){
+								$('#slectedColumn').css('display','block');
+							}
+							girdView(obj);
+						}
+					}, error:function() {
+						alert(UIT0041);
+						return;
+					}
+				});
+			}
+			
+			function girdView(obj){
+				
+				var isFirst = true;
+				var isDataFirst = true;
+				var columnList = obj.columnList;
+				var dataList = obj.dataList;
+				var csvAt = obj.csvAt;
+				var columnName = [];
+				var columnType = [];
+				
+				
+				$.each(columnList, function(index, value) {
+					var cnObjFirst = {};
+					var ctObjFirst = {};
+					
+					var cnObj = {};
+					var ctObj = {};
+					
+					if(isFirst){
+						// columnName
+						cnObjFirst.header = UIT0240;
+						cnObjFirst.name = 'mergeColName';
+						cnObjFirst.childNames = ['colName'];
+						columnName.push(cnObjFirst);
+						
+						// columnType
+						ctObjFirst.header = UIT0353;
+						ctObjFirst.name = 'colName';
+						ctObjFirst.width = 200;
+						ctObjFirst.align = 'center';
+						columnType.push(ctObjFirst);
+						isFirst = false;
+					}
+					// columnName
+					if(csvAt){
+						cnObj.header = value.COLUMN_COMMENT;
+					}else{
+						cnObj.header = value.COLUMN_NAME;
+					}
+					cnObj.name = 'merge'+value.COLUMN_NAME;
+					cnObj.childNames = [value.COLUMN_NAME];
+					
+					columnName.push(cnObj);
+					
+					var dataType = value.DATA_TYPE;
+					var dataLen = value.DATA_LENGTH;
+					
+					if(undefined != dataLen){
+						dataLen = '('+dataLen+')'
+					}else{
+						dataLen = '';
+					}
+						
+					// columnType
+					ctObj.header = dataType+dataLen;
+					ctObj.name = value.COLUMN_NAME;
+					ctObj.minWidth = colWidth;
+					ctObj.align = 'center';
+					ctObj.whiteSpace = 'pre-line'
+					
+					columnType.push(ctObj);
+				})
+				
+				// data
+				var data = [];
+				var dataFirstObj = {};
+				
+				var cnt = Math.floor(columnList.length/2);
+				
+				//데이터가 없는 테이블을 조회할때 데이터 없을 표시
+				if(dataList.length == 0){
+					$.each(columnList, function(index, value) {
+						if(isDataFirst){
+							dataFirstObj.colName = '';
+							
+							if(cnt == index){
+								dataFirstObj[value.COLUMN_NAME] = UIT0354;
+							}
+						}
+											
+						if(index+1 == columnList.length){
+							data.push(dataFirstObj);
+							isDataFirst = false;
+						}
+					})
+					$('#slectedColumn').css('display','none');
+				}else{
+					$.each(columnList, function(index, value) {
+						if(isDataFirst){
+							dataFirstObj.colName = '<input type="button" class="btn_select" value="'+UIT0355+'"/>';
+							dataFirstObj[value.COLUMN_NAME] = "<input type='checkbox' value='"+value.COLUMN_NAME+"'/>";
+						}
+											
+						if(index+1 == columnList.length){
+							data.push(dataFirstObj);
+							isDataFirst = false;
+						}
+					})
+				}
+				
+				$.each(dataList, function(index, value2) {
+					var dataObj = {};
+					dataObj.colName = '';
+					$.each(columnList, function(index, value) {
+						if('DATE' == value.DATA_TYPE.toUpperCase()){
+							dataObj[value.COLUMN_NAME] = formatDate($.trim(value2[value.COLUMN_NAME]));
+						}else if('DATETIME' == value.DATA_TYPE.toUpperCase()){
+							dataObj[value.COLUMN_NAME] = formatDateTime($.trim(value2[value.COLUMN_NAME]));
+						}else{
+							dataObj[value.COLUMN_NAME] = $.trim(value2[value.COLUMN_NAME]);
+						}
+						//dataObj[value.COLUMN_NAME] = $.trim(value2[value.COLUMN_NAME]);
+						if(dataObj[value.COLUMN_NAME].length > 30){
+							dataObj[value.COLUMN_NAME] = dataObj[value.COLUMN_NAME].substring(0,30)+"...";
+						}
+					})
+					data.push(dataObj);	
+				})
+				
+				grid = new tui.Grid({
+					el: document.getElementById("grid"),
+					data: data,
+					scrollX: true,
+					scrollY: false,
+					bodyWidth : 'auto',
+					bodyHeight : 'auto',
+					rowHeight : 40,
+					minBodyHeight : 40,
+					header: {
+						height: 80,
+						complexColumns: columnName
+					},
+					//columnOptions: {
+					//	frozenCount: 1
+					//},
+					columns: columnType,
+					columnOptions: {
+					      resizable: true
+					    }
+				});
+				
+				const extOptions = {
+					cell: {
+						focused: {
+							border: 0 // 선택 셀 강조 표시 x
+						}
+					}
+				};
+
+				tui.Grid.applyTheme('default', extOptions);
+				
+				grid.on('click', function(ev) {
+
+					var data = grid.getData();
+					var colName = ev.columnName;
+
+					if (colName == null) {
+						return false;
+					}
+
+					if (colName == 'colName' || colName == 'mergeColName') {
+
+						var chkboxList = data[0];
+						var checked = null;
+
+						for (var i in chkboxList) {
+							if (i == UIT0355 || typeof chkboxList[i] != 'string') {
+								continue;
+							}
+							var chkbox = $(chkboxList[i]);
+							if (chkbox.length == 0) {
+								continue;
+							}
+							if (checked == null) {
+								checked = !chkbox.prop('checked');
+							}
+							chkbox.attr('checked', checked);
+							chkboxList[i] = chkbox[0].outerHTML;
+						}
+
+					} else {
+
+						var chkbox = $(data[0][colName]);
+						if (chkbox.length == 0) {
+							chkbox = $(data[0][colName.replace('merge', '')]);
+						}
+						chkbox.attr('checked', !chkbox.prop('checked'));
+						data[0][colName] = chkbox[0].outerHTML;
+					}
+
+					grid.resetData(data);
+					return ev.stop();
+				});
+			}
+			
+			function fn_nextStep(){
+				
+				$("#hiddenInput").empty();
+				
+				var data = grid.getData();
+				var val = "";
+				
+				for (var c in data[0]) {
+					if (c == UIT0355 || typeof data[0][c] != 'string') {
+						continue;
+					}
+					
+					var chkbox = $(data[0][c]);
+					if (!chkbox.prop('checked')) {
+						continue;
+					}
+					val = chkbox.val();
+					// 한글 컬럼 체크
+					//var check = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+					var check = /전체선택/; // UIT0355
+					if(!check.test(val)){
+						$('#hiddenInput').append($('<input type="hidden" name="columnName" value="" />').val(val));	
+					}
+				}
+				
+				if ($('#hiddenInput').html() == '') {
+					alert(UIT0356);
+					return;
+				}else{
+					$("#div_1").hide();
+					$("#searchDiv").hide();
+					$("#div_2").show();
+					$("#grid").empty();
+					
+					var schemaName = $("#schemaName").val();
+					var tableName = $('#tableName').val();
+					if(conType == 'CSV'){
+						schemaName = stableSchema;
+						tableName = stableName;
+					}
+					
+					var frm = $('#frm').serializeArray();
+					
+					var columnName = [];
+					$.each(frm, function(index, value) {
+						if(value.name == "columnName"){
+							columnName.push(value.value);	
+						}
+					})
+					
+					var params = {
+						"schemaName" : schemaName,
+						"tableName" : tableName,
+						"columnName" : columnName,
+						"rowCount" : rowCount
+					};
+					
+					$.ajaxSettings.traditional = true;
+					
+					$.ajax({
+						url: "/mngr/diagnosis/selectAnalysisAjax",
+						data : params,
+						method : 'post',
+						success: function(data){
+							//var obj = JSON.parse(data);
+							var obj = data;
+							dataTalbe(obj);
+							
+						}, error:function() {
+							alert(UIT0041);
+							return;
+						}
+					});
+				}
+			}
+			
+			
+			function dataTalbe(obj){
+				
+				var selectColList = obj.selectColList;
+				var selectDataList = obj.selectDataList;
+				var analsList = obj.analsList;
+				var analsGroup = obj.analsGroup;
+				dataLength = selectDataList.length;
+				
+				// COLUMNS 리스트
+				var columnsArr = [
+					{ name: 'first', title: UIT0323},
+					{ name: 'second', title: UIT0357},
+			        { name: 'third', title: UIT0358}
+				];
+				
+				$.each(selectColList, function(index, value) {
+					var columnsObj = {};
+					if(conType == 'CSV'){
+						columnsObj.title = value.COLUMN_COMMENT + '<br/>' + value.DATA_TYPE +'('+ value.DATA_LENGTH +')';
+					}else{
+						var dataLen = '';
+						if(undefined != value.DATA_LENGTH){
+							dataLen = '('+ value.DATA_LENGTH +')';
+						}
+						columnsObj.title = value.COLUMN_NAME + '<br/>' + value.DATA_TYPE +dataLen;
+					}
+					
+					columnsArr.push(columnsObj);				
+				})
+				
+				// DATA 리스트 
+				var dataListArr = [];
+ 
+				// 샘플데이터
+				$.each(selectDataList, function(index, value2) {
+					var dataArr = [];
+					var dataObj = {};
+					dataArr.push('SAMPLE DATA');
+					dataArr.push('&nbsp;');
+					dataArr.push(index + 1);
+					
+					$.each(selectColList, function(index, value) {
+						if('DATE' == value.DATA_TYPE.toUpperCase()){
+							dataObj[value.COLUMN_NAME] = formatDate($.trim(value2[value.COLUMN_NAME]));
+						}else if('DATETIME' == value.DATA_TYPE.toUpperCase()){
+							dataObj[value.COLUMN_NAME] = formatDateTime($.trim(value2[value.COLUMN_NAME]));
+						}else{
+							dataObj[value.COLUMN_NAME] = $.trim(value2[value.COLUMN_NAME]);
+						}
+						if(dataObj[value.COLUMN_NAME].length > 30){
+							dataObj[value.COLUMN_NAME] = dataObj[value.COLUMN_NAME].substring(0,30)+"...";
+						}
+						dataArr.push(dataObj[value.COLUMN_NAME]);
+					})
+					
+					dataListArr.push(dataArr);
+				})
+				
+				// 체크박스 데이터
+				$.each(analsList, function(index, value2) {
+					var analsArr = [];
+					if(value2.pttrnSeNm == undefined){
+						value2.pttrnSeNm = '&nbsp;';
+					}
+					
+					analsArr.push(value2.groupNm);
+					analsArr.push(value2.pttrnSeNm);	// 그룹 명 추가
+					analsArr.push(value2.analsNm);
+					
+					$.each(selectColList, function(index, value) {
+						analsArr.push('<label class="switch"><input type="checkbox" name="'+value.COLUMN_NAME+'" value="'+value2.analsId+'"'+ checkAnals(analsId[value.COLUMN_NAME], value2.analsId)+'/><span class="slider round"></span></label>');
+					})
+
+					dataListArr.push(analsArr);
+				})
+				
+				var data = dataListArr;
+				var columnDefsArr = [
+					{"targets": [0, 1, 2], "class" : "fixColums"}
+				];
+				
+				// 샘플 데이터에 length가 40 이상일 경우 width 고정 옵션 적용
+				$.each(data, function(index, value) {
+					var colLength = selectColList.length;
+					
+					if(index < 9){
+						$.each(value, function(index, value) {
+							var columnDefsObj = {}; // visible: false = 숨기기
+							if( value.length >= 40) {
+								columnDefsObj.targets = [index];
+								columnDefsObj.class = "fixWidth";
+								columnDefsArr.push(columnDefsObj);
+							}else{
+								
+								columnDefsObj.targets = [index];
+								columnDefsObj.class = "fullWidth_"+colLength;
+								columnDefsArr.push(columnDefsObj);
+							}
+						})
+					}
+				})
+				
+				table = $('#dataTable').DataTable({
+					destroy : true,
+					retrieve : false,
+					columns: columnsArr,
+					data: data,
+					rowsGroup: [
+					  'first:name',
+					  'second:name',
+					  'third:name'
+					],
+		    		//pageLength: '20',
+					scrollY:        800,
+					scrollX:        true,
+					scrollCollapse: false,
+					searching: false,			// 검색 영역
+					paging:         false,	// 페이징 표시
+					info : false,				// 페이지 건수 표시 
+					ordering: false,			// 정렬 제거
+					orderCellsTop: false,
+					//autoWidth: false,
+					fixedColumns: {
+						leftColumns: 3
+					},
+					columnDefs : columnDefsArr
+				});
+				
+				fn_sampleDataHide();
+				
+				// 헤더 선택 하위 전체 선택
+				$('#head0 thead').on('click', 'th', function () {
+					var sn = table.column(this).index();
+					var tableTr = $('#dataTable').children('tbody').find('tr');
+					
+					$.each(tableTr, function(index, value) {
+						var td = $(value).children('td')[sn];
+						var chk = $(td).find('input:checkbox');
+						
+						if(!$(chk).is(":checked")){
+							$(chk).prop("checked", true);
+						}else{
+							$(chk).prop("checked", false);
+						}
+					})
+				});
+				
+				// LEFT TD 선택 해당 row 전체선택
+				var leftTable = $('.DTFC_LeftBodyLiner').children('table').find('tbody > tr');
+				
+				$(leftTable).on('click', 'td', function () {
+					var selectTr = $(this).parents().data('tr');
+					var targetTr = $('#dataTable').children('tbody').find('tr');
+					var thisTdSpan = Number($(this).attr('rowspan'));
+					
+					$.each(targetTr, function(index, value) {
+					
+						var trRowSn = $(value).data('tr');
+						var endTrSn = selectTr + thisTdSpan
+						
+						if(thisTdSpan == 1){
+							if($(value).data('tr') == selectTr){
+								var trChk = $(value).find('input:checkbox');
+								if(!$(trChk).is(":checked")){
+									$(trChk).prop("checked", true);
+								}else{
+									$(trChk).prop("checked", false);
+								}
+							}
+						} else {
+							if(trRowSn >= selectTr && trRowSn < endTrSn){
+								var trChk = $(value).find('input:checkbox');
+								
+								if(!$(trChk).is(":checked")){
+									$(trChk).prop("checked", true);
+								}else{
+									$(trChk).prop("checked", false);
+								}
+							}
+						}
+					});
+				});
+			};
+			
+			function fn_startLayer(){
+				var today = new Date();
+				$('#dgnssSaveNm').val(UIT0359 + today.getFullYear() + today.getMonth() + today.getDate() + '_' + today.getMilliseconds());
+			}
+			
+			function fn_prev(){
+				/* 
+				$("#div_2").hide();
+				$("#grid2_1").empty();
+				$("#grid2_2").empty();
+				$("#grid2_3").empty();
+			
+				$("#div_1").show();
+				$("#searchDiv").show();
+				
+				fn_getTableList();
+				*/
+				location.href = "/mngr/diagnosis/form1.do";
+			}
+			
+			function checkAnals(list, analsId) {
+				for (var i in list) {
+					if (list[i] == analsId) {
+						return 'checked="checked" ';
+					}
+				}
+				return "";
+			}
+			
+			function toggleBtn() {
+				if ( $("#date").css("display") == "none") {
+					 $("#date").show(); 
+					 $("#time").show(); 
+				 }
+
+				 else {
+					 $("#date").hide(); 
+					 $("#time").hide(); 
+				 }
+			}
+			
+			function fn_saveDiagnosis() {
+	
+				if ($('input:checkbox:checked').length == 0) {
+					alert(UIT0360);
+					return false;
+				}
+				
+				$('#schemaNm').val($('#schemaName').val());      
+				$('#tableNm').val($('#tableName').val());  
+				if(conType == 'CSV'){
+					$('#schemaNm').val(stableSchema);
+					$('#tableNm').val(stableName);
+				}
+				$('#dgnssSaveName').val($('#dgnssSaveNm').val());
+				$('#use').val($('#useAt').val());
+				
+			
+				var startHour = $('#startHour').val();
+				var useAt = $('#useAt').val();
+				
+				if(useAt == 1){
+					if(startHour > 23 || startHour < 0){
+						confirm("0~23까지만 입력가능합니다.");
+						return false;
+					}
+					if(startHour.length == 1){
+						startHour = "0"+startHour;
+					}
+					var startMin = $('#startMin').val();
+					if(startMin > 59 || startMin < 0){
+						confirm("0~59까지만 입력 가능합니다.");
+						return false;
+					}
+					if( startMin.length == 1){
+						startMin = "0"+startMin;
+					}
+					
+					if($('#bsnsBgnd').val() == null ||$('#bsnsBgnd').val() == ""){
+						confirm("예약 날짜를 선택해주세요");
+						return false;
+					}
+					
+				}
+				
+				
+				$('#scheduleDe').val($('#bsnsBgnd').val().replace(/-/gi, '') + startHour + startMin);
+				
+				var frm = $('#frm');
+				
+				fn_executeAnalys();			
+			}
+			
+			function fn_executeAnalys(){
+				wrapWindowByMask();
+				$.ajax({
+					url: "insert.do",
+					data: $('#frm').serialize() , 
+					method : 'post',
+					success:function(result){
+						if(result == "1"){
+							alert("예약이 불가능한 시간입니다.");
+							return false;
+						}else {
+						closeWindowByMask();
+						location.href = "/mngr/diagnosis/result/list.do";
+						}
+					}, error:function() {
+						closeWindowByMask();
+		                alert(UIT0041);
+		                return;
+		           }, complete:function(){
+		        	   closeWindowByMask();
+		           }
+				}); 
+			}
+			
+			// 샘플데이터 1~8번 숨김처리
+			function fn_sampleDataHide(){
+				
+				/*
+				if(dataLength == 1){
+					alert('샘플데이터가 더는 존재하지 않습니다.');
+					return false;
+				}
+				*/
+				var tableTr = $('#dataTable').children('tbody').find('tr');
+				var leftTr = $('.DTFC_LeftBodyLiner').children('table').find('tbody > tr');
+	
+				$.each(leftTr, function(index, value) {
+					var cn = $(value).data('tr');
+					if(cn == 0){
+						var tdSpan = $(leftTr).children().first();
+						var tdSpan2 = $(leftTr).children().eq(1);
+						var rowspanCnt = $(leftTr).children().first().attr('rowspan');
+						
+						if(rowspanCnt > 1){
+							$(tdSpan).attr('rowspan','1');
+							$(tdSpan2).attr('rowspan','1');
+						}else{
+							$(tdSpan).attr('rowspan', dataLength);
+							$(tdSpan2).attr('rowspan',dataLength);
+						}
+					}
+					
+					if(cn <= dataLength - 1){
+						$(value).css('background-color','#F8F9FC');
+					}
+					 
+					if(cn > 0 && cn <= dataLength - 1){
+						$(value).toggle();
+					}
+				});
+				
+				$.each(tableTr, function(index, value) {
+								
+					var cn = $(value).data('tr');
+					
+					if(cn == 0){
+						var tdSpan = $(tableTr).children().first();
+						var tdSpan2 = $(tableTr).children().eq(1);
+						var rowspanCnt = $(tableTr).children().first().attr('rowspan');
+						
+						if(rowspanCnt > 1){
+							$(tdSpan).attr('rowspan','1');
+							$(tdSpan2).attr('rowspan','1');
+						}else{
+							$(tdSpan).attr('rowspan', dataLength);
+							$(tdSpan2).attr('rowspan',dataLength);
+						}
+					}
+					
+					if(cn <= dataLength - 1){
+						$(value).css('background-color','#F8F9FC');
+					}
+					
+					if(cn > 0 && cn <= dataLength - 1){
+						$(value).toggle();
+					}
+				});
+			}
+		</script>
+	</div>
+</html>

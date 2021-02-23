@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>BASIC</li>
+	            <li>데이터 표준화 관리</li>
+	            <li><label th:text="#{UIT0514}">표준화 분석</label></li>
+            </ul>
+		</div>
+		
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; BASIC &gt; <label th:text="#{UIT0498}"></label> &gt; <label th:text="#{UIT0514}"></label></span>
+		</div>
+                
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0514}"> 표준화 분석</h1>
+		</div> -->
+  
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="content_body">
+					<div class="input_table" style="border: none;">
+						<table>
+                            <colgroup>
+                                <col style="width:20%">
+                                <col style="width:25%">
+                                <col style="width:10%">
+                                <col style="width:25%">
+                                <col style="width:20%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        <span class="str">*</span><label for="data" th:text="#{UIT0264}">스키마명</label>
+                                    </th>
+                                    <td>
+                                    	<div class="selectbox" style="width: 230px;">
+	                                    	<label for="la_tableSchema"></label>
+	                                        <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+	                                        	<option value="" th:text="#{UIT0265}">선택해주세요</option>
+	                                        </select>
+                                        </div>
+                                    </td>
+                                    <th>
+                                        <label for="name" th:text="#{UIT0272}">테이블 수</label>
+                                    </th>
+                                    <td>
+                                        <input id="tableCnt" name="tableCnt" type="text" value="" readonly="readonly" >
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+						</table>
+					</div>
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="card shadow mb-4  margint10">
+					<div class="card-body">
+						<section class="pad100 txt_right">
+							<button type='button' data-toggle="modal" data-target="#analysisModal" data-backdrop="static" data-keyboard="false" class='btn btn-s blue in_wp100' th:text="#{UIT0337}" onclick="fn_openModalLayer();">분석시작</button>
+						</section>
+						<form id="frm" name="frm">
+							<input type="hidden" id="schemaName" name="tableSchema" value="" />
+							<input type="hidden" id="tableAll" name="tableAll" value="1" />
+							<input type="hidden" id="tableTotalCnt" name="tableTotalCnt" value="" />
+							<input type="hidden" id="analysisSaveName" name="analysisSaveName" value="" />
+							<div id="tableGrid" class="tb_type99" style="OVERFLOW-Y:auto; width:100%; height:500px;"></div>
+						</form>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 분석설정 저장 모달창-->
+		<div class="modal fade" id="analysisModal" tabindex="-1" role="dialog" aria-labelledby="analysisModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel" th:text="#{UIT0339}">분석설정등록</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<!-- <span aria-hidden="true">×</span> -->
+							<img src="/img/icon/cancel_btn.png" th:alt="#{UIT0025}" style="width: 20px;">
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="menuListDiv" style="display: block;">
+							<section class="l_box_type02">
+								 <div class="table_area">
+									<table class="write fixed">
+										<colgroup>
+											<col style="width: 25%;" />
+                                    		<col style="width: auto" />
+										</colgroup>
+										<tbody>
+											<tr>
+												<th th:text="#{UIT0340}">분석명</th>
+												<td><input type="text" id="analysisSaveNm" name="analysisSaveNm" class="in_w100" value="" /></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<div class="button_area alignc">
+						    <button class="btn btn-s blue in_wp100" type="button" data-dismiss="modal" onclick="fn_executeAnalys()" th:text="#{UIT0088}">저장</button>
+						</div>
+						<!-- <a class="btn btn-secondary" data-dismiss="modal" href="#none" th:text="#{UIT0341}">닫기</a> -->
+					</div>
+				</div>
+			</div>
+		</div>
+					
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+		var Schema = /*[[ ${schema} ]]*/; //: 스키마명
+		var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		var UIT0267 = /*[[ #{UIT0267} ]]*/; //: 검색결과가 없습니다.
+		var UIT0273 = /*[[ #{UIT0273} ]]*/; //: 테이블 명
+		var UIT0274 = /*[[ #{UIT0274} ]]*/; //: Row 수
+		var UIT0275 = /*[[ #{UIT0275} ]]*/; //: Row 평균길이
+		var UIT0276 = /*[[ #{UIT0276} ]]*/; //: Index 수
+		var UIT0277 = /*[[ #{UIT0277} ]]*/; //: PK 컬럼수
+		var UIT0278 = /*[[ #{UIT0278} ]]*/; //: 테이블 설명
+		var UIT0500 = /*[[ #{UIT0500} ]]*/; //: 도메인
+		var UIT0501 = /*[[ #{UIT0501} ]]*/; //: 표준 용어
+		var UIT0514 = /*[[ #{UIT0514} ]]*/; //: 표준화 분석
+		/*]]*/
+		
+		
+		
+		
+		$(document).ready(function(){
+		
+			$("label[for='la_tableSchema']").text(Schema);
+			
+		});
+		
+		var tableGrid = {};
+		
+		// 분석명 입력 팝업
+		function fn_openModalLayer(){
+			var today = new Date();
+			//$('#analysisSaveNm').val(UIT0514.replace(" ", "") + '_' + today.getFullYear() + today.getMonth() + today.getDate() + '_' + today.getMilliseconds());
+			$('#analysisSaveNm').val(UIT0514.replace(" ", ""));
+			$('#analysisSaveName').val(UIT0514.replace(" ", ""));
+			
+		}
+		
+		// 분석 저장
+		function fn_executeAnalys(){
+			var tableSchema = $("#tableSchema").val();
+			if(tableSchema == ""){
+				tableSchema =/*[[ ${schema} ]]*/;
+			}
+			$('#schemaName').val(tableSchema);
+			$('#itemsPageIndex').val($('#pageIndex').val());
+			
+			var chkCnt = $("input[type='checkbox']").filter(':checked').size();
+			$("#analysisSaveName").val($("#analysisSaveNm").val())
+			
+			if(chkCnt > 0){
+				$.ajax({
+					url: "/mngr/dataStandard/excuteStandardAnalysis",
+					data: $('#frm').serialize(),
+					beforeSend: function() {
+						wrapWindowByMask();
+					},
+					method : 'post',
+					success:function(){
+						closeWindowByMask();
+						
+						// 표준화 분석 결과 페이지로 이동
+						location.href = "/mngr/dataStandard/standardAnalysisResult.do";
+					},
+					error:function() {
+						closeWindowByMask();
+		                alert(UIT0041);
+		                return;
+		            },
+		            complete:function(){
+		        	    closeWindowByMask();
+		            }
+				});
+			} else {
+				alert("하나 이상의 도메인, 표준용어를 선택해 주세요.")
+			}
+			
+		}
+		
+		// 테이블 정보 그리드 세팅
+		function fn_setGrid(jsonData){
+			$("#tableGrid").empty();
+			
+			var columns = [
+				{header: UIT0273,name: 'tableName', whiteSpace: 'normal', sortable: true,   width: 300,align:'center'}, 	 
+				{header: UIT0274,name: 'numRows', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0275,name: 'avgRowLen', whiteSpace: 'normal', sortable: true,  width: 140,align:'right'},
+				{header: UIT0276,name: 'indexCnt', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0277,name: 'pkCnt', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0278,name: 'comments', whiteSpace: 'normal', sortable: true, align:'left'},
+				{header: UIT0500,name: 'domain', whiteSpace: 'pre-line', width:100, align:'center'},
+				{header: UIT0501,name: 'word', whiteSpace: 'pre-line', width:100, align:'center'}
+			];
+			
+			tableGrid = new tui.Grid({
+		        el : document.getElementById("tableGrid"),
+		        data : jsonData,
+		        scrollX : false,
+		        scrollY : false,
+		        //rowHeight : 40,
+		        minBodyHeight : 40,
+		        //bodyHeight : 500,
+		        header: {
+		            height: 40
+		        },
+		        columns : columns
+		    });
+
+		    const extOptions = {
+		        cell: {
+		            focused: {
+		                border: 0 // 선택 셀 강조 표시 x
+		            }
+		        }
+		    };
+
+		    
+		  
+		    tui.Grid.applyTheme('default', extOptions);
+		    
+		   
+		    if( jsonData != null ) {
+			    $.each(jsonData, function(index, item) {
+			    	item.domain = '<label class="switch"><input type="checkbox" name="'+item.tableName+'" value="domain" checked /><span class="slider round"></span></label>';
+			    	item.word = '<label class="switch"><input type="checkbox" name="'+item.tableName+'" value="word" checked /><span class="slider round"></span></label>';
+				});
+		    }
+		 
+		    tableGrid.resetData(jsonData);
+		    
+		    $('.tui-grid-header-area').on('click', 'th', function () {
+		    	
+		    	var sn = $(this).index();
+				var tableTr = $('.tui-grid-table').children('tbody').find('tr');
+		    	
+				$.each(tableTr, function(index, value) {
+					
+					var td = $(value).children('td')[sn];
+					var chk = $(td).find('input:checkbox');
+					
+					if(!$(chk).is(":checked")){
+						$(chk).prop("checked", true);
+					}else{
+						$(chk).prop("checked", false);
+					}
+				})
+			});
+		    
+		    
+		    
+		  
+		}
+		
+		// 테이블 정보 조회
+		function fn_search(){
+			var tableSchema = $("#tableSchema").val();
+			var tableAll = $('#tableAll').val();
+			if(tableSchema ==""){
+				tableSchema =/*[[ ${schema} ]]*/;
+			}
+			
+			var data = {
+				"tableSchema":tableSchema,
+				"tableAll":tableAll
+			};
+			$.ajax({
+				url: "/mngr/analysis/selectTableAnalysis",
+				data : data,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var jsonData = obj.result;
+					var totalCnt = obj.totalCnt;
+					
+					$("#tableCnt").val(totalCnt);
+					$("#tableTotalCnt").val(totalCnt);
+					$("#showCnt").show();
+					$("#tableSchema").val($("#tableSchema").val());
+					
+					// 그리드 세팅
+					fn_setGrid(jsonData);
+					
+				},
+		        error:function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();
+				} 
+			});
+		}
+		
+		// 스키마 변경 이벤트
+		function fn_changeSchema(){
+			$('#pageIndex').val('');
+			fn_search();
+		}
+		
+		// 스키마 정보 설정		
+		function fn_selectTableSchema(){
+			var option = "";
+			var Schema = /*[[ ${schema} ]]*/;
+			$.ajax({
+				url: "/mngr/analysis/selectTableAnalysis",
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var jsonData = obj.result;
+					for(var i = 0; i < jsonData.length; i++){
+						var selected = "";
+						if(Schema.trim().toUpperCase() == jsonData[i].OWNER.toUpperCase()) {
+							selected = "selected=true";
+							var option  = $("<option value="+jsonData[i].OWNER+" "+selected+">"+jsonData[i].OWNER+"</option>");
+						}else{
+							if(jsonData.length == 1){
+								selected = "selected=true";
+							}else{
+								selected = "";
+							}
+						}
+						//var option  = $("<option value="+jsonData[i].OWNER+" "+selected+">"+jsonData[i].OWNER+"</option>");
+						$("#tableSchema").append(option);
+													
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tableSchema").trigger("chosen:updated");
+						
+					}
+						// 선택된 스키마 정보로 테이블 정보 조회
+						fn_changeSchema();
+				},
+		        error:function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();
+				}
+			});
+		}
+				
+		$(document).ready(function() { 
+			$("#showCnt").hide();
+			// sessionCon 체크
+			isSessionConChk(sessionCon);
+			isCsvFileCheck(sessionCon);
+			
+			/* $("#tableSchema").chosen({
+				search_contains : true,
+				width : 230,
+				no_results_text : UIT0267+" : "
+			}); */
+			
+			fn_selectTableSchema();
+		});
+		
+		</script>
+	</div>   
+</html>

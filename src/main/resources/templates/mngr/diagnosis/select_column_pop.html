@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title th:text="#{UIT0057}"></title>
+
+	<!-- 폰트 -->
+	<link href="/resources/vendor/fontawesome-free/css/all.css" rel="stylesheet" />
+	<!-- Admin Bootstrap 스타일시트 -->
+	<link href="/resources/css/sb-admin-3.css" rel="stylesheet" />
+	<!-- TUI 스타일시트 -->
+	<link href="/resources/css/tui/tui-grid.css" rel="stylesheet" />
+	<!-- jquery ui -->
+	<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+	<!-- Sub -->
+	<link href="/resources/css/sub.css" rel="stylesheet">
+
+	<!-- TUI 스크립트 -->
+	<script type="text/javascript" src="/resources/js/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/underscore.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/backbone.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-code-snippet.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-grid.js"></script>
+	<script type="text/javascript" src="/resources/js/common.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-pagination.js"></script>
+	<!-- Bootstrap 스크립트 -->
+	<script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+	<!-- Admin Bootstrap 스크립트 -->
+	<script src="/resources/js/sb-admin-2.js"></script>
+	</head>
+	
+	<body id="page-top" style="overflow-x:hidden; overflow-y:hidden;">
+		<div id="wrapper">
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+					<!-- 본문 -->
+					<div class="container-fluid">
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<form id="frm" name="frm" action="../form2.do" method="get">
+									<input type="hidden" name="schemaName" value="${param.schemaName}" />
+									<input type="hidden" name="tableName" value="${param.tableName}" />
+									<div id="hiddenDiv"></div>
+									
+									<div class="card shadow mb-4">
+										<div class="card-body">
+											<div class="modal-header">
+												<h5 class="modal-title" id="example" th:text="#{UIT0071}">프로파일링 분석 </h5>
+												<button type="button" class="btn btn-primary btn_wd100" onclick="goForm2();" th:text="#{UIT0221}">확인</button>
+											</div>
+											<div id="grid" class="tb_type99"></div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript"  class="code-js" th:inline="javascript">
+	
+			/*<![CDATA[*/
+			var UIT0240 = /*[[ #{UIT0240} ]]*/; //: 컬럼명
+			var UIT0353 = /*[[ #{UIT0353} ]]*/; //: 컬럼타입
+			var UIT0355 = /*[[ #{UIT0355} ]]*/; //: 전체선택
+			var UIT0356 = /*[[ #{UIT0356} ]]*/; //: 분석할 컬럼을 선택해 주세요.
+			/*]]*/
+
+
+var grid = null;
+var colWidth = 120;
+
+$(function() {
+	girdView();
+});
+
+function girdView(){
+
+	var columnName = [
+		{header: UIT0240, name: 'mergeColName', whiteSpace: 'normal', childNames: ['colName']},
+<c:forEach var="item" items="${columnList}" varStatus="i">
+		{
+<c:choose>
+	<c:when test="${csvAt}">
+			header: '${item.COLUMN_COMMENT}',
+	</c:when>
+	<c:otherwise>
+			header: '${item.COLUMN_NAME}',
+	</c:otherwise>
+</c:choose>
+			name: 'merge${item.COLUMN_NAME}',
+			childNames: ['${item.COLUMN_NAME}']
+		}<c:if test="${not i.last}">,</c:if>
+</c:forEach>
+	];
+
+	var columnType = [
+		{header: UIT0353, name: 'colName', whiteSpace: 'normal', width: 100, align: 'center'},
+<c:forEach var="item" items="${columnList}" varStatus="i">
+		{
+			header: '${item.DATA_TYPE}(${item.DATA_LENGTH})',
+			name: '${item.COLUMN_NAME}',
+			align: 'center'
+		}<c:if test="${not i.last}">,</c:if>
+</c:forEach>
+	];
+
+	var data = [
+		{
+			//colName: '선택',
+			colName: '<input type="button" class="btn_select" value="'+UIT0355+'"/>',
+<c:forEach var="item" items="${columnList}" varStatus="i">
+			${item.COLUMN_NAME}: '<input type="checkbox" value="${item.COLUMN_NAME}" />'<c:if test="${not i.last}">,</c:if>
+			//${item.COLUMN_NAME}: '<label class="switch"><input type="checkbox" value="${item.COLUMN_NAME}" /><span class="slider round"></span></label>'<c:if test="${not i.last}">,</c:if>
+</c:forEach>
+		}<c:if test="${not empty dataList}">,</c:if>
+<c:forEach var="row" items="${dataList}" varStatus="r">
+		{
+			colName: '',
+	<c:forEach var="col" items="${columnList}" varStatus="c">
+			${col.COLUMN_NAME}: '${fn:trim(row[col.COLUMN_NAME])}'<c:if test="${not c.last}">,</c:if>
+	</c:forEach>
+		}<c:if test="${not r.last}">,</c:if>
+</c:forEach>
+	];
+
+	grid = new tui.Grid({
+		el: document.getElementById("grid"),
+		data: data,
+		scrollX: false,
+		scrollY: false,
+		bodyHeight : 'auto',
+		header: {
+			height: 80,
+			complexColumns: columnName
+		},
+//		columnOptions: {
+//			frozenCount: 1
+//		},
+		columns: columnType
+	});
+
+	grid.on('click', function(ev) {
+
+		var data = grid.getData();
+		var colName = ev.columnName;
+
+		if (colName == null) {
+			return false;
+		}
+
+		if (colName == 'colName' || colName == 'mergeColName') {
+
+			var chkboxList = data[0];
+			var checked = null;
+
+			for (var i in chkboxList) {
+
+				if (i == UIT0355 || typeof chkboxList[i] != 'string') {
+					continue;
+				}
+
+				var chkbox = $(chkboxList[i]);
+
+				if (chkbox.length == 0) {
+					continue;
+				}
+
+				if (checked == null) {
+					checked = !chkbox.prop('checked');
+				}
+
+				chkbox.attr('checked', checked);
+				chkboxList[i] = chkbox[0].outerHTML;
+			}
+
+		} else {
+
+			var chkbox = $(data[0][colName]);
+
+			if (chkbox.length == 0) {
+				chkbox = $(data[0][colName.replace('merge', '')]);
+			}
+
+			chkbox.attr('checked', !chkbox.prop('checked'));
+			data[0][colName] = chkbox[0].outerHTML;
+
+		}
+
+		grid.resetData(data);
+		//grid.refreshLayout();
+
+		return ev.stop();
+	});
+
+	const extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+
+}
+
+function goForm2() {
+
+	var data = grid.getData();
+	var val;
+
+	$('#hiddenDiv').empty();
+
+	for (var c in data[0]) {
+
+		if (c == UIT0355 || typeof data[0][c] != 'string') {
+			continue;
+		}
+
+		var chkbox = $(data[0][c]);
+
+		if (!chkbox.prop('checked')) {
+			continue;
+		}
+
+		val = chkbox.val();
+		
+		var check = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+		if(!check.test(val)){
+			$('#hiddenDiv').append($('<input type="hidden" name="columnName" value="" />').val(val));	
+		}
+
+	}
+
+	if ($('#hiddenDiv').html() == '') {
+		alert(UIT0356);
+		return;
+	}
+
+	var frm = $('#frm');
+
+	opener.name = "analysisWin";
+	frm.attr('target', opener.name);
+	frm.submit();
+	self.close();
+}
+</script>
+
+</html>

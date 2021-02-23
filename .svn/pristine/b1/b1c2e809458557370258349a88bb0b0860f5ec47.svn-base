@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+
+<%@ page import="java.util.List" %>
+<%@ page import="com.webapp.dqsys.util.SangsUtil"%>
+<%@ page import="com.webapp.dqsys.security.domain.Member"%>
+<%@ page import="java.util.Enumeration"%>
+<%
+	Member member = (Member) session.getAttribute("member");
+	String insttCode = "";
+	String userNm = "";
+	if(member != null){
+		insttCode = member.getInsttCode();
+		userNm = member.getUserNm();
+	}
+	
+	String conDbUrl = (String)session.getAttribute("conDbUrl");
+	String sessionCon = (String)session.getAttribute("DDId");
+	
+	if(conDbUrl == null){conDbUrl = "";}
+	if(sessionCon == null){sessionCon = "";}
+	
+	// 추가
+	String conType = (String)session.getAttribute("conType");
+	String conFileName = (String)session.getAttribute("conFileName");
+	int isChk = 0; 
+	
+	if(conType == null){conType = "";}
+	if(conFileName == null){conFileName = "";}
+	
+	if(conType.contains("CSV")){
+		isChk = 1;
+	}
+%>
+
+<script>
+	var loginInsttCode = '<%=insttCode %>';
+	var sessionCon = '<%=sessionCon%>';
+	
+	// 추가
+	var conType = '<%=conType%>';
+	var conFileName = '<%=conFileName%>';
+	var isChk = '<%=isChk%>';
+</script>
+
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+	
+	<div style="text-align:center;">
+        <h6>
+            <p class="textAStyle txt_left mgn_b0">
+                <img src="/resources/img/icon/icon_wifi.png" alt="와이파이 아이콘" class="vtc_unset">
+                <% if(isChk == 0){ %>
+               	<span class="col_blue01">접속 DBMS</span> : <%=conDbUrl%>
+             	<% } else {  %>
+                <span class="col_blue01">연결 CSV파일</span> : <%=conFileName%>
+                <% } %>
+            </p>
+        </h6>
+    </div>
+
+	<!-- 상단 이동 버튼 -->
+	<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+		<i class="fa fa-bars"></i>
+	</button>
+	<!-- 상단 네비 -->
+	<ul class="navbar-nav ml-auto">
+		<div class="topbar-divider d-none d-sm-block"></div>
+
+		<!-- Nav Item - User Information -->
+		<li class="nav-item dropdown no-arrow">
+			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="mr-2 d-none d-lg-inline text-gray-600 small"><%=userNm %></span>
+			</a>
+			<!-- Dropdown - User Information -->
+			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+				<a class="dropdown-item" href="/mngr/cmmnMng/cmmnManage">
+					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-600"> 관리자 정보</i>
+				</a>
+				<!-- 
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"> 설정</i>
+				</a>
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"> 접속이력</i>
+				</a>
+				-->
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-600"> 로그아웃</i>
+				</a>
+			</div>
+		</li>
+	</ul>
+</nav>

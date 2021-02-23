@@ -1,0 +1,87 @@
+@charset "utf-8";
+
+html,body {height:100%; font-family: 'Noto Sans KR', sans-serif;}
+body {min-width: 1550px; background-color: #585858;}
+
+/* bg 각 페이지 별로 bg가 다름 */
+body.bg01 {background: url('../img/common/login_bg.png') no-repeat #585858;}
+body.bg02 {background: url('../img/common/sub_bg01.png') no-repeat 0 0 #585858;}
+body.bg03 {background: url('../img/common/sub_bg02.png') no-repeat 0 0 #585858;}
+body.bg04 {background: url('../img/common/sub_bg03.png') no-repeat 0 0 #585858;}
+
+/* layout */
+#wrap {}
+.container {overflow: hidden; height: 100%; position:relative;}
+
+/* 컨텐츠 공통 */
+#content {width: 1550px; margin: 155px auto;}
+#content .content_area {position: relative; height: 565px; border-radius: 5px; background-color: #3b3b3b;}
+#content .content_area.bg_type01 {background: url('../img/common/login_sub_bg.png') no-repeat left 55px center #3b3b3b;}
+#content .content_location {overflow:hidden; color:#fff; margin-bottom: 30px;}
+#content .content_location ul {overflow: hidden; margin-bottom: 20px;}
+#content .content_location ul li {display: inline-block; position: relative; font-size: 12px;}
+#content .content_location ul li + li {margin-left: 30px;}
+#content .content_location ul li + li::before {position: absolute; content: ">"; width: 5px; height: 5px; left: -20px;}
+#content .content_location p {font-size: 24px; color: #feedc7;}
+
+.login_area {position: absolute; overflow: hidden; width: 446px; height: 300px; top: 120px; right: 210px; padding: 32px; border-radius: 5px; background-color: #313131;}
+.login_title strong {display: block; margin-bottom: 25px; font-size: 22px; color: #f8d88d; text-align: center;}
+
+.login_form {overflow: hidden;}
+.login_form > div {border-bottom: 1px solid #484848;}
+.login_form > div + div {margin-top: 5px;}
+.login_form > div label {display: inline-block; width: 36px; height: 35px; vertical-align: middle; text-indent: -9999px; }
+.login_form > div input {width: calc(100% - 40px); height: 35px; border: 0px; background-color: transparent; color: #fff !important; text-indent: 0px;}
+.login_form > div input:-webkit-autofill {transition: background-color 5000s ease-in-out 0s; -webkit-transition: background-color 9999s ease-out; -webkit-box-shadow: 0 0 0px 1000px #313131 inset !important; -webkit-text-fill-color: #fff !important;}
+.login_form > div input::placeholder {font-size: 16px; color: #707070; font-weight: bold; }
+.login_form > div input::-webkit-input-placeholder {font-size: 16px; color: #707070; font-weight: bold;}
+.login_form > div input:-ms-input-placeholder {font-size: 16px; color: #707070 !important; font-weight: bold !important;}
+.login_form > div.id_area label {background: url('../img/common/login_id.png') no-repeat center center;}
+.login_form > div.password_area label {background: url('../img/common/login_password.png') no-repeat center center;}
+.login_form > div.warning_box {height: 25px; margin: 0px; border: 0px;}
+.login_form > div.warning_box > p.warning_txt {padding-top: 5px; font-size: 12px; color: #f3f089; text-align: right; font-weight: 100;}
+
+button.login_btn {width: 100%; height: 40px; margin-top: 15px; line-height: 40px; border-radius: 5px; background-color: #2a88e5;}
+button.login_btn span {padding-left: 20px; color: #fff; font-size: 15px; font-weight: bold; background: url('../images/common/btn_arrow_bg.png') no-repeat left 1px;}
+
+input.login_btn {width: 100%; height: 40px; margin-top: 15px; line-height: 40px; border-radius: 5px; background-color: #2a88e5; color: #fff; font-size: 15px; font-weight: bold; border: 0; cursor: pointer;}
+
+.db_input_area {overflow: hidden; padding: 45px 85px 50px;}
+.db_input_area .db_location {overflow: hidden; margin-left: 30px;}
+.db_input_area .db_location strong {font-size: 22px; font-weight: bold; color: #54c8f6;}
+.db_input_area .db_location ul {overflow: hidden; margin: 15px 0;}
+.db_input_area .db_location ul li {display: inline-block; position: relative; font-size: 14px; color: #fff;}
+.db_input_area .db_location ul li + li {margin-left: 30px;}
+.db_input_area .db_location ul li + li::before {position: absolute; content: ">"; width: 5px; height: 5px; left: -20px;}
+
+.db_input_area .db_content {overflow: hidden; height: 400px; border: 1px solid #4d4d4d; border-radius: 5px;}
+.db_input_area .db_content > div {float: left; display: inline-block; width: 50%;}
+.db_input_area .db_content > div > div {width: 440px; margin-top: 40px;}
+.db_input_area .db_content > div > div > strong {font-size: 20px; color: #ffffff; font-weight: bold;}
+.db_input_area .db_content > div input:-webkit-autofill {transition: background-color 5000s ease-in-out 0s; -webkit-transition: background-color 9999s ease-out; -webkit-box-shadow: 0 0 0px 1000px #4a4a4a inset !important; -webkit-text-fill-color: #fff !important;}
+
+.db_input_area .db_content > .db_left_area > div {margin-left: 130px;}
+.db_input_area .db_content > .db_right_area > div {margin-left: 66px;}
+
+div.db_table {overflow: hidden; margin-top: 20px;} 
+div.db_table table {table-layout: fixed;}
+div.db_table table tr th {padding: 0 25px 0 0; font-size: 16px; color: #ababab; font-weight: bold; text-align: right;}
+div.db_table table tr th.th_posi {display: block; margin-top: 22px;}
+div.db_table table tr td {padding: 5px 0;}
+div.db_table table tr th label.impo {position: relative;}
+div.db_table table tr th label.impo::before {position: absolute; display: inline-block; content: "*"; width: 9px; height: 9px; top: 7px; left: -14px; color: #ff8000; }
+div.db_table table tr td input[type=text] {width: 100%; height: 48px; padding: 0 20px; color: #fff !important; line-height: 48px; text-indent: 0px; background-color: #4a4a4a; border: 0px; border-radius: 5px;}
+div.db_table table tr td input[type=password] {width: 100%; height: 48px; padding: 0 20px; color: #fff !important; line-height: 48px; font-size: 100%; text-indent: 0px; background-color: #4a4a4a; border: 0px; border-radius: 5px;}
+
+div.db_table table tr td input[type=text].id_input {width:calc(100% - 110px);}
+div.db_table table tr td input[type=text].id_input + button.btn_blue02 {margin-left: 6px;}
+
+.db_button_area {overflow: hidden; margin-top: 5px; text-align: right;}
+p.emphasis_txt {font-size: 14px; color: #f3f089; padding-left: 20px; background: url('../img/common/text_check_bg.png') no-repeat center left;}
+.db_button_area > p.emphasis_txt {margin-left: 140px;}
+.table_blank_box {height: 20px; padding-top: 4px;}
+button.btn_black {min-width: 88px; height: 40px; font-size: 14px; color: #fff; background-color: #0c0c0c; border-radius: 5px; vertical-align: middle;}
+button.btn_black span.next {padding-right: 15px; background: url('../img/common/btn_arrow04.png') no-repeat center right;}
+button.btn_black span.prev {padding-left: 15px; background: url('../img/common/btn_arrow03.png') no-repeat center left;}
+button.btn_blue {min-width: 88px; height: 40px; font-size: 14px; color: #fff; background-color: #2a88e5; border-radius: 5px; vertical-align: middle;}
+button.btn_blue02 {min-width: 100px; height: 48px; font-size: 14px; color: #fff; background-color: #0e5194; border-radius: 5px; vertical-align: middle;}

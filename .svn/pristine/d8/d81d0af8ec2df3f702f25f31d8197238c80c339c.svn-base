@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.DiagnosisMapper">
+
+	<select id="selectInsttForReport" resultType="sangsmap">
+		SELECT
+			A.INSTT_NM,
+			IF(BSNS_BGNDE != '',
+				CONCAT(
+					CONCAT(
+						SUBSTR(BSNS_BGNDE, 1, 4), '-',
+						SUBSTR(BSNS_BGNDE, 5, 2), '-',
+						SUBSTR(BSNS_BGNDE, 7, 2)
+					),
+					' ~ ',
+					CONCAT(
+						SUBSTR(BSNS_ENDDE, 1, 4), '-',
+						SUBSTR(BSNS_ENDDE, 5, 2), '-',
+						SUBSTR(BSNS_ENDDE, 7, 2)
+					)
+				),
+				''
+			) AS BSNS_DE,
+			B.DGNSS_DBMS_NM
+		FROM
+			instt A
+			JOIN dgnss_dbms B ON A.INSTT_CODE = B.INSTT_CODE
+		WHERE
+			A.INSTT_CODE = #{insttCode}
+			AND B.DGNSS_DBMS_ID = #{dgnssDbmsId}
+	</select>
+
+	<select id="selectDgnssDbms" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_DBMS_NM,
+			DBMS_ID,
+			DBMS_VER_ID,
+			IP,
+			PORT,
+			<!-- `SCHEMA`, -->
+			SID,
+			`DATABASE`,
+			PARAMTR,
+			ID,
+			PASSWORD,
+			RM,
+			USE_AT,
+			REGIST_DT,
+			SUBSTRING_INDEX(DGNSS_DBMS_NM, '(', 1) AS CSV_FILE_NAME,
+			UPPER(SUBSTRING_INDEX(SUBSTRING_INDEX(DGNSS_DBMS_NM, '(', 1),'.',-1)) AS FILE_TYPE
+		FROM
+			dgnss_dbms
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+	</select>
+
+	<select id="selectDgnssTableList" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			DGNSS_NM,
+			TABLE_NM,
+			ALL_CO,
+			DATE_FORMAT(EXC_BEGIN_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_BEGIN_TIME,
+			DATE_FORMAT(EXC_END_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_END_TIME,
+			CONCAT(TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME), 's') AS WORK_TIME,
+			EXC_STTUS,
+			REGIST_DT
+		FROM
+			dgnss_tables
+		ORDER BY
+			REGIST_DT DESC
+		LIMIT
+			#{startIdx}, ${perPage}
+	</select>
+
+	<select id="selectDgnssTableListCnt" resultType="int">
+		SELECT
+			COUNT(*) AS CNT
+		FROM
+			dgnss_tables
+	</select>
+
+	<select id="selectDgnssTable" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			DGNSS_NM,
+			TABLE_NM,
+			ALL_CO,
+			DATE_FORMAT(EXC_BEGIN_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_BEGIN_TIME,
+			DATE_FORMAT(EXC_END_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_END_TIME,
+			CONCAT(TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME), 's') AS WORK_TIME,
+			EXC_STTUS,
+			REGIST_DT
+		FROM
+			dgnss_tables
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+	</select>
+
+	<insert id="insertDgnssTable">
+		INSERT INTO dgnss_tables
+		(
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			DGNSS_NM,
+			TABLE_NM,
+			ALL_CO,
+			EXC_BEGIN_TIME,
+			EXC_END_TIME,
+			EXC_STTUS,
+			REGIST_DT
+		)
+		VALUES
+		(
+			#{insttCode},
+			#{dgnssDbmsId},
+			#{dgnssInfoId},
+			#{dgnssNm},
+			#{tableNm},
+			#{allCo},
+			NOW(),
+			NULL,
+			'S',
+			NOW()
+		)
+	</insert>
+
+	<update id="updateEndDgnssTable">
+		UPDATE
+			dgnss_tables
+		SET
+			EXC_END_TIME = NOW(),
+			EXC_STTUS = #{excSttus}
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+	</update>
+
+	<select id="selectDgnssColumnList" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_INFO_ID,
+			COLUMN_NM,
+			COLUMN_TY,
+			COLUMN_LT,
+			TRGCNT,
+			REGIST_DT
+		FROM
+			dgnss_columns
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+		<if test="dbmsKnd != null and dbmsKnd != 'DBMS'">
+			ORDER BY cast(substring(COLUMN_NM,7) as unsigned)
+		</if>
+		
+	</select>
+
+	<select id="selectDgnssColumnListForReport" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_INFO_ID,
+			COLUMN_NM,
+			COLUMN_TY,
+			COLUMN_LT,
+			TRGCNT,
+			(
+				SELECT
+					FORMAT(AVG(IFNULL(MTCHG_CO * 100 / #{rowCount}, 0)), 2)
+				FROM
+					dgnss_columns_res B
+				WHERE
+					A.INSTT_CODE = B.INSTT_CODE
+					AND A.DGNSS_DBMS_ID = B.DGNSS_DBMS_ID
+					AND A.DGNSS_INFO_ID = B.DGNSS_INFO_ID
+					AND A.COLUMN_NM = B.COLUMN_NM
+			) AS PER_CO,
+			(
+				SELECT
+					COLUMN_COMMENT
+				FROM
+					information_schema.columns B
+				WHERE
+					B.TABLE_NAME = #{tableNm}
+					AND B.COLUMN_NAME = A.COLUMN_NM
+			) AS COLUMN_COMMENT
+		FROM
+			dgnss_columns A
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+		<if test="dbmsKnd != null and dbmsKnd != 'DBMS'">
+			ORDER BY cast(substring(COLUMN_NM,7) as unsigned)
+		</if>
+	</select>
+
+	<insert id="insertDgnssColumn">
+		INSERT INTO dgnss_columns
+		(
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			COLUMN_NM,
+			COLUMN_TY,
+			COLUMN_LT,
+			TRGCNT,
+			REGIST_DT
+		)
+		VALUES
+		(
+			#{insttCode},
+			#{dgnssDbmsId},
+			#{dgnssInfoId},
+			#{columnNm},
+			#{columnTy},
+			#{columnLt},
+			#{trgcnt},
+			NOW()
+		)
+	</insert>
+
+	<select id="selectDgnssColumnResList" resultType="sangsmap">
+		SELECT
+			A.INSTT_CODE,
+			A.DGNSS_DBMS_ID,
+			A.DGNSS_INFO_ID,
+			A.COLUMN_NM,
+			A.ANALS_ID,
+			B.ANALS_NM,
+			C1.CMMN_CODE AS GROUP_CODE,
+			C1.CMMN_CODE_NM AS GROUP_NM,
+			A.MTCHG_CO,
+			(#{rowCount} - A.MTCHG_CO) AS MISCNT,
+			FORMAT(IFNULL(A.MTCHG_CO * 100 / #{rowCount}, 0) , 2) AS PER_CO,
+			FORMAT(100 - (IFNULL(A.MTCHG_CO * 100 / #{rowCount}, 0)),2) AS MISPER_CO,
+			A.REGIST_DT
+		FROM
+			dgnss_columns_res A
+			JOIN anals B ON A.ANALS_ID = B.ANALS_ID
+			JOIN cmmn_code_detail C1 ON B.ANALS_SE = C1.CMMN_CODE
+		WHERE
+			A.INSTT_CODE = #{insttCode}
+			AND A.DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND A.DGNSS_INFO_ID = #{dgnssInfoId}
+			AND A.COLUMN_NM = #{columnNm}
+		ORDER BY
+			C1.CMMN_CODE,
+			C1.INQIRE_ORDR,
+			B.REGIST_DT DESC, B.ANALS_SE, cast(B.ANALS_ID as unsigned)
+	</select>
+
+	<select id="selectWorkDgnssColumnResCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			dgnss_columns_res
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+			AND MTCHG_CO IS NULL
+	</select>
+
+	<insert id="insertDgnssColumnRes">
+		INSERT INTO dgnss_columns_res
+		(
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			COLUMN_NM,
+			ANALS_ID,
+			MTCHG_CO,
+			REGIST_DT
+		)
+		VALUES
+		(
+			#{insttCode},
+			#{dgnssDbmsId},
+			#{dgnssInfoId},
+			#{columnNm},
+			#{analsId},
+			NULL,
+			NOW()
+		)
+	</insert>
+
+	<update id="updateDgnssColumnRes">
+		UPDATE
+			dgnss_columns_res
+		SET
+			MTCHG_CO = #{mtchgCo}
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+			AND COLUMN_NM = #{columnNm}
+			AND ANALS_ID = #{analsId}
+	</update>
+
+	<select id="selectFrqAnalList" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			COLUMN_NM,
+			SN,
+			DATA_VALUE,
+			DATA_CO,
+			REGIST_DT,
+			FORMAT(IFNULL(DATA_CO * 100 / (SELECT MAX(MTCHG_CO) FROM DGNSS_COLUMNS_RES WHERE INSTT_CODE = #{insttCode} AND DGNSS_DBMS_ID = #{dgnssDbmsId} AND DGNSS_INFO_ID = #{dgnssInfoId} AND COLUMN_NM = #{columnNm}), 0),2) AS PER_CO
+		FROM
+			frq_anals
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+			AND COLUMN_NM = #{columnNm}
+		ORDER BY
+			DATA_CO DESC, DATA_VALUE
+	</select>
+
+	<select id="selectWorkFrqAnalCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			frq_anals
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+			AND SN = 0
+	</select>
+
+	<insert id="insertFrqAnal">
+		INSERT INTO frq_anals
+		(
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			COLUMN_NM,
+			SN,
+			DATA_VALUE,
+			DATA_CO,
+			REGIST_DT
+		)
+		VALUES
+		(
+			#{insttCode},
+			#{dgnssDbmsId},
+			#{dgnssInfoId},
+			#{columnNm},
+			#{sn},
+			#{dataValue},
+			#{dataCo},
+			NOW()
+		)
+	</insert>
+
+	<delete id="deleteWorkFrqAnal">
+		DELETE FROM
+			frq_anals
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+			AND COLUMN_NM = #{columnNm}
+			AND SN = 0
+	</delete>
+
+	<select id="selectDgnssSaveList" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_SAVE_ID,
+			DGNSS_SAVE_NM,
+			DGNSS_DBMS_ID,
+			SCHEMA_NM,
+			TABLE_NM,
+			COLUMN_NM_DC,
+			ANALS_ID_DC,
+			DATE_FORMAT(REGIST_DT, '%Y-%m-%d %H:%i:%s') AS REGIST_DT
+		FROM
+			dgnss_save
+		WHERE
+			INSTT_CODE = #{insttCode}
+		ORDER BY
+			DGNSS_SAVE_ID DESC
+		LIMIT
+			#{startIdx}, #{perPage}
+	</select>
+
+	<select id="selectDgnssSaveListCnt" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			dgnss_save
+		WHERE
+			INSTT_CODE = #{insttCode}
+	</select>
+
+	<insert id="insertDgnssSave">
+		INSERT INTO dgnss_save
+		(
+			INSTT_CODE,
+			DGNSS_SAVE_ID,
+			DGNSS_SAVE_NM,
+			DGNSS_DBMS_ID,
+			SCHEMA_NM,
+			TABLE_NM,
+			COLUMN_NM_DC,
+			ANALS_ID_DC,
+			REGIST_DT
+		)
+		VALUES
+		(
+			#{insttCode},
+			#{dgnssSaveId},
+			#{dgnssSaveNm},
+			#{dgnssDbmsId},
+			#{schemaNm},
+			#{tableNm},
+			#{columnNmDc},
+			#{analsIdDc},
+			NOW()
+		)
+	</insert>
+
+	<delete id="deleteDgnssSave">
+		DELETE FROM
+			dgnss_save
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_SAVE_ID = #{dgnssSaveId}
+	</delete>
+
+	<select id="selectDgnssErrorList" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_INFO_ID,
+			DGNSS_ERROR_ID,
+			DGNSS_DBMS_ID,
+			SCHEMA_NM,
+			TABLE_NM,
+			COLUMN_NM,
+			ANALS_ID,
+			CASE WHEN LENGTH(ERROR_NM) > 150 THEN LEFT(ERROR_NM,150) ELSE ERROR_NM END ERROR_NM,
+			CASE WHEN LENGTH(ERROR_CONTENT) > 500 THEN LEFT(ERROR_CONTENT,500) ELSE ERROR_CONTENT END ERROR_CONTENT,
+			DATE_FORMAT(REGIST_DT, '%Y-%m-%d %H:%i:%s') AS REGIST_DT
+		FROM
+			dgnss_error
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+		ORDER BY
+			REGIST_DT DESC
+		LIMIT
+			#{startIdx}, #{perPage}
+	</select>
+
+	<select id="selectDgnssErrorListCnt" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			dgnss_error
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+	</select>
+
+	<insert id="insertDgnssError">
+		INSERT INTO dgnss_error
+		(
+			INSTT_CODE,
+			DGNSS_INFO_ID,
+			DGNSS_ERROR_ID,
+			DGNSS_DBMS_ID,
+			SCHEMA_NM,
+			TABLE_NM,
+			COLUMN_NM,
+			ANALS_ID,
+			ERROR_NM,
+			ERROR_CONTENT,
+			REGIST_DT
+		)
+		VALUES
+		(
+			#{insttCode},
+			#{dgnssInfoId},
+			#{dgnssErrorId},
+			#{dgnssDbmsId},
+			#{schemaNm},
+			#{tableNm},
+			#{columnNm},
+			#{analsId},
+			#{errorNm},
+			#{errorContent},
+			NOW()
+		)
+	</insert>
+
+	<select id="selectAnalsList" resultType="sangsmap">
+		SELECT
+			A.INSTT_CODE,
+			A.ANALS_ID,
+			A.ANALS_SE,
+			C1.CMMN_CODE AS GROUP_CODE,
+			C1.CMMN_CODE_NM AS GROUP_NM,
+			A.ANALS_TY,
+			A.PTTRN_SE,
+			C2.CMMN_CODE_NM AS PTTRN_SE_NM,
+			A.ANALS_NM,
+			A.ANALS_FRMLA,
+			A.BEGIN_VALUE,
+			A.END_VALUE,
+			A.DBMS_KND,
+			A.DBMS_VER,
+			A.RM,
+			A.USE_AT,
+			A.REGIST_DT
+		FROM
+			anals A
+			JOIN cmmn_code_detail C1 ON A.ANALS_SE = C1.CMMN_CODE
+			LEFT JOIN cmmn_code_detail C2 ON A.PTTRN_SE = C2.CMMN_CODE
+		WHERE
+			A.INSTT_CODE = #{insttCode}
+			AND A.DBMS_KND = #{dbmsKnd}
+			AND A.ANALS_FRMLA IS NOT NULL
+			AND A.USE_AT = '1'
+		ORDER BY
+			A.ANALS_SE,
+			cast(A.ANALS_ID as unsigned)
+			
+	</select>
+
+	<select id="selectAnalsListForReport" resultType="sangsmap">
+		SELECT
+			A.INSTT_CODE,
+			A.ANALS_ID,
+			A.ANALS_SE,
+			C2.CMMN_CODE_NM AS PTTRN_SE_NM,
+			C1.CMMN_CODE AS GROUP_CODE,
+			C1.CMMN_CODE_NM AS GROUP_NM,
+			A.ANALS_TY,
+			A.PTTRN_SE,
+			A.ANALS_NM,
+			(
+				SELECT
+					COUNT(*)
+				FROM
+					dgnss_columns_res B
+				WHERE
+					A.INSTT_CODE = B.INSTT_CODE
+					AND A.ANALS_ID = B.ANALS_ID
+					AND D.DGNSS_DBMS_ID = B.DGNSS_DBMS_ID
+					AND D.DGNSS_INFO_ID = B.DGNSS_INFO_ID
+			) AS COL_CO,
+			(
+				SELECT
+					FORMAT(AVG(IFNULL(B.MTCHG_CO * 100 / #{rowCount}, 0)), 2)
+				FROM
+					dgnss_columns_res B
+				WHERE
+					A.INSTT_CODE = B.INSTT_CODE
+					AND A.ANALS_ID = B.ANALS_ID
+					AND D.DGNSS_DBMS_ID = B.DGNSS_DBMS_ID
+					AND D.DGNSS_INFO_ID = B.DGNSS_INFO_ID
+			) AS PER_CO
+		FROM
+			anals A
+			JOIN cmmn_code_detail C1 ON A.ANALS_SE = C1.CMMN_CODE
+			LEFT JOIN cmmn_code_detail C2 ON A.PTTRN_SE = C2.CMMN_CODE
+			JOIN dgnss_columns_res D ON A.INSTT_CODE = D.INSTT_CODE AND A.ANALS_ID = D.ANALS_ID
+		WHERE
+			A.INSTT_CODE = #{insttCode}
+			AND A.DBMS_KND = #{dbmsKnd}
+			AND A.ANALS_FRMLA IS NOT NULL
+			AND A.USE_AT = '1'
+			AND D.DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND D.DGNSS_INFO_ID = #{dgnssInfoId}
+		GROUP BY
+			A.ANALS_ID
+		ORDER BY
+			A.ANALS_SE,
+			cast(A.ANALS_ID as unsigned)
+	</select>
+
+	<select id="selectAnalsGroupList" resultType="sangsmap">
+		SELECT
+			C1.CMMN_CODE AS GROUP_CODE,
+			C1.CMMN_CODE_NM AS GROUP_NM,
+			COUNT(*) CNT
+		FROM
+			anals A
+			JOIN cmmn_code_detail C1 ON A.ANALS_SE = C1.CMMN_CODE
+		WHERE
+			A.INSTT_CODE = #{insttCode}
+			AND A.DBMS_KND = #{dbmsKnd}
+			AND A.ANALS_FRMLA IS NOT NULL
+			AND A.USE_AT = '1'
+		GROUP BY
+			C1.CMMN_CODE
+		ORDER BY
+			C1.CMMN_CODE,
+			C1.INQIRE_ORDR
+	</select>
+
+	<select id="selectAnalsGroupListForReport" resultType="sangsmap">
+		SELECT
+			C1.CMMN_CODE AS GROUP_CODE,
+			C1.CMMN_CODE_NM AS GROUP_NM,
+			COUNT(*) CNT
+		FROM
+			(
+				SELECT
+					A.ANALS_ID,
+					A.ANALS_SE
+				FROM
+					anals A
+					JOIN dgnss_columns_res B ON A.INSTT_CODE = B.INSTT_CODE AND A.ANALS_ID = B.ANALS_ID
+				WHERE
+					A.INSTT_CODE = #{insttCode}
+					AND A.DBMS_KND = #{dbmsKnd}
+					AND A.ANALS_FRMLA IS NOT NULL
+					AND A.USE_AT = '1'
+					AND B.DGNSS_DBMS_ID = #{dgnssDbmsId}
+					AND B.DGNSS_INFO_ID = #{dgnssInfoId}
+				GROUP BY
+					A.ANALS_ID
+			) A
+			JOIN cmmn_code_detail C1 ON A.ANALS_SE = C1.CMMN_CODE
+		GROUP BY
+			C1.CMMN_CODE
+		ORDER BY
+			C1.CMMN_CODE,
+			C1.INQIRE_ORDR
+	</select>
+
+	<select id="selectResAnalsList" resultType="sangsmap">
+		SELECT
+			B.INSTT_CODE,
+			B.ANALS_ID,
+			B.ANALS_SE,
+			B.ANALS_TY,
+			B.PTTRN_SE,
+			B.ANALS_NM,
+			B.ANALS_FRMLA,
+			B.BEGIN_VALUE,
+			B.END_VALUE,
+			B.DBMS_KND,
+			B.DBMS_VER,
+			B.RM,
+			B.USE_AT,
+			B.REGIST_DT
+		FROM
+			dgnss_columns_res A
+			JOIN anals B ON A.ANALS_ID = B.ANALS_ID
+			JOIN cmmn_code_detail C1 ON B.ANALS_SE = C1.CMMN_CODE			
+		WHERE
+			A.INSTT_CODE = #{insttCode}
+			AND A.DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND A.DGNSS_INFO_ID = #{dgnssInfoId}
+			AND A.COLUMN_NM = #{columnNm}
+			AND B.ANALS_SE != 'AG000100'
+		ORDER BY
+			C1.CMMN_CODE,
+			C1.INQIRE_ORDR
+	</select>
+
+	<select id="selectColumnComment" resultType="string">
+		SELECT
+			COLUMN_COMMENT
+		FROM
+			information_schema.columns
+		WHERE
+			TABLE_NAME = #{tableName}
+			AND COLUMN_NAME = #{columnName}
+	</select>
+</mapper>

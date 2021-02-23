@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+	
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; BASIC &gt; <label th:text="#{UIT0498}"></label> &gt; <label th:text="#{UIT0499}"></label></span>
+		</div>
+                
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0499}"> 표준화 항목 관리</h1>
+		</div>
+		
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="tab1" href="#none" onclick="fn_tabLink(this)" th:text="#{UIT0500}">도메인</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="tab2" href="#none" onclick="fn_tabLink(this)" th:text="#{UIT0501}">표준용어</a>
+			</li>
+		</ul>
+	
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="card shadow mb-4">
+					<div class="input_table">
+						<table>
+							<caption th:text="#{UIT0077}"></caption>
+							<colgroup>
+								<col style="width:10%">
+								<col style="width:25%">
+								<col style="width:10%">
+								<col style="width:25%">
+								<col style="width:20%">
+								<col style="width:10%">
+							</colgroup>
+							<tbody>
+								<tr id="domainSearchArea">
+									<th>
+										<label for="type2" th:text="#{UIT0502}">분류</label>
+									</th>
+									<td>
+										<input type="text" name="searchDomainCl" id="searchDomainCl" th:title="#{UIT0504}" maxlength="50" th:placeholder="#{UIT0504}">
+									</td>
+									<th>
+										<label for="type2" th:text="#{UIT0503}">도메인명</label>
+									</th>
+									<td>
+										<input type="text" name="searchDomainNm" id="searchDomainNm" th:title="#{UIT0505}" maxlength="50" th:placeholder="#{UIT0505}">
+									</td>
+									<td></td>
+									<td>
+									<button class='btn btn-primary wd_50' type='button' th:text="#{UIT0084}" onclick="fn_selDataList();" >조회</button>
+									</td>
+								</tr>
+								<tr id="wordSearchArea" style="display:none;">
+									<th>
+										<label for="type2" th:text="#{UIT0506}">표준용어명</label>
+									</th>
+									<td>
+										<input type="text" name="searchWordNm" id="searchWordNm" th:title="#{UIT0508}" maxlength="50" th:placeholder="#{UIT0508}">
+									</td>
+									<th>
+										<label for="type2" th:text="#{UIT0507}">표준용어영문명</label>
+									</th>
+									<td>
+										<input type="text" name="searchWordEngNm" id="searchWordEngNm" th:title="#{UIT0509}" maxlength="50" th:placeholder="#{UIT0509}">
+									</td>
+									<td></td>
+									<td>
+									<button class='btn btn-primary wd_50' type='button' th:text="#{UIT0084}" onclick="fn_selDataList();" >조회</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="card shadow mb-4">
+					<input type="hidden" id="ckBtn" name="ckBtn" value="" />
+					<div class="card-body">
+						<section class="mgn_b20 txt_right">
+							<button class='btn btn-primary btn_wd100' type='button' th:text="#{UIT0085}" onclick="fn_openModalLayer('');">등록</button>
+							<button class='btn btn-primary btn_wd120' type='button' th:text="#{UIT0293}" onclick="fn_openModalLayer('CSV');">CSV 파일등록</button>
+						</section>
+						
+						<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+						<div id ="grid" class="tb_type99" style="clear: both; min-height: 440px;"></div>
+                        <div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- modal 창 -->
+		<!-- 도메인 등록 팝업 open -->
+		<div id="domainSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 520px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0516}">도메인 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="domainFrm">
+	                        <div class="tb_type03">
+	                            <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0502}">분류</label> </th>
+											<td><input type="text" id="domainCl" name="domainCl" maxlength="50"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0503}">도메인명</label></th>
+											<td><input type="text" id="domainNm" name="domainNm"  maxlength="50"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0510}">데이터타입</label> </th>
+											<td><input type="text" id="domainTy" name="domainTy" maxlength="20"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0511}">데이터길이</label></th>
+											<td><input type="text" id="domainLt" name="domainLt" maxlength="20" oninput="inputCheck(this)"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0092}">설명</label></th>
+											<td>
+												<textarea id="domainRm" name="domainRm"></textarea>
+											</td>
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="domainSaveBtn" th:text="#{UIT0088}" onclick="fn_saveDomain();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<div id="domainCsvSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 310px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0516}">도메인 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form name="domainCsvUploadFrm" id="domainCsvUploadFrm"  method="post" action="" enctype="multipart/form-data">
+	                        <section class="l_box_type02">                                    
+	                            <div class="tb_type03">
+	                                <table style="margin-top:10px;">
+	                                    <tbody>
+	                                        <tr>
+	                                            <th><span class="str">*</span> <label th:text="#{UIT0290}">파일 업로드</label></th>
+	                                            <td style="text-align: left; width:600px;">
+	                                                <div class="filebox bs3-primary" style="text-align: left; width:600px;">
+	                                                    <input id="domainFileFullPath" name="domainFileFullPath" class="upload-name in_box_type01 in_length400" value="파일선택" style="width: 475px;" disabled="disabled">
+	                                                    <label for="domainFileName" class="mgn_b0" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+	                                                    <input type="file" name="domainFileName" id="domainFileName" style="width: 100px;" class="upload-hidden" onchange="fn_setFileInfo(event);"> 
+	                                                </div>
+	                                            </td>
+	                                        </tr>                                                                                                   
+	                                    </tbody>
+	                                </table>
+                            	</div>
+                       		</section>
+                    	</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="domainCsvSaveBtn" th:text="#{UIT0088}" onclick="fn_saveCsvData();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 도메인 등록 팝업 close -->
+		
+		<!-- 표준용어 등록 팝업 open -->
+		<div id="wordSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 520px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0517}">표준 용어 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="wordFrm">
+	                        <div class="tb_type03">
+	                            <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0506}">표준용어명</label> </th>
+											<td><input type="text" id="wordNm" name="wordNm" maxlength="50"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0507}">표준용어영문명</label></th>
+											<td><input type="text" id="wordEngNm" name="wordEngNm"  maxlength="50"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0512}">영문약어</label> </th>
+											<td><input type="text" id="wordEngAb" name="wordEngAb" maxlength="50"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0513}">구분</label> </th>
+											<td style="text-align: left; ">
+												<select id="wordCl" name="wordCl" style="width: 100px;">
+													<option value="">선택</option>
+													<option value="0">표준어</option>
+													<option value="1">동의어</option>	
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0092}">설명</label></th>
+											<td>
+												<textarea id="wordRm" name="wordRm"></textarea>
+											</td>
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="wordSaveBtn" th:text="#{UIT0088}" onclick="fn_saveWord();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<div id="wordCsvSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 310px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0517}">표준 용어 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form name="wordCsvUploadFrm" id="wordCsvUploadFrm"  method="post" action="" enctype="multipart/form-data">
+	                        <section class="l_box_type02">                                    
+	                            <div class="tb_type03">
+	                                <table style="margin-top:10px;">
+	                                    <tbody>
+	                                        <tr>
+	                                            <th><span class="str">*</span> <label th:text="#{UIT0290}">파일 업로드</label></th>
+	                                            <td style="text-align: left; width:600px;">
+	                                                <div class="filebox bs3-primary" style="text-align: left; width:600px;">
+	                                                    <input id="wordFileFullPath" name="wordFileFullPath" class="upload-name in_box_type01 in_length400" value="파일선택" style="width: 475px;" disabled="disabled">
+	                                                    <label for="wordFileName" class="mgn_b0" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+	                                                    <input type="file" name="wordFileName" id="wordFileName" style="width: 100px;" class="upload-hidden" onchange="fn_setFileInfo(event);"> 
+	                                                </div>
+	                                            </td>
+	                                        </tr>                                                                                                   
+	                                    </tbody>
+	                                </table>
+                            	</div>
+                       		</section>
+                    	</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="wordCsvSaveBtn" th:text="#{UIT0088}" onclick="fn_saveCsvData();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 표준용어 등록 팝업 close -->
+		
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var chkTabId = /*[[${tabId}]]*/;
+		var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		
+		var UIT0307 = /*[[ #{UIT0307} ]]*/; //: 업로드할 파일을 선택해주세요
+		var UIT0308 = /*[[ #{UIT0308} ]]*/; //: 파일명은 영문자/숫자 조합만 가능 합니다.
+		var UIT0309 = /*[[ #{UIT0309} ]]*/; //: 확장자 명이 csv 파일만 등록 가능합니다.
+		var UIT0310 = /*[[ #{UIT0310} ]]*/; //: 저장하시겠습니까?
+		var UIT0314 = /*[[ #{UIT0314} ]]*/; //: 정상적으로 등록 되었습니다.
+		var UIT0315 = /*[[ #{UIT0315} ]]*/; //: 등록에 실패하였습니다. 다시 등록해 주시기 바랍니다.
+		var UIT0320 = /*[[ #{UIT0320} ]]*/; //: 해당 파일을 업로드 하시겠습니까?
+		var UIT0321 = /*[[ #{UIT0321} ]]*/; //: 정상적으로 업로드 되었습니다.
+		
+		var UIT0092 = /*[[ #{UIT0092} ]]*/; //: 설명
+		var UIT0502 = /*[[ #{UIT0502} ]]*/; //: 분류
+		var UIT0503 = /*[[ #{UIT0503} ]]*/; //: 도메인명
+		var UIT0506 = /*[[ #{UIT0506} ]]*/; //: 표준용어명
+		var UIT0507 = /*[[ #{UIT0507} ]]*/; //: 표준용어영문명
+		var UIT0510 = /*[[ #{UIT0510} ]]*/; //: 데이터타입
+		var UIT0511 = /*[[ #{UIT0511} ]]*/; //: 데이터길이
+		var UIT0512 = /*[[ #{UIT0512} ]]*/; //: 영문약어
+		var UIT0513 = /*[[ #{UIT0513} ]]*/; //: 구분
+		var UIT0518 = /*[[ #{UIT0518} ]]*/; //: 분류를 입력해 주세요
+		var UIT0519 = /*[[ #{UIT0519} ]]*/; //: 도메인명을 입력해 주세요
+		var UIT0520 = /*[[ #{UIT0520} ]]*/; //: 데이터타입을 입력해 주세요
+		var UIT0521 = /*[[ #{UIT0521} ]]*/; //: 표준용어명을 입력해 주세요
+		var UIT0522 = /*[[ #{UIT0522} ]]*/; //: 구분을 선택해 주세요
+	/*]]*/
+	
+		var tabType = "";
+		
+		// 도메인 등록
+		function fn_saveDomain(){
+			var frmChk = true;
+			var domainCl = $("#domainCl").val(); // 분류
+			var domainNm = $("#domainNm").val(); // 도메인명
+			var domainTy = $("#domainTy").val(); // 데이터타입
+			var domainLt = $("#domainLt").val(); // 데이터길이
+			var domainRm = $("#domainRm").val(); // 설명
+			
+			// validation 체크
+			if(domainCl.length == 0) {
+				alert(UIT0518);
+				frmChk = false;
+			}
+			else if(domainNm.length == 0) {
+				alert(UIT0519);
+				frmChk = false;
+			}
+			else if(domainNm.length == 0) {
+				alert(UIT0519);
+				frmChk = false;
+			}
+			else if(domainTy.length == 0) {
+				alert(UIT0520);
+				frmChk = false;
+			}
+			
+			if(frmChk){
+				var arr = [];
+				var obj = {};
+				obj.domainCl = domainCl;
+				obj.domainNm = domainNm;
+				obj.domainTy = domainTy;
+				obj.domainLt = domainLt;
+				obj.domainRm = domainRm;
+				
+				arr.push(obj);
+				
+				if(arr.length > 0){
+					$.ajax({
+						url: '/mngr/dataStandard/saveDomainInfo',
+						method : 'POST',
+						data: {insertList : JSON.stringify(arr)},
+						beforeSend: function() {
+							wrapWindowByMask();
+						},
+						success: function(data){
+							var obj = JSON.parse(data);
+							var isSuccess = obj.result;
+							
+							if( isSuccess ) {
+								fn_searchTab(chkTabId);
+								
+								fn_modalCloseLayer();
+							}
+							else {
+								alert(UIT0041);
+								return;
+							}
+				        },
+				        error:function() {
+							alert(UIT0041);
+							return;
+						},
+						complete: function() {
+							closeWindowByMask();
+						}
+				    });
+				}
+			}
+		}
+
+		// 도메인 csv 등록
+		function domainCsvUpload(){
+	        var form = $('#domainCsvUploadFrm')[0];
+	        var csvFile = new FormData(form);
+	        
+			$.ajax({
+				url: '/mngr/dataStandard/saveDomainCsv',
+				method : 'POST',
+				enctype: 'multipart/form-data',
+				processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+				data: csvFile,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var isSuccess = obj.result;
+					
+					if( isSuccess ) {
+						fn_searchTab(chkTabId);
+						
+						fn_modalCloseLayer();
+					}
+					else {
+						alert(UIT0041);
+						return;
+					}
+		        },
+		        error:function() {
+		        	alert(UIT0041);
+					return;
+	            },
+				complete: function() {
+					closeWindowByMask();
+				}
+		    });
+		}
+		
+		// 표준 용어 등록
+		function fn_saveWord(){
+			var frmChk = true;
+			var wordNm = $("#wordNm").val();
+			var wordEngNm = $("#wordEngNm").val();
+			var wordEngAb = $("#wordEngAb").val();
+			var wordCl = $("#wordCl").val();
+			var wordRm = $("#wordRm").val();
+			
+			if(wordNm.length == 0 ) {
+				alert(UIT0521);
+				frmChk = false;
+			}			
+			else if(wordCl.length == 0) {
+				alert(UIT0522);
+				frmChk = false;
+			}
+			
+			if(frmChk){
+				var arr = [];
+				var obj = {};
+				obj.wordNm = wordNm;
+				obj.wordEngNm = wordEngNm;
+				obj.wordEngAb = wordEngAb;
+				obj.wordCl = wordCl;
+				obj.wordRm = wordRm;
+				
+				arr.push(obj);
+				
+				if(arr.length > 0){
+					$.ajax({
+						url: '/mngr/dataStandard/saveWordInfo',
+						method : 'POST',
+						data: {insertList : JSON.stringify(arr)},
+						beforeSend: function() {
+							wrapWindowByMask();
+						},
+						success: function(data){
+							var obj = JSON.parse(data);
+							var isSuccess = obj.result;
+							
+							if( isSuccess ) {
+								fn_searchTab(chkTabId);
+								
+								fn_modalCloseLayer();
+							}
+							else {
+								alert(UIT0041);
+								return;
+							}
+				        },
+				        error:function() {
+							alert(UIT0041);
+							return;
+						},
+						complete: function() {
+							closeWindowByMask();
+						}
+				    });
+				}
+			}
+		}
+		
+		// 표준 용어 csv 등록
+		function wordCsvUpload(){
+	        var form = $('#wordCsvUploadFrm')[0];
+	        var csvFile = new FormData(form);
+	        
+			$.ajax({
+				url: '/mngr/dataStandard/saveWordCsv',
+				method : 'POST',
+				enctype: 'multipart/form-data',
+				processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+				data: csvFile,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var isSuccess = obj.result;
+					
+					if( isSuccess ) {
+						fn_searchTab(chkTabId);
+						
+						fn_modalCloseLayer();
+					}
+					else {
+						alert(UIT0041);
+						return;
+					}
+		        },
+		        error:function() {
+		        	alert(UIT0041);
+					return;	
+	            },
+				complete: function() {
+					closeWindowByMask();
+				}
+		    });
+		}
+		
+		// csv 저장 이벤트
+		function fn_saveCsvData(){
+			var csvFileChk= true;
+			
+			var fileName = '';
+			if(chkTabId == 'tab2'){
+				fileName = $("#wordFileName").val();
+            }
+            else {
+            	fileName = $("#domainFileName").val();
+            }
+			
+			var fileNames = fileName.split("\\");
+			var len = fileNames.length -1;
+			var checkNms = fileNames[len].split(".");
+			
+			var checkNm = checkNms[0].trim();
+			var checkDns = checkNms[1].trim();			
+			
+			// 업로드 파일 확인
+			if(fileName == "") {
+				alert(UIT0307);
+				csvFileChk = false;
+				return false;
+			}
+			if ((new RegExp(/[^a-z0-9_]/gi)).test(checkNm)) {
+				alert(UIT0308);
+				csvFileChk = false;
+				return false;
+			}
+			if ((new RegExp(/^csv/gi)).test(checkDns.toLowerCase())== false) {
+				alert(UIT0309);
+				csvFileChk = false;
+				return false;
+			}
+
+			if(csvFileChk==true){
+				// csv 등록
+				if(chkTabId == 'tab2'){
+					wordCsvUpload();
+	            }
+	            else {
+	            	domainCsvUpload();
+	            }
+			}
+		}
+		
+		// 선택된 파일 정보
+		function fn_setFileInfo(evt){
+			var files = evt.target.files;
+
+            var file = files[0];
+            var fileName = file.name;
+            var fileSize = file.size;
+            if(chkTabId == 'tab2'){
+            	$("#wordFileFullPath").val(fileSize+ ' Byte'+' / '+fileName);
+            }
+            else {
+				$("#domainFileFullPath").val(fileSize+ ' Byte'+' / '+fileName);
+            }
+		}
+		
+		// 등록 팝업
+		function fn_openModalLayer(mode){
+			/*레이어 열기*/
+			var popSaveForm = {};
+			chkTabId = $('a.active').attr('id');
+			if(chkTabId == 'tab2'){
+				if( mode === 'CSV' ) {
+					$('#wordCsvSaveLayer').addClass('on');
+				}
+				else {
+					popSaveForm = $("#wordFrm").serializeArray();
+					$('#wordSaveLayer').addClass('on');	
+				}
+			}
+			else {
+				if( mode === 'CSV' ) {
+					$('#domainCsvSaveLayer').addClass('on');
+				}
+				else {
+					popSaveForm = $("#domainFrm").serializeArray();
+					$('#domainSaveLayer').addClass('on');
+				}
+			}
+			
+			// 폼 초기화
+			if( mode === 'CSV' ) {
+				if(chkTabId == 'tab2'){
+					if ( isBrowserMsie() ){
+					    $("#wordFileName").replaceWith( $("#wordFileName").clone(true) );
+					} else {
+					    $("#wordFileName").val("");
+					}
+				    $("#wordFileFullPath").val("");
+				}
+				else {
+					if ( isBrowserMsie() ){
+					    $("#domainFileName").replaceWith( $("#domainFileName").clone(true) );
+					} else {
+					    $("#domainFileName").val("");
+					}
+				    $("#domainFileFullPath").val("");
+				}
+			}
+			else {
+				$.each(popSaveForm, function(i, v){
+					$('#'+v.name).val('');
+				});
+			}
+			
+		    $('.layer_pop_wrap').css("left","30%");
+		    $('.layer_pop_wrap').css("top","35%");
+			
+		    $('.tui-grid-container').css('z-index', 1);			// 
+		    $('.cover').show();
+		}
+		
+		// 페이지 이동시 사용
+		function fn_search(){
+			fn_selDataList();
+		}
+		
+		// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+		function fn_setDataListGrid(listData){
+			// 화면 초기화 처리
+			$("#grid").empty();
+			// 조회 컬럼 목록
+			
+			var columns = "";
+			
+			tabType = tabType === undefined ? 'domain' : tabType;
+			
+			if(tabType == 'domain'){
+				columns = [
+					{header : UIT0502, title : UIT0502, name : 'domainCl', whiteSpace: 'normal', sortable: true,  width: 200, align: 'center'},
+					{header : UIT0503, title : UIT0503, name : 'domainNm', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'}, 
+					{header : UIT0510, title : UIT0510, name : 'domainTy', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'}, 
+					{header : UIT0511, title : UIT0511, name : 'domainLt', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'},
+					{header : UIT0092, title : UIT0092, name : 'rm', whiteSpace: 'normal', sortable: true, align: 'center'}
+				];
+			}else{
+				columns = [
+					{header : UIT0506, title : UIT0506, name : 'wordNm', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'},
+					{header : UIT0507, title : UIT0507, name : 'wordEngNm', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'}, 
+					{header : UIT0512, title : UIT0512, name : 'wordEngAb', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'}, 
+					{header : UIT0513, title : UIT0513, name : 'wordCl', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'},
+					{header : UIT0092, title : UIT0092, name : 'rm', whiteSpace: 'normal', sortable: true, align: 'center'}
+				];
+			}
+			
+			const dataListGrid = new tui.Grid({
+				el : document.getElementById("grid"),
+				data : listData,
+				rowHeaders: ['rowNum'],
+				scrollX : false,
+				scrollY : false,
+				rowHeight : 40,
+				minBodyHeight : 40,
+				header: {
+					height: 40
+				},
+				columns : columns
+			});
+			
+			const extOptions = {
+				cell: {
+					focused: {
+			            border: 1 // 선택 셀 강조 표시 x
+			        }
+				}
+			};
+			
+			tui.Grid.applyTheme('default', extOptions);
+			
+			dataListGrid.resetData(listData);
+		}
+		
+		// 목록 정보를 Ajax를 이용하여 가지고 온다.
+		function fn_selDataList(){
+			if('' == tabType){
+				tabType = 'domain';
+			}
+			
+			var params = {
+				"searchDomainCl" : $('#searchDomainCl').val(),
+				"searchDomainNm" : $('#searchDomainNm').val(),
+				"searchWordNm" : $('#searchWordNm').val(),
+				"searchWordEngNm" : $('#searchWordEngNm').val(),
+				"pageIndex" : $('#pageIndex').val(),
+				"itemsPerPage" : $("#itemsPerPage").val(),
+				"tabType" : tabType
+			}
+			
+			$.ajax({
+				url: '/mngr/dataStandard/selectStandardItemManageList',
+				data: params,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					if( obj == null ) {
+						alert(UIT0041);
+						return;
+					}
+					else {
+						var dataList = obj.dataList;
+						var totalCnt = obj.totalCnt;
+						tabType = obj.tabType;
+						fn_setDataListGrid(dataList);
+						/* 페이징 function 호출 */
+						fn_pagination(totalCnt);
+					}
+				},
+				error: function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();
+				}
+			});
+		}
+		
+		// 텝 클릭시 이동
+		function fn_searchTab(tabId){
+			// 페이지 초기화
+			$('#pageIndex').val('');
+			chkTabId = tabId;
+			
+			// 페이지 설정
+			switch (tabId) {
+				case "tab1" : 
+					tabType="domain";
+					$('#domainSearchArea').find('input').val('');
+					fn_selDataList();
+					$('#wordSearchArea').hide();
+					$('#domainSearchArea').show();
+					break;
+			  	case "tab2" : 
+			  		tabType="word";
+					$('#wordSearchArea').find('input').val('');
+			  		fn_selDataList();
+					$('#domainSearchArea').hide();
+					$('#wordSearchArea').show();
+			    	break;
+			}
+		}
+		
+		// 페이지 로드시 적용 설정
+		$(document).ready(function() {
+			var startTab = $("#tab1");
+			if(chkTabId == 'tab2'){
+				startTab = $("#tab2");	
+			}
+			
+			fn_tabLink(startTab);
+		});
+		</script>
+	</div>
+</html>

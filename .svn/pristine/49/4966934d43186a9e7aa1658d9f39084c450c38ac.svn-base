@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html th:lang = "ko"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title th:text="#{UIT0057}">:: 상상스토리 ::</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="shortcut icon" th:href="@{/img/icon/favicon.ico}"  type="image/x-icon" />
+<!-- 공통으로 쓰이는 css파일을넣는다.-->
+<link rel="stylesheet" th:href="@{/vendor/fontawesome-free/css/all.css}" />
+<!-- <link rel="stylesheet" th:href="@{/css/sb-admin-3.css}" /> -->
+<link rel="stylesheet" th:href="@{/css/tui/tui-grid.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-pagination.css}" />
+<link rel="stylesheet" th:href="@{/css/sub.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.css}" />
+<link rel="stylesheet" th:href="@{/css/chosen.css}" />
+<link rel="stylesheet" th:href="@{/css/reset.css}" />
+<link rel="stylesheet" th:href="@{/css/layout.css}" />
+
+
+   <!-- 대쉬보드에서만 사용합니다. -->
+<link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<link rel="stylesheet" th:href="@{/css/NotoSansKR.css}" />
+
+<script th:src="@{/js/jquery-1.11.2.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+<script th:src="@{/js/tui/underscore.js}"></script>
+<script th:src="@{/js/tui/backbone.js}"></script>
+<script th:src="@{/js/tui/tui-code-snippet.js}"></script>
+<script th:src="@{/js/tui/tui-pagination.js}"></script>
+<script th:src="@{/js/tui/tui-grid.js}"></script>
+<script th:src="@{/js/chosen.jquery.js}"></script>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<!-- <script th:src="@{/js/tree/jquery.js}"></script> -->
+<script th:src="@{/js/tree/bootstrap-treeview.js}"></script>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<!-- <script th:src="@{/js/jquery-1.11.2.min.js}"></script> -->
+<script th:src="@{/js/common.js}"></script>
+
+<!-- TUI 차트 js -->
+<script th:src="@{/js/tui/core.js}"></script>
+<script th:src="@{/js/tui/raphael.js}"></script>
+<script th:src="@{/js/tui/tui-chart.js}"></script>
+
+<!-- Page level plugins -->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+<script th:inline="javascript">
+
+	jQuery.browser = {};
+	(function () {
+	    jQuery.browser.msie = false;
+	    jQuery.browser.version = 0;
+	    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+	        jQuery.browser.msie = true;
+	        jQuery.browser.version = RegExp.$1;
+	    }
+	})();
+	
+</script>
+
+<style type="text/css">
+	#csvINS {margin:0 auto; padding:0;}
+	#csvINS li {display:none;}
+	#csvINS li:first-child {display:block;}
+	.btn_modal_box {text-align:center;margin-top:15px;}
+	.btn_modal_box button.off {cursor:default; opacity:0.5;}
+</style>
+
+<input type="hidden" id="pageIndex" name="pageIndex" value=""/>
+<input type="hidden" id="totalCnt" name="totalCnt" value=""/>
+<input type="hidden" id="searchCnt" name="searchCnt" value=""/>
+
+<body id="page-top" class="dashboard" th:with="userNm = ${session.member.userNm}
+							, loginInsttCode = ${session.member.insttCode}
+							, conDbUrl = ${session.conDbUrl}
+							, sessionCon = ${session.DDId}
+							, conType = ${session.conType}
+							, conFileName = ${session.conFileName}
+							, conTitle = ${session.conTitle}">
+    <!-- wrap -->
+    <div id="wrap">
+        <!-- skip_nav -->
+        <div id="skip_nav">
+            <a href="#lnb" th:text="#{UIT0532}">레프트메뉴 바로가기</a>
+            <a href="#content" th:text="#{UIT0533}">본문내용 바로가기</a>
+        </div>
+        <!--// skip -->
+        <!-- container -->
+		<div class="container">
+            <!-- lnb -->
+            <div id="lnb">
+                <!-- <div class="left_area"> -->
+                	<div th:replace="fragments/left :: leftAsideFragment"></div>
+                <!--  </div> --> 
+            </div>
+            <!--// lnb -->
+            <!-- content -->
+			<div id="content">
+                <!-- navbar -->
+                <nav class="navbar">
+                    <div class="navbar_left">
+                        <a class="btn_fold" title="메뉴접기"></a>
+                        <div class="navtitle_box">
+                            <span class="link_txt" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? #{UIT0054} : #{UIT0055}"></span>
+                            <div>
+                                <p class="link_title" th:text="${session.conTitle }">MSSQL_데이터품질 측정을 위한 뎅티터베이스 연결</p>
+                                <p class="link_url" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ?  ${session.conFileName } :  ${session.conDbUrl }">Jdbc:sqlserver://192.168.20.91:1433;database=DQSYS</p>
+                            </div>
+                        </div>
+                        <!-- 
+                        <span class="link_txt" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? #{UIT0054}+' : ' + ${session.conTitle } : #{UIT0055}+' : ' + ${session.conTitle }"></span>
+                        
+                        <div class="navtitle_box">
+                             <span th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ?  ${session.conFileName } :  ${session.conDbUrl }"></span>
+                        </div>
+                         -->
+                    </div>
+                    <div class="navbar_right">
+                        <span class="account_date" th:text="${getDate}">2020.02.12</span>
+                        <div class="account_info" th:each="member : ${session.member}">
+                            <span th:text="${member.userNm}"></span>
+                        </div>
+                        
+                        <a class="logout_btn" href="#" data-toggle="modal" data-target="#logoutModal" th:title="#{UIT0051}" >
+                            <span  th:text="#{UIT0051}"> 로그아웃</span>
+                        </a>
+                    </div>
+                </nav>
+                <!--// navbar -->
+
+                <!-- content_area -->
+                <div class="content_area">
+                   <!-- dashboard_layer -->
+                    <div class="dashboard_layer">
+                        <!-- dashboard_row -->
+                        <div class="dashboard_row">
+                            <div class="in_w75">
+                                <div class="info_area">
+                                    <div>
+                                        <strong th:text="#{UIT0534}">시스템 현황</strong>
+                                    </div>
+                                    <div>
+                                        <span id="dbmsTotalCnt" th:text="#{UIT0535}+' : '+#{UIT0536}">단위 : 건</span>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg01" th:text="#{UIT0537}">DMBS 연결 설정</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong id="TotalCnt" th:text="${dbmsTotalCnt}">5</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg02" th:text="#{UIT0538}">연결가능 DMBS</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong id="conSuc" th:text="${dbmsTotalCnt}">5</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg03" th:text="#{UIT0539}">연결불가 DMBS</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong id="conFail">0</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg04" th:text="#{UIT0540}">파일 데이터</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong th:text="${conFileTotalCnt}">0</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="in_w25">
+                                <div class="info_area">
+                                    <div>
+                                        <strong th:text="#{UIT0541}">진단 항목 현황</strong>
+                                    </div>
+                                    <div>
+                                        <span th:text="#{UIT0535}+' : '+#{UIT0536}">단위 : 건</span>
+                                    </div>
+                                </div>
+                                <div class="card in_w100 h180">
+                                    <div class="card_body bg_type04">
+                                       <ul class="card_content_type02">
+                                      	   <li>
+                                               <span class="txt">DBMS</span>
+                                               <select id="dbmsKnd" name="dbmsKnd" class="in_w100" onchange="selDbmsKindListBox(this.value);"> 
+                                               </select>
+                                           </li>
+                                           <li>
+                                                <span class="txt" th:text="#{UIT0542}">기본 분석 항목</span>
+                                                <span class="num" id="basicAnals">0</span>
+                                           </li>
+                                           <li>
+                                                <span class="txt" th:text="#{UIT0543}">기본 패턴 항목</span>
+                                                <span class="num" id="basicPatten">0</span>
+                                           </li>
+                                           <li>
+                                                <span class="txt" th:text="#{UIT0544}">사용자 정의 항목</span>
+                                                <span class="num" id="userAdd">0</span>
+                                           </li>
+                                       </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// dashboard_row -->
+                        
+                        <!-- dashboard_row -->
+                        <div class="dashboard_row">
+                            <div class="in_w100">
+                                <div class="info_area">
+                                    <div>
+                                        <strong th:text="#{UIT0545}">진단 현황</strong>
+                                    </div>
+                                </div>
+                                <div class="card in_w20 h255">
+                                    <div class="card_header bg_type02">
+                                        <span class="card_header_title02" th:text="#{UIT0546}">기본 정보</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <ul class="card_content_type03">
+                                            <li class="bg01">
+                                                <span class="txt" th:text="#{UIT0383}">테이블</span>
+                                                <span class="num" id="tablesCnt">0</span>
+                                            </li>
+                                            <li class="bg02">
+                                                <span class="txt" th:text="#{UIT0547}">컬럼</span>
+                                                <span class="num" id="columnsCnt">0</span>
+                                            </li>
+                                            <li class="bg03">
+                                                <span class="txt" th:text="#{UIT0548}">진단 항목</span>
+                                                <span class="num" id="analsCnt">0</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card in_w30 h255">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title02" th:text="#{UIT0549}">진단율</span>
+                                    </div>
+                                    <div class="card_body bg_type04"  >
+                                    	<div style="width:100px;height:200px;position: absolute;padding-top: 20px;padding-left: 20px;"><span style="font-size: 34px; color:#fff;" id="rate">0 %</span></div>
+                                    	<div style="padding-left: 100px;" id="chart01"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card in_w50 h255">
+                                    <div class="card_header bg_type02" >
+                                        <span class="card_header_title02" th:text="#{UIT0550}">진단 항목별 불일치 건수</span>
+                                    </div>
+                                    <div class="card_body bg_type01" id="chart02">
+                                        <!-- <span style="font-size: 20px; color:#fff;">그래프가 들어갑니다.</span> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// dashboard_row -->
+
+                        <!-- dashboard_row -->
+                        <div class="dashboard_row">
+                            <div class="in_w100">
+                                <div class="info_area">
+                                    <div>
+                                        <strong th:text="#{UIT0551}">월별 진단 현황</strong>
+                                        <span id="rangeDt">0000.00. ~ 0000.00.</span>
+                                    </div>
+                                </div>
+                                <div class="card in_w100 h210">
+                                    <div class="card_body bg_type01" id="chart03"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// dashboard_row -->
+                    </div>
+                    <!--// dashboard_layer -->
+
+                    <div class="btn_top"></div>
+                </div>
+        		<!--// content_area -->
+            </div>
+            <!--// content -->
+        </div>
+        <!--// container -->
+        <div class="footer_area">
+            <footer th:replace="fragments/footer :: footerFragment"></footer>
+        </div>
+    </div>
+    				
+	<!-- 로그아웃 모달창-->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel" th:text="#{UIT0051}">로그아웃</h5>
+					<button class="close" type="button" aria-label="Close" onclick="fn_modalClose();return false;">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+	        	<div class="modal-body" th:text="#{UIT0052}">현재 세션을 종료하시겠습니까?</div>
+				<div class="modal-footer">
+					<a class="btn btn-l gray in_wp100 alignc" th:text="#{UIT0051}" th:href="@{/logout}">로그아웃</a>
+	        	</div>
+			</div>
+		</div>
+	</div>
+
+    <!--// wrap -->
+    </body>
+	<script th:inline="javascript">
+	
+	/*<![CDATA[*/
+	var analsCnt = /*[[${analsCnt}]]*/;  // 진단 항목 현황
+	var basicInfoCnt = /*[[${basicInfoCnt}]]*/; // 진단 현황-기본 정보
+	var resTotCnt = /*[[${resTotCnt}]]*/; // 진단 현황-진단율
+	var resNotMatchCnt = /*[[${resNotMatchCnt}]]*/; // 진단 현황-진단 항목별 불일치 건수
+	var monthResCnt = /*[[${monthResCnt}]]*/; // 월별 진단 현황
+	var dbmsKnd = /*[[${dbmsKnd}]]*/;
+	var conType = /*[[${session.conType}]]*/;
+	var totalCnt = /*[[${dbmsTotalCnt}]]*/
+	/*]]*/
+	var failConCnt = 0;
+	
+	$(document).ready(function() {
+		// 기본정보
+		basicInfo();
+        
+        if(dbmsKnd == null || dbmsKnd == ""){
+        	if(conType == null || conType == ""){
+	            dbmsKnd = "Oracle";
+        	}else{
+        		dbmsKnd = conType;
+        	}
+        }
+
+        //fn_makeDbmsInput(dbmsKnd);
+        // 진단항목 DB List
+        selDbmsKindListBox(dbmsKnd);
+		// 진단율 차트
+		chartView1();
+		// 진단항목불일치 차트
+		chartView2();
+		// 월별진단현황 차트
+		chartView3();
+		// 연결가능 DB 정보 조회 
+		fn_dbStateInfo();
+	});
+
+	
+	function basicInfo() {
+		// 진단 항목 현황
+		for (var i in analsCnt) {
+			// DBMS
+			if("AG000100" == analsCnt[i].ANALS_SE){ // 기본항목
+				$("#basicAnals").text(analsCnt[i].ANALS_CNT);
+			}else if("AG000300" == analsCnt[i].ANALS_SE){ // 기본패턴
+				$("#basicPatten").text(analsCnt[i].ANALS_CNT);
+			}else{
+				if("AG000200" != analsCnt[i].ANALS_SE){ // 사용자정의
+					$("#userAdd").text(analsCnt[i].ANALS_CNT);
+				}
+			}
+		}
+
+		// 진단 현황-기본 정보
+		if(basicInfoCnt.length > 0){
+			$("#tablesCnt").text(basicInfoCnt[0].TABLE_CNT);
+			$("#columnsCnt").text(basicInfoCnt[0].COLUM_CNT);
+			$("#analsCnt").text(basicInfoCnt[0].ANALS_CNT);
+		}else{
+			$("#tablesCnt").text(0);
+			$("#columnsCnt").text(0);
+			$("#analsCnt").text(0);
+		}
+	}
+	
+	// db종류 조회
+    function selDbmsKindListBox(dbmsKnd){
+    	$("#dbmsKnd").empty();
+        $.ajax({
+            url: '/mngr/basicInfo/selDbmsKindList',
+            method : 'POST',
+            success: function(dataList){
+                for(var i = 0; i < dataList.length; i++){
+                    var selected = "";
+                    if(dbmsKnd == dataList[i].dbmsKnd) {
+                        selected = "selected=true";
+                        $("#dbmsId").val(dataList[i].dbmsId);
+                        
+                    }else{
+                        selected = "";
+                    }
+                    
+                    var option = $("<option value="+dataList[i].dbmsKnd+" "+selected+">"+dataList[i].dbmsKnd+"</option>");
+                    $("#dbmsKnd").append(option);
+                }
+                // 진단항목 재조회
+                onChangeDb(dbmsKnd);
+            },
+        });
+
+    }
+	
+    function onChangeDb(dbmsKnd){
+        $.ajax({
+            url: '/mngr/main/analsCntList',
+            method : 'POST',
+            data: {dbmsKnd : dbmsKnd},
+            success: function(dataList){
+               	for (var i in dataList) {
+           			// DBMS
+           			if("AG000100" == dataList[i].ANALS_SE){ // 기본항목
+           				$("#basicAnals").text(dataList[i].ANALS_CNT);
+           			}else if("AG000300" == dataList[i].ANALS_SE){ // 기본패턴
+           				$("#basicPatten").text(dataList[i].ANALS_CNT);
+           			}else{
+           				if("AG000200" != dataList[i].ANALS_SE){ // 사용자정의
+           					$("#userAdd").text(dataList[i].ANALS_CNT);
+           				}
+           			}
+           		}
+            },
+        });
+        
+    }
+	
+
+	function chartView1() {
+		
+		var container = document.getElementById('chart01');
+		var data = {};
+		var seriesData = {};
+		var mCnt;
+		var tCnt;
+		var fCnt;
+		var dRate;
+		var rate;
+		if(resTotCnt.length > 0){
+			mCnt = resTotCnt[0].M_CNT;
+			tCnt = resTotCnt[0].T_CNT;
+			fCnt = tCnt - mCnt;
+			dRate = mCnt/tCnt*100;
+			if(tCnt == 0) dRate = 0;
+			// 소수점 이하 반올림 처리
+			rate = dRate.toFixed(0);
+			//console.log(mCnt+" / "+tCnt+" / "+fCnt+" / "+dRate+" / "+rate);
+			// 진단율 설정
+			$("#rate").text(rate+" %");
+			
+			// 그래프 데이터 설정
+			data.categories = [];
+			data.series = [];
+			seriesData.name = '일치';
+			seriesData.data = mCnt;
+			data.series.push(seriesData);
+			seriesData = {};
+			seriesData.name = '불일치';
+			seriesData.data = fCnt;
+			data.series.push(seriesData);
+		
+		}else{
+			// 데이터가 없을때 설정
+			data = {series: [{name: '일치',data: 0},{name: '불일치',data: 0}]}
+			// 진단율 설정
+			$("#rate").text("0 %");
+		}
+		
+		var options = {
+		    chart: {
+		        width: 350,
+		        height: 203
+		    },
+		    series: {
+		        radiusRange: ['35%', '100%'],
+		        showLabel: true
+		    },
+		    tooltip: {
+		        suffix: '%'
+		    },
+		    legend: {
+		    	align: 'top'
+		    },
+		    chartExportMenu: {visible: false},
+			legend: {
+				visible: true,
+				showCheckbox: false			
+			}
+		};
+		var theme = {
+		    series: {
+		        series: {
+		            colors: [
+		                '#83b14e', '#FF9672'
+		            ]
+		        },
+		        label: {
+		            color: '#F9F9F9',
+		            fontFamily: 'sans-serif'
+		        }
+		    },
+		    chart: {
+		        fontFamily: 'Verdana',
+		        background: {
+		            color: '#343434',
+		            opacity: 1
+		        }
+		    },
+		    legend: {
+		        label: {
+		            fontSize: 14,
+		            fontFamily: 'Verdana',
+		            fontWeight: 'bold',
+		            color: '#F9F9F9'
+		        }
+		    }
+		};
+
+		// For apply theme
+		//tui.chart.setTooltipAlign('left');
+		tui.chart.registerTheme('myTheme1', theme);
+		options.theme = 'myTheme1';
+
+		tui.chart.pieChart(container, data, options);
+	} 
+	
+	
+	function chartView2() {
+		var container = document.getElementById('chart02');
+		var data = {};
+		var seriesData = {};
+		data.categories = [];
+		data.series = [];
+		seriesData.data = [];
+		if(resNotMatchCnt.length > 0){
+			for (var i in resNotMatchCnt) {
+				data.categories.push(resNotMatchCnt[i].ANALS_NM) ;
+				seriesData.data.push(resNotMatchCnt[i].F_CNT);
+			}
+			data.series.push(seriesData);
+		}else{
+			data = {
+				categories: ['날짜','URL','Email','숫자','한글'],
+				series: [
+					{
+						data: [0,0,0,0,0]
+					}
+				]
+			}
+		}
+		
+		var options = {
+		    chart: {
+		        width: 780,
+		        height: 193
+		    },
+		    series: {
+		         showLabel: true,
+		         colorByPoint: true
+		    },
+		    chartExportMenu: {visible: true},
+			legend: {visible: false}
+		};
+		var theme = {
+			// 배경색
+			chart: {
+		        fontFamily: 'Verdana',
+		        background: {
+		            color: '#414141',
+		            opacity: 1
+		        }
+		    },
+		    series: {
+		        label: {
+		            color: '#F9F9F9',
+		            fontFamily: 'sans-serif'
+		        },
+		        color: '#F9F9F9'
+		    },
+		    legend: {
+		    	showLabel: false
+		    },
+		    xAxis: {
+		        tickColor: '#F9F9F9',
+		        label: {
+		            fontSize: 14,
+		            fontFamily: 'Verdana',
+		            color: '#F9F9F9'
+		        }
+		    },
+		    yAxis: {
+		        tickColor: '#F9F9F9',
+		        label: {
+		            fontSize: 14,
+		            fontFamily: 'Verdana',
+		            color: '#F9F9F9'
+		        }
+		    },
+		    plot: {
+		        lineColor: 'white'
+		    }
+		};
+	
+		// For apply theme
+		tui.chart.registerTheme('myTheme2', theme);
+		options.theme = 'myTheme2';
+	
+		tui.chart.columnChart(container, data, options);
+	}
+	
+	function chartView3() {
+		
+		var container = document.getElementById('chart03');
+		var data = {};
+		var seriesData = {};
+		data.categories = [];
+		data.series = [];
+		seriesData.data = [];
+		var endDt;
+		var rangeDt;
+		for (var i in monthResCnt) {
+			data.categories.push(monthResCnt[i].YYYYMM) ;
+			seriesData.data.push(monthResCnt[i].CNT);
+			endDt = monthResCnt[i].YYYYMM;
+		}
+		data.series.push(seriesData);
+		rangeDt = monthResCnt[0].YYYYMM+" ~ "+endDt;
+		$("#rangeDt").text(rangeDt);
+		var options = {
+		    chart: {
+		        width: 1528,
+		        height: 208,
+		        //title: '24-hr Average Temperature'
+		    },
+		    yAxis: {
+		        pointOnColumn: true,
+		        
+		    },
+		    xAxis: {
+		        //type: 'datetime',
+		        //dateFormat: 'MMM'
+		    },
+		    series: {
+		        showDot: true,
+		        zoomable: false,
+		        showLabel: true,
+		        colorByPoint: true
+		    },
+		    chartExportMenu: {visible: true},
+			legend: {visible: false}
+		};
+		var theme = {
+			series: {
+		        label: {
+		            color: '#F9F9F9',
+		            fontFamily: 'sans-serif'
+		        },
+		        color: '#F9F9F9'
+		    },
+		 	// 배경색
+		    chart: {
+		        fontFamily: 'Verdana',
+		        background: {
+		            color: '#414141',
+		            opacity: 1
+		        }
+		    },
+		    xAxis: {
+		        tickColor: '#F9F9F9',
+		        label: {
+		            fontSize: 14,
+		            fontFamily: 'Verdana',
+		            color: '#F9F9F9'
+		        }
+		    },
+		    yAxis: {
+		        tickColor: '#F9F9F9',
+		        label: {
+		            fontSize: 14,
+		            fontFamily: 'Verdana',
+		            color: '#F9F9F9'
+		        }
+		    },
+		    plot: {
+		        lineColor: 'white'
+		    }
+		};
+
+		// For apply theme
+		tui.chart.registerTheme('myTheme3', theme);
+		options.theme = 'myTheme3';
+
+		var chart = tui.chart.lineChart(container, data, options);
+	}
+	
+	// 연결가능 DB 정보 조회
+	function fn_dbStateInfo(){
+		failConCnt = 0;
+		$.ajax({
+			url: '/mngr/main/dbList',
+			success: function(data){
+				//var obj = JSON.parse(data);
+				console.log("====>>"+data.length);
+				for(var i = 0; i < data.length; i++){
+					console.log(i+" : DGNSS_DBMS_ID ====>>"+data[i].DGNSS_DBMS_ID);
+					dbmsConCheck(data[i].DGNSS_DBMS_ID);
+                }
+			}
+		});
+		console.log("failConCnt : "+failConCnt);
+	}
+	
+	// 연결가능 DB 정보 조회
+	function dbmsConCheck(dgnssDbmsId){
+		$.ajax({
+			url: '/mngr/main/dbmsConCheck',
+			data: {dgnssDbmsId : dgnssDbmsId},
+			success: function(data){
+				//var obj = JSON.parse(data);
+				console.log("====>>"+data);
+				if(!data){
+					console.log("====>><<");
+					failConCnt++;
+				}
+				viewSystemState(failConCnt);
+			}
+		});
+	}
+	
+	function viewSystemState(failConCnt){
+		var conSuc = totalCnt - failConCnt;
+		var conFail = failConCnt;
+		$("#conSuc").text(conSuc);
+		$("#conFail").text(failConCnt);
+	}
+	
+	</script>
+</html>
+

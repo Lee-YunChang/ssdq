@@ -1,0 +1,20 @@
+package com.webapp.dqsys.mngr.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+public interface DataStandardMapper {
+
+	public int insertDomainInfo(Map<String, String> params);
+
+	public List<?> selectDomainList(Map<String, String> params);
+
+	public int selectDomainListTotalCnt(Map<String, String> params);
+
+	public int insertWordInfo(Map<String, String> params);
+
+	public List<?> selectWordList(Map<String, String> params);
+
+	public int selectWordListTotalCnt(Map<String, String> params);
+
+}

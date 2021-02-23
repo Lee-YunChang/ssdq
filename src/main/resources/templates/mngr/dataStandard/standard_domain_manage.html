@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>PROFILING</li>
+	            <li><label th:text="#{UIT0068}"></label></li>
+	            <li><label th:text="#{UIT0263}"></label></li>
+            </ul>
+		</div>
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; PROFILING &gt; <label th:text="#{UIT0068}"></label> &gt; <label th:text="#{UIT0263}"></label> </span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0263}"> 컬럼 구조 분석</h1>
+		</div> -->
+	 
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<!-- <div class="card shadow mb-4" id="dbms" name="dbms">
+					<div id="dbmsDiv" class="input_table" style="border: none;"> -->
+				<div class="content_body marginb10" id="dbms" name="dbms">
+					<div class="table_area" id="dbmsDiv" style="border: none;">
+						<table class="search fixed">
+	                        <colgroup>
+	                            <col style="width:20%">
+	                            <col style="width:25%">
+	                            <col style="width:10%">
+	                            <col style="width:25%">
+	                            <col style="width:20%">
+	                        </colgroup>
+	                        <tbody>
+	                            <tr>
+	                                <th>
+	                                	<span class="impo"></span> <label for="data" th:text="#{UIT0264}"> 스키마명</label>
+	                                </th>
+	                                <td>
+	                                    <!--  <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+	                                    	<option th:text="#{UIT0265}">선택해주세요</option>
+	                                    </select> -->
+	                                    <div class="selectbox" style="width: 230px;">
+											<label for="la_tableSchema"></label>  
+                                            <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+                                            	<option value="" th:text="#{UIT0265}">선택해주세요</option>
+                                            </select>
+                                        </div>
+	                                </td>    
+	                                <th>
+	                                	<span class="impo"></span> <label for="name" th:text="#{UIT0266}">테이블명</label>
+	                                </th>
+	                                <td>
+	                                    <!-- <select name="tableName" id="tableName" onchange="fn_changeTable()">
+	                                    	<option th:text="#{UIT0265}">선택해주세요</option>
+	                                    </select> -->
+	                                    <div class="selectbox" style="width: 230px;">
+											<label for="la_tableName">선택해주세요</label>  
+                                            <select name="tableName" id="tableName" onchange="fn_changeTable()">
+                                            	<option value="" th:text="#{UIT0265}">선택해주세요</option>
+                                            </select>
+                                        </div>
+	                                </td>
+	                                <td></td>
+	                            </tr>
+	                        </tbody>
+						</table>
+					</div>
+					
+					<div id="csvDiv" class="input_table" style="border: none;" disabled=true>
+						<table>
+	                        <colgroup>
+	                            <col style="width:20%">
+	                            <col style="width:25%">
+	                            <col style="width:10%">
+	                            <col style="width:25%">
+	                            <col style="width:20%">
+	                        </colgroup>
+	                        <tbody>
+	                            <tr>
+	                                <th>
+	                                	<label th:text="#{UIT0237}+' : '"> 파일명 : </label>
+	                                </th>
+	                                <td colspan=4 >
+	                                     <span id="fileName"></span>
+	                                </td>    
+	                            </tr>
+	                        </tbody>
+						</table>
+					</div>
+					
+				</div>
+				
+				<!-- 내용 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<section class="mgn_b20 txt_right">
+							<button class='btn btn-s blue in_wp100' type='button' th:text="#{UIT0087}" onclick="fn_openModalLayer('DELETE');">삭제</button>
+							<button class='btn btn-s blue in_wp100' type='button' th:text="#{UIT0085}" onclick="fn_openModalLayer('');">등록</button>
+							<button class='btn btn-s blue in_wp120' type='button' th:text="#{UIT0293}" onclick="fn_openModalLayer('CSV');">CSV 파일등록</button>
+						</section>
+						
+						<div id="columnGrid" class="tb_type99" ></div>
+						<!-- <div id="domainGrid" class="tb_type99" ></div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+					
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+		var fileName = /*[[ ${conFileName} ]]*/; //: 파일명
+		var Schema = /*[[ ${schema} ]]*/; //: 스키마명
+		var UIT0267 = /*[[ #{UIT0267} ]]*/; //: 검색결과가 없습니다.
+		var UIT0265 = /*[[ #{UIT0265} ]]*/; //: 선택해주세요
+		var UIT0240 = /*[[ #{UIT0240} ]]*/; //: 컬럼명
+		var UIT0255 = /*[[ #{UIT0255} ]]*/; //: Data 타입
+		var UIT0256 = /*[[ #{UIT0256} ]]*/; //: Data 길이
+		var UIT0257 = /*[[ #{UIT0257} ]]*/; //: Data 정밀도
+		var UIT0258 = /*[[ #{UIT0258} ]]*/; //: Data 스케일
+		var UIT0259 = /*[[ #{UIT0259} ]]*/; //: 널허용
+		var UIT0260 = /*[[ #{UIT0260} ]]*/; //: 디폴트값
+		var UIT0269 = /*[[ #{UIT0269} ]]*/; //: 최소값
+		var UIT0270 = /*[[ #{UIT0270} ]]*/; //: 최대값
+		var UIT0261 = /*[[ #{UIT0261} ]]*/; //: 컬럼설명
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var UIT0500 = /*[[ #{UIT0500} ]]*/; //: 분류
+		var UIT0502 = /*[[ #{UIT0502} ]]*/; //: 분류
+		var UIT0503 = /*[[ #{UIT0503} ]]*/; //: 도메인명
+		var UIT0506 = /*[[ #{UIT0506} ]]*/; //: 표준용어명
+		var UIT0507 = /*[[ #{UIT0507} ]]*/; //: 표준용어영문명
+		var UIT0510 = /*[[ #{UIT0510} ]]*/; //: 데이터타입
+		var UIT0511 = /*[[ #{UIT0511} ]]*/; //: 데이터길이
+		var UIT0512 = /*[[ #{UIT0512} ]]*/; //: 영문약어
+		var UIT0513 = /*[[ #{UIT0513} ]]*/; //: 구분
+		var UIT0518 = /*[[ #{UIT0518} ]]*/; //: 분류를 입력해 주세요
+		var UIT0519 = /*[[ #{UIT0519} ]]*/; //: 도메인명을 입력해 주세요
+		var UIT0520 = /*[[ #{UIT0520} ]]*/; //: 데이터타입을 입력해 주세요
+		var UIT0521 = /*[[ #{UIT0521} ]]*/; //: 표준용어명을 입력해 주세요
+		var UIT0522 = /*[[ #{UIT0522} ]]*/; //: 구분을 선택해 주세요
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var UIT0092 = /*[[ #{UIT0092} ]]*/; //: 설명
+		var UIT0086 = /*[[ #{UIT0086} ]]*/; //: 사용여부
+		/*]]*/
+		
+		
+		$(document).ready(function() { 
+			//셀렉트박스 라벨초기값 지정
+			$("label[for='la_tableSchema']").text(Schema);
+			
+			// sessionCon 체크
+			isSessionConChk(sessionCon);
+			if(fileName == ''){
+				$('#dbmsDiv').css('display','block');
+				$('#csvDiv').css('display','none');
+				/* chosen Select Box 관련 추가  */
+				/* 2019-07-29 최보람 */
+				/* $("#tableSchema, #tableName").chosen({
+					search_contains : true,
+					width : 230,
+					no_results_text : UIT0267+" : "
+				}); */
+				
+				fn_selectTableSchema();
+			
+			}else{
+				$('#dbmsDiv').css('display','none');
+				$('#csvDiv').css('display','block');
+				$("#fileName").text(fileName);
+				selectCsvInfo(sessionCon);
+			}
+			
+		});
+		
+		function selectCsvInfo(sessionCon){
+			
+			var data = {
+					"dgnssDbmsId":sessionCon,
+					"tabType":'csv'
+			};
+			$.ajax({
+				url: "/mngr/basicInfo/selectDbList",
+				data : data,
+				success: function(data){
+					var obj = JSON.parse(data);
+					var dataList = obj.result;
+					var tableName = "";
+					var tableSchema = "";
+					
+					for(var i = 0; i < dataList.length; i++){
+						tableName = dataList[i].dgnssDbmsNm.replace(fileName, '');
+						tableName = tableName.replace('(', '').replace(')', '');
+						tableSchema = dataList[i].database;
+					}
+					selectColumnAnalysis(tableName, tableSchema);
+				}
+			});
+		}
+		
+		function fn_selectTableSchema(){
+			var option = "";
+			//var Schema = /*[[ ${schema} ]]*/;
+			$.ajax({
+				url: "/mngr/analysis/selectColumnAnalysis",
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					for(var i = 0; i < jsonData.length; i++){
+						var selected = "";
+						if(Schema.trim().toUpperCase() == jsonData[i].OWNER.toUpperCase()) {
+							selected = "selected=true";
+							
+						}else{
+							if(jsonData.length == 1){
+								//selected = "selected=true";
+								//selDbmsTableListBox();
+							}else{
+								selected = "";
+							}
+						}
+						var option  = $("<option value="+jsonData[i].OWNER+" "+selected+">"+jsonData[i].OWNER+"</option>");
+						$("#tableSchema").append(option);
+													
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tableSchema").trigger("chosen:updated");
+						
+						
+					}
+					fn_changeSchema();
+				}
+			});
+			
+		}
+		
+		function fn_changeSchema(){
+			var option = "";
+			var tableSchema = $("#tableSchema").val();
+			if(tableSchema == ""){
+				tableSchema = /*[[ ${schema} ]]*/;
+			}
+			$("#tableName").empty();
+			$("#columnAnalysisGrid").empty();
+			
+			option  = $("<option>"+ UIT0265 +"</option>");
+			$("#tableName").append(option);
+			
+			$.ajax({
+				url: "/mngr/analysis/selectTable",
+				data: {"tableSchema":tableSchema},
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					
+					for(var i = 0; i < jsonData.length; i++){
+						option  = $("<option>"+jsonData[i].TABLENAME+"</option>");
+						$("#tableName").append(option);
+		
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tableName").trigger("chosen:updated");
+					} 
+				}
+				
+			});
+		}
+		
+		function fn_changeTable(){
+			var tableName = $("#tableName").val();
+			var tableSchema = $("#tableSchema").val();
+			
+			$("#columnAnalysisGrid").empty();
+			$.ajax({
+				url: "/mngr/analysis/selectColumnAnalysis",
+				data: {"tableName":tableName, "tableSchema":tableSchema},
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					
+					fn_setGrid(jsonData);
+				}
+			});
+			
+		}
+		
+		function selectColumnAnalysis(tableName, tableSchema){
+			
+			$("#columnAnalysisGrid").empty();
+			$.ajax({
+				url: "/mngr/analysis/selectColumnAnalysis",
+				data: {"tableName":tableName, "tableSchema":tableSchema},
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					
+					fn_setGrid(jsonData);
+				}
+			});
+			
+		}
+		
+		function fn_selDataList(){
+			var params = {
+					"searchDomainCl" : $('#searchDomainCl').val(),
+					"searchDomainNm" : $('#searchDomainNm').val(),
+					"searchDomainDbms" : $('#searchDomainDbms').val(),
+					"searchWordNm" : $('#searchWordNm').val(),
+					"searchWordEngNm" : $('#searchWordEngNm').val(),
+					"searchWordDbms" : $('#searchWordDbms').val(),
+					"pageIndex" : $('#pageIndex').val(),
+					"itemsPerPage" : $("#itemsPerPage").val(),
+					"tabType" : "domain"
+			}
+			
+			$.ajax({
+				url: '/mngr/dataStandard/selectStandardItemManageList',
+				data: params,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					if( obj == null ) {
+						alert(UIT0041);
+						return;
+					}
+					else {
+						
+						dataList = obj.dataList;
+						totalCnt = obj.totalCnt;
+						
+						tabType = obj.tabType;
+						
+						fn_setDataListGrid(dataList);
+									
+					}
+				},
+				error: function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();	
+				}
+			});
+		}
+		
+		
+		function fn_setGrid(data){
+			$("#column").empty();
+
+			var columns;
+  		
+				columns = [
+				{header: UIT0240, name: 'columnName', align:'center'},			
+				{header: UIT0255, name: 'dataType', align:'center'}, 
+				{header: UIT0256, name: 'dataLength',align:'center'}
+				];
+			
+			
+			var html ="";
+			html += "<strong style='display:none;'>* 요약 정보 </strong>";
+			html += "<div style= 'width: 65%; display:inline-block; float: left;' >";
+			html += "<div id='column' style= 'margin-bottom:30px; width: 30%; display:inline-block; float: left;'>";
+			html += "</div>";
+			html += "<div id='domainTable' style= 'margin-bottom:30px; width: 70%; display:inline-block; '>";
+			html += "<table class='write fixed'>";
+			html +=	"<tr>";
+			html +=	"<th  style='height: 51px; text-align: center; border-right:1px solid #e3e6f0;'>분류</th>";
+			html +=	"<th  style='height: 51px; text-align: center; border-right:1px solid #e3e6f0;'>도메인명</th>";
+			html +=	"<th  style='height: 51px; text-align: center; border-right:1px solid #e3e6f0;'>데이터타입</th>";
+			html +=	"<th  style='height: 51px; text-align: center'>데이터길이</th>";
+			html +=	"</tr>";
+		
+			for(var i= 0; i < data.length ; i++){
+				html +=	"<tr>";
+	 			html +=	"<td style='border-right:1px solid #e3e6f0;'><input type='text' id='domainCl_"+ i +"' name='domainCl' class='in_w100' style='height: 29px' value=''/></td>";
+				html +=	"<td style='border-right:1px solid #e3e6f0;'><input type='text' id='domainNm_"+ i +"' name='domainNm' class='in_w100' style='height: 29px' value=''/></td>";
+				html +=	"<td style='border-right:1px solid #e3e6f0;'><input type='text' id='domainTy_"+ i +"' name='domainTy' class='in_w100' style='height: 29px' value=''/></td>";
+				html +=	"<td style='border-right:1px solid #e3e6f0;'><input type='text' id='domainLt_"+ i +"' name='domainLt' class='in_w100' style='height: 29px' value=''/></td>";
+				html +=	"</tr>";
+			}
+			html +=	"</table>";
+			html += "</div>";
+			html += "</div>";
+			html += "<div id='grid' style= 'margin-bottom:30px; width: 30%; display:inline-block; float: right;'>";
+			html += "</div>";
+			html += "<br/><br/>";
+		
+			
+			
+			
+			$("#columnGrid").append(html);
+			
+			
+			const columnAnalysisGrid = new tui.Grid({
+		           el : document.getElementById("column"),
+		           data : data,
+		           scrollX : false,
+		           scrollY : false,
+		           rowHeight : 40,
+		           minBodyHeight : 40,
+		           header: {
+		   	        height: 50, 
+		   			complexColumns: [
+		   		          {
+		   		            header: UIT0500,
+		   		            name: 'mergeColumn1',
+		   		            childNames: ['useAt1', 'useAt2','useAt3','useAt4']
+		   		          }
+		   		         
+		   		        ]
+		   		      },
+		           columns : columns
+		     });
+		     
+		     const extOptions = {
+		           cell: {
+		                focused: {
+		                 border: 0 // 선택 셀 강조 표시 x
+		             }
+		           }
+		     };
+		     
+		     tui.Grid.applyTheme('default', extOptions);
+		     
+		     columnAnalysisGrid.resetData(data);
+		     fn_selDataList();
+		}
+		
+		
+		// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+		function fn_setDataListGrid(listData){
+			// 화면 초기화 처리
+			$("#grid").empty();
+			// 조회 컬럼 목록
+			
+			var columns = "";
+			
+				columns = [
+					{header : UIT0502, title : UIT0502, name : 'domainCl', whiteSpace: 'normal', sortable: true,  align: 'center'},
+					{header : UIT0503, title : UIT0503, name : 'domainNm', whiteSpace: 'normal', sortable: true,  align: 'center'}, 
+					{header : UIT0510, title : UIT0510, name : 'domainTy', whiteSpace: 'normal', sortable: true,  align: 'center'}, 
+					{header : UIT0511, title : UIT0511, name : 'domainLt', whiteSpace: 'normal', sortable: true,  align: 'center'}
+					//{header : UIT0092, title : UIT0092, name : 'rm', whiteSpace: 'normal', sortable: true, align: 'center'},
+					//{header : UIT0095, title : UIT0095, name : 'domainAlter', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'}
+				];
+				
+				
+			/* 	var html ="";
+				html += "<strong style='display:none;'>* 요약 정보 </strong>";
+				html += "<div id='grid' style= 'margin-bottom:30px; width: 33%; display:inline-block; float: right;'>";
+				html += "</div>";
+				html += "<br/><br/>";
+				
+				$("#domainGrid").append(html); */
+			
+			const dataListGrid = new tui.Grid({
+				el : document.getElementById("grid"),
+				data : listData,
+				selectionUnit: 'row',
+				scrollX : false,
+				scrollY : false,
+				rowHeight : 40,
+				minBodyHeight : 40,
+				  header: {
+			   	        height: 50, 
+			   			complexColumns: [
+			   		          {
+			   		            header: UIT0500,
+			   		            name: 'mergeColumn1',
+			   		            childNames: ['domainCl', 'domainNm','domainTy','domainLt']
+			   		          }
+			   		         
+			   		        ]
+			   		      },
+				columns : columns
+			});
+			
+			const extOptions = {
+				cell: {
+					focused: {
+			            border: 1 // 선택 셀 강조 표시 x
+			        }
+				}
+			};
+			
+			tui.Grid.applyTheme('default', extOptions);
+			
+			var rowNum = "";
+			//마우스 위치 id값 조회
+			$('.in_w100').click(function(){
+				
+				var id_check = "";
+				id_check = $(this).attr("id");
+				
+				rowNum = id_check.substr(id_check.indexOf("_")+1);
+				
+			})
+			
+			//grid cell선택시 row 데이터 선택
+			dataListGrid.on('click', function (ev) {
+				
+				var inText = ev.nativeEvent.target.innerText;
+		  		var obj = ev.nativeEvent.target;
+		  		var mode = $(obj).data("value");
+		  	
+		  		var domainCl  = dataListGrid.getRow(ev.rowKey).domainCl;
+		  		var domainNm  = dataListGrid.getRow(ev.rowKey).domainNm;
+		  		var domainTy  = dataListGrid.getRow(ev.rowKey).domainTy;
+		  		var domainLt  = dataListGrid.getRow(ev.rowKey).domainLt;
+		  		
+		  		$('#domainCl_'+rowNum).val(domainCl);
+		  		$('#domainNm_'+rowNum).val(domainNm);
+		  		$('#domainTy_'+rowNum).val(domainTy);
+		  		$('#domainLt_'+rowNum).val(domainLt);
+		  		
+		  		
+		  		
+				  });
+
+		
+			
+		}
+		
+		
+		
+		</script>
+	</div>    
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+<head>
+	<style type="text/css">
+		.tb_type99 .tui-grid-container .tui-grid-content-area .tui-grid-lside-area .tui-grid-body-area .tui-grid-body-container {width: 40px !important;}
+		.tb_type99 .tui-grid-container .tui-grid-content-area .tui-grid-rside-area {width: calc(100% - 41px) !important;}
+	</style>
+</head>	
+	<div layout:fragment="content">
+	
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>BASIC</li>
+	            <li><label th:text="#{UIT0279}">기본정보</label></li>
+            </ul>
+		</div>
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+  			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; BASIC &gt; <label th:text="#{UIT0322}">데이터연결</label></span>
+        </div>
+        
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0322}"> 데이터연결</h1>
+        </div> -->
+		
+		<div class="tab_area">
+            <ul>
+                <li class="on" id="tab_area1">
+                    <a id="tab1" href="#none" onclick="fn_tabLink(this)">
+                        <span>DBMS</span>
+                    </a>
+                </li>
+                <li id="tab_area2">
+                    <a id="tab2" href="#none" onclick="fn_tabLink(this)">
+                        <span>CSV</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+		<!-- <ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="tab1" href="#none" onclick="fn_tabLink(this)">DBMS</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="tab2" href="#none" onclick="fn_tabLink(this)">CSV</a>
+			</li>
+		</ul> -->
+	                    
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 내용 -->
+				<div class="card shadow mb-4">
+					<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+                     <input type="hidden" id="ckBtn" name="ckBtn" value="" />
+                     
+                     <div class="content_body">
+                     	<div class="table_area marginb40">
+	                         <div id ="grid" class="tb_type99" style="clear: both; min-height: 440px;"></div>
+	                         <div id="pagination" class="tui-pagination"></div>
+                         </div>
+                     </div>
+                             
+	            </div>
+			</div>
+		</div>
+
+		<script th:inline="javascript"  class="code-js">
+		
+		/*<![CDATA[*/
+			var chkTabId = /*[[${tabId}]]*/;
+			var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+			var UIT0044 = /*[[ #{UIT0044} ]]*/; //: 비고
+			var UIT0323 = /*[[ #{UIT0323} ]]*/; //: 구분
+			var UIT0324 = /*[[ #{UIT0324} ]]*/; //: 진단대상데이터베이스명
+			var UIT0325 = /*[[ #{UIT0325} ]]*/; //: 서버IP
+			var UIT0326 = /*[[ #{UIT0326} ]]*/; //: 서버PORT
+			var UIT0327 = /*[[ #{UIT0327} ]]*/; //: 접속계정
+			var UIT0328 = /*[[ #{UIT0328} ]]*/; //: 접속
+			var UIT0329 = /*[[ #{UIT0329} ]]*/; //: 상세
+			var UIT0330 = /*[[ #{UIT0330} ]]*/; //: CSV 파일 명
+			var UIT0331 = /*[[ #{UIT0331} ]]*/; //: 선택하신 DBMS로 접속 설정을 하시겠습니까?
+			var UIT0332 = /*[[ #{UIT0332} ]]*/; //: 선택하신 CSV 파일로 접속 설정을 하시겠습니까?
+			var UIT0333 = /*[[ #{UIT0333} ]]*/; //: 선택한 DBMS 연결 중 오류가 발생하였습니다.
+		/*]]*/
+		
+			var tabType = "";
+			
+			// 페이지 로드시 적용 설정
+			$(document).ready(function() {
+				var startTab = $("#tab1");
+				if(chkTabId == 'tab2'){
+					startTab = $("#tab2");	
+				}
+				
+				fn_tabLink(startTab);
+			});
+			
+			// 텝 클릭시 이동
+			function fn_searchTab(tabId){
+				// 페이지 초기화
+				$('#pageIndex').val('');
+				// 페이지 설정
+				switch (tabId) {
+					case "tab1" : tabType="dbms";fn_selDataList();
+					break;
+				  	case "tab2" : tabType="csv";fn_selDataList();
+				    break;
+				}
+			}
+			
+			// 페이지 이동시 사용
+			function fn_search(){
+				fn_selDataList();
+			}
+			
+			// 목록 정보를 Ajax를 이용하여 가지고 온다.
+			function fn_selDataList(){
+				var pageIndex = $('#pageIndex').val();
+				var searchValue = $('#searchValue').val();
+				var itemsPerPage = $("#itemsPerPage").val();
+				
+				if('' == tabType){
+					tabType = 'dbms';
+				}
+				var params = {
+					"searchValue" : searchValue,
+					"pageIndex" : pageIndex,
+					"itemsPerPage" : itemsPerPage,
+					"tabType" : tabType
+				}
+				
+				$.ajax({
+					url: '/mngr/basicInfo/selectDbList',
+					data: params,
+					success: function(data){
+						var obj = JSON.parse(data);
+						var dataList = obj.result;
+						var totalCnt = obj.totalCnt;
+						tabType = obj.tabType;
+						fn_setDataListGrid(dataList);
+						/* 페이징 function 호출 */
+						fn_pagination(totalCnt);
+					}
+				});
+			}
+			
+			// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+			function fn_setDataListGrid(listData){
+				// 화면 초기화 처리
+				$("#grid").empty();
+				// 조회 컬럼 목록
+				
+				var columns = "";
+				
+				tabType = tabType === undefined ? 'dbms' : tabType;
+				
+				if(tabType == 'dbms'){
+					columns = [
+						{header : UIT0323, title : UIT0323, name : 'dbmsKnd', whiteSpace: 'normal', sortable: true,  width: 100, align: 'center'}, 
+						{header : UIT0324, title : UIT0324, name : 'dgnssDbmsNm', whiteSpace: 'normal', sortable: true}, 
+						{header : UIT0325, title : UIT0325, name : 'ip', whiteSpace: 'normal', sortable: true,  width: 100, align: 'center'}, 
+						{header : UIT0326, title : UIT0326, name : 'port', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'}, 
+						{header : 'Database', title : 'Database', name : 'database', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'},
+						{header : UIT0327, title : UIT0327, name : 'id', width: 100, whiteSpace: 'normal', sortable: true, align: 'center'},
+						{header : UIT0044, title : UIT0044, name : 'rm', width: 220, whiteSpace: 'normal', align: 'center', formatter : function(value, options){
+								var html  = "";
+								var display = "";
+								html += "<div class='button_area'>"
+								html += "<input type='button' class='btn btn-s blue in_wp70' data-value='CON' value='"+UIT0328+"' />&nbsp;&nbsp;";
+								if(value.value == 'dq_database'){
+									//display = "disable='true'";
+								}
+								html += "<input type='button' class='btn btn-s gray in_wp70' data-value='SEL' value='"+UIT0329+"' />";
+								html += "</div>"
+								return html;
+							}
+						}
+					];
+					
+				}else{
+					
+					columns = [
+						{header : UIT0323, title : UIT0323, name : 'dbmsKnd', whiteSpace: 'normal', sortable: true,  width: 100, align: 'center',}, 
+						{header : UIT0330, title : UIT0330, name : 'dgnssDbmsNm', whiteSpace: 'normal',  sortable: true,}, 
+						{header : UIT0044, title : UIT0044, name : 'rm', width: 220, whiteSpace: 'normal', align: 'center', formatter : function(value, options){
+								var html  = "";
+								var display = "";
+								html += "<input type='button' class='btn btn-s blue in_wp70' data-value='CON' value='"+UIT0328+"' />&nbsp;&nbsp;";
+								if(value.value == 'dq_database'){
+									//display = "disable='true'";
+								}
+								return html;
+							},
+						}
+					];
+				}
+				
+				const dataListGrid = new tui.Grid({
+					el : document.getElementById("grid"),
+					data : listData,
+					rowHeaders: ['rowNum'],
+					scrollX : false,
+					scrollY : false,
+					rowHeight : 40,
+					minBodyHeight : 40,
+					header: {
+						height: 40
+					},
+					columns : columns
+				});
+				
+				const extOptions = {
+					cell: {
+						focused: {
+				            border: 1 // 선택 셀 강조 표시 x
+				        }
+					}
+				};
+				
+				tui.Grid.applyTheme('default', extOptions);
+				
+				dataListGrid.on('click', function(ev) {
+					
+			  		var inText = ev.nativeEvent.target.innerText;
+			  		var obj = ev.nativeEvent.target;
+			  		var mode = $(obj).data("value");
+			  		
+			  		if(ev.columnName === 'rm'){
+			  			var item = dataListGrid.getRow(ev.rowKey);
+			  			
+			  			if(mode != undefined){
+			  	  			if(mode == 'CON'){
+			  	  				fn_connectDbms(item,tabType);
+			  	  	  		}
+			  	  	  		if(mode == 'SEL'){
+			  	  	  			location.href = "/mngr/basicInfo/dataConnProp.do?dgnssDbmsId="+item.dgnssDbmsId;
+			  	  	  	  	}
+			  			}
+			  		}
+			  	});
+				
+				dataListGrid.resetData(listData);
+			}
+			
+			
+			// 선택된 지정 DB 접속 정보를 세션에 등록한다.
+			function fn_setDbms(obj,tabType){
+				
+				var dgnssDbmsId = obj.dgnssDbmsId;
+				var param = "";
+				var massage = "";
+				if(tabType=="dbms"){
+					param = "?tabId=tab1";
+					massage = UIT0331;
+				}else{
+					param = "?tabId=tab2";
+					massage = UIT0332;
+				}
+				
+				if(confirm(massage)){
+					
+					$.ajax({
+						url: "/mngr/basicInfo/connectDbms",
+						data: {dgnssDbmsId : dgnssDbmsId} ,
+						success: function(data){
+							// 처리 완료시 페이지를 리로드 하여 세션에 저장된 접속 URL 정보를 확인 한다.
+							location.href = "/mngr/basicInfo/dgnssDbmsList"+param;
+						}
+					});
+				}
+			}
+			
+			
+			function fn_connectDbms(obj,tabType){
+				
+				if(tabType=="dbms"){
+					var arr = [];
+					obj.pwd = obj.password;
+					obj.type = "reCheck";
+					arr.push(obj);
+					if(arr != null){
+						$.ajax({
+							url: '/mngr/basicInfo/dataConnPropCheckDb.do',
+							method : 'POST',
+							data: {dataList : JSON.stringify(arr)},
+							success: function(data){
+								var objdata = $.parseJSON(data);
+								var result = objdata.result;
+								if(result == true){
+									fn_setDbms(obj,tabType);
+								}else{
+									alert(UIT0333);
+									return false;
+								}
+								
+					        }, error:function() {
+					        	alert(UIT0333);
+				                return false;
+				           }
+					    });
+					}
+				}else{
+					fn_setDbms(obj,tabType);
+				}
+			}
+
+		</script>
+	</div>	
+</html>

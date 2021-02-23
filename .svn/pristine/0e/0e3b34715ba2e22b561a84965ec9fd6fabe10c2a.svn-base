@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><img src="/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROPERTIES  &gt; 공통정보 &gt; 공통코드관리 </span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23 font_slim" style="color: gray; font-weight: 100;"></i> 공통코드관리</h1>
+		</div>
+   
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="card shadow mb-4">
+					<div class="input_table">
+						<table>
+							<caption>대분류 관리를 위해 정책분야명, 정책영역명, 정책대기능코드, 정책대기능코드를 검색할 수 있는 표입니다.</caption>
+							<colgroup>
+								<col style="width:25%">
+								<col style="width:10%">
+								<col style="width:35%">
+								<col style="width:25%">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>
+										<label for="type2">검색 조건</label>
+									</th>
+									<td>
+										<select name="searchType" id="searchType" title="정책대기능명 선택" style="width: 200px;">
+											<option value="groupCode">그룹코드</option>
+											<option value="groupCodeNm">그룹코드 명</option>
+										</select>
+									</td>
+									<td>
+										<input type="text" name="searchValue" id="searchValue" title="검색어 입력" maxlength="50" placeholder="입력">
+									</td>
+									<td></td>
+									<td>
+									<button class='btn btn-primary wd_50' type='button' style="width:150px;" onclick="fn_searchGroupList();" >조회</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- 
+					<div style="text-align: center; padding: 10px;">
+						<button class='btn btn-primary wd_50' type='button' style="width:150px;" onclick="fn_searchGroupList();" >조회</button>
+					</div>
+					 -->
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="card shadow mb-4">
+					<input type="hidden" id="ckBtn" name="ckBtn" value="" />
+					<div class="card-body">
+						<button class='btn btn-primary mgn_b20' type='button' onclick="fn_openCodeLayer('INS', '');" style='width:76px; float: right;'>등록</button>
+					
+						<div id ="grid" class="tb_type99" style="min-height:240px; clear: both;"></div>
+                                                                         
+					</div>
+					
+					<div class="card-body">
+						<div class="line_type02"></div>
+					</div>
+					
+					<div id="detailDiv" class="card-body">
+  
+						<button class='btn btn-primary mgn_b20' type='button' onclick="fn_openDetailCodeLayer('INS', '');" style='width:76px; float: right;'>등록</button>
+						
+						<div id ="detailGrid" class="tb_type99" style="min-height:200px; clear: both;"></div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<!-- modal 창 -->
+		<!-- 그룹코드 관리 팝업 open -->
+		<div id="groupCodeLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" alt="닫기 버튼"></a>
+			</div>
+			<div class="layer_pop" style="height: 330px;">
+				<div class="layer_header">
+				    <p>그룹코드</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="groupCodeFrm">
+							<input type="hidden" id="mode" name="mode" value="" >
+							<input type="hidden" id="groupCodeVdi" name="groupCodeVdi" value="" >
+	                        
+	                        <div class="tb_type03">
+	                            <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> 그룹코드 </th>
+											<td><input type="text" id="groupCode" name="groupCode" maxlength="20" oninput="inputCheck(this)"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> 그룹코드 명</th>
+											<td><input type="text" id="groupCodeNm" name="groupCodeNm"  maxlength="50"></td>
+										</tr>
+										<tr>
+											<th>사용여부</th>
+											<td style="text-align: left; ">
+												<select id="groupUseAt" name="useAt" style="width: 100px;">
+													<option value="Y">Y</option>
+													<option value="N">N</option>	
+												</select>
+											</td>
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-secondary" type="button" id="groupCodeDelBtn"  data-delYn='Y' onclick="fn_saveCode(this);">삭제</button></span>
+								<span><button class="btn btn-primary" type="button" id="groupCodeSaveBtn" onclick="fn_saveCode(this);">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 그룹코드 관리 팝업 close -->		
+		
+		<!-- 상세코드 관리 팝업 open -->
+		<div id="detailCodeLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" alt="닫기 버튼"></a>
+			</div>
+			<div class="layer_pop">
+				<div class="layer_header">
+				    <p>상세코드</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="detailCodeFrm">
+							<input type="hidden" id="detailMode" name="detailMode" value="">
+							<input type="hidden" id="detailCodeVdi" name="detailCodeVdi" value="" >
+							
+	                        <div class="tb_type03">
+	                            <table>
+	                                <tbody>
+	                                    <tr>
+	                                        <th>그룹코드</th>
+	                                        <td><input type="text" id="detailGroupCode" name="detailGroupCode" readonly="readonly"></td>
+	                                        <th><span class="str">*</span> 상세코드 </th>
+	                                        <td><input type="text" id="detailCmmnCode" name="detailCmmnCode" maxlength="20" placeholder="20자리 코드 입력" oninput="inputCheck(this)"></td>
+	                                    </tr>
+	                                    <tr>
+	                                    	 <th><span class="str">*</span> 상세코드 명</th>
+	                                        <td colspan="3"><input type="text" id="detailCmmnCodeNm" name="detailCmmnCodeNm" maxlength="50"></td>
+	                                    </tr>
+	                                    <tr>
+	                                    	 <th>설명</th>
+	                                        <td colspan="3"><!-- 텍스트 입력  -->
+	                                        <textarea rows="2" id="detailCmmnCodeDc" name="detailCmmnCodeDc"></textarea>
+	                                        </td>
+	                                    </tr>
+	                                    <tr>
+	                                        <th>순번</th>
+	                                        <td><input type="text" id="inqireOrdr" name="inqireOrdr" min="0" maxlength="4" oninput="maxLengthCheck(this)"></td>
+	                                        <th>사용여부</th>
+	                                        <td style="text-align: left;">
+	                                            <select id="detailUseAt" name="useAt" style="width: 100px;">
+		                                            <option value="Y">Y</option>
+												 <option value="N">N</option>
+	                                            </select>
+                                           </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-secondary" type="button" id="detailCodeDelBtn"  data-delYn='Y' onclick="fn_saveDetailCode(this);">삭제</button>
+								<span><button class="btn btn-primary" type="button" id="detailCodeSaveBtn" onclick="fn_saveDetailCode(this);">저장</button></span>
+				        	</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 상세코드 관리 팝업 close -->		
+
+		<script type="text/javascript" class="code-js">
+		$(document).ready(function() {
+		     $("#detailDiv").hide();
+		     fn_searchGroupList();
+		});
+		var detailData = "";
+		var detailGrid = "";
+		var selectGroupCode ="";
+		
+		function fn_searchGroupList(){
+		     
+		     $("#grid").empty();
+		     var groupData = "";
+		     var searchType = $("#searchType").val();
+		     var searchValue = $("#searchValue").val();
+		     
+		     var columns = null;
+		     var data = {"searchType" : searchType, "searchValue" : searchValue};
+		     
+		     $.ajax({
+		           url: '/mngr/cmmnMng/selectCommonCode',
+		           data: data,
+		           success: function(data){
+		                groupData = JSON.parse(data);
+		                fn_setGroupGrid(groupData);
+		           }
+		     });
+		}
+		function fn_setGroupGrid(groupData){
+			var columns = [
+			      {header : '그룹코드', name : 'groupCode', whiteSpace: 'normal', sortable: true, width: 400, align: 'center'},
+			      {header : '그룹코드명', name : 'groupCodeNm', whiteSpace: 'normal', sortable: true},
+			      {header : '사용여부', name : 'useAt', whiteSpace: 'normal', sortable: true, width: 80, align: 'center'},
+			      {header : '비고', name : 'release', whiteSpace: 'normal', width: 120, align: 'center', formatter : function(value, options){
+			                var html  = "";
+			                html += "<input type='button' class='btn_select' data-value='UDT' data-toggle='modal' data-target='#codeModal' data-backdrop='static' data-keyboard='false' value='수정'/>";
+			                return html;
+			           }
+			      }
+			];
+		     
+			const groupGrid = new tui.Grid({
+				el : document.getElementById("grid"),
+				data : groupData,
+				scrollX : false,
+				scrollY : false,
+				rowHeight : 40,
+				minBodyHeight : 40,
+				//bodyHeight : 349,
+				header: {
+				  height: 50
+				},
+				columns : columns
+			});
+			     
+			const extOptions = {
+				cell: {
+				     focused: {
+				      border: 0 // 선택 셀 강조 표시 x
+				  }
+				}
+			};
+		     
+			tui.Grid.applyTheme('default', extOptions);
+		     
+			groupGrid.on('click', function(ev) {
+				var inText = ev.nativeEvent.target.innerText;
+				var obj = ev.nativeEvent.target;
+				var mode = $(obj).data("value");
+				
+				if(ev.columnName === 'release'){
+					var item = groupGrid.getRow(ev.rowKey);
+					
+					if(mode != undefined){
+						fn_openCodeLayer(mode, item);
+					}
+				          
+				} else if(ev.columnName === 'groupCode') {
+					var rowData = groupGrid.getData();
+					selectGroupCode = $.trim(inText);
+					$.each(rowData, function(index, value) {
+						var evKey = groupGrid.getElement(value.rowKey, 'groupCode');
+						
+						if(value.rowKey == ev.rowKey){
+							$(evKey).css({'color': '#2e59d9'});		
+						}else{
+							$(evKey).css({'color': '#8e909d'});
+						}
+					})
+					fn_searchDetailList(inText);
+				}
+			});
+		     
+			groupGrid.resetData(groupData);
+		}
+		
+		function fn_openCodeLayer(mode, item){
+			/*레이어 열기*/
+		    $('#groupCodeLayer').addClass('on');
+		    
+		    $('.layer_pop_wrap').css("left","30%");
+		    $('.layer_pop_wrap').css("top","35%");
+			
+		    $('.tui-grid-container').css('z-index', 1);			// 
+		    $('.cover').show();
+			
+		     // 폼 초기화
+		     $("#groupCodeFrm")[0].reset();
+		     $("#groupCodeChk").text("");
+		     $("#detailCodeChk").text("");
+		     
+		     $("#mode").val(mode);
+		     
+		     if(mode == "INS"){
+		    	   $("#groupCodeSaveBtn").text("저장");
+		           // 수정불가 해제
+		           $("#groupCode").attr("readonly", false);
+		           $("#groupCodeDelBtn").hide();
+		     }else{
+		           $("#groupCodeDelBtn").show();
+		     }
+		     
+		     if(mode == 'UDT'){
+		    	   $("#groupCodeSaveBtn").text("수정");
+		           // 수정불가
+		           $("#groupCode").attr("readonly",true);
+		           
+		           $("#groupCode").val(item.groupCode);
+		           $("#groupCodeNm").val(item.groupCodeNm);
+		           $("#groupUseAt").val(item.useAt);
+		     }
+		     
+		}
+		function fn_saveCode(obj){
+		     
+		     var submitChk = $("#groupCodeVdi").val();
+		     var delYn = $(obj).data("delyn");
+		     var groupCode = $("#groupCode").val();
+		     var groupCodeNm = $("#groupCodeNm").val();
+		     
+		     if(groupCode == ""){
+		           alert("그룹코드를 입력하세요.");
+		           return false;
+		     }
+		     
+		     if(groupCodeNm == ""){
+		           alert("그룹코드 명을 입력하세요.");
+		           return false;
+		     }
+		     
+		     if("Y" == delYn){
+		           
+		           if(confirm("하위코드가 존재할 시 전부 삭제됩니다. 진행하시겠습니까?")) {
+		                submitChk = true;
+		                $("#mode").val('DEL');
+		           }else{
+		        	   return false;
+		           }
+		     }    
+		     
+		     var frm = $("#groupCodeFrm").serialize();
+		     
+		     
+		     console.log("submitChk = ", submitChk);
+		     
+		     if(submitChk != 'false'){
+		           
+				$.ajax({
+					url: "/mngr/cmmnMng/saveCommonCode",
+					data: frm,
+					success: function(data){
+						var result = JSON.parse(data);
+						
+						fn_searchGroupList();
+						
+						if("INS" == result){
+							alert("그룹코드가 등록 되었습니다.");   
+						}else if("UDT" == result){
+							alert("그룹코드가 수정 되었습니다.");
+						}else{
+							alert("그룹코드/하위코드가 삭제 되었습니다.");
+							$("#detailGrid").empty();
+							$("#detailDiv").hide();
+						}
+						
+						fn_modalCloseLayer();
+					}
+				});
+		     }
+		}
+		function fn_searchDetailList(groupCode){
+		     $("#detailGrid").empty();
+		     $("#detailDiv").show();
+		     
+		     // 그룹코드 값 push
+		     $("#detailGroupCode").val(groupCode);
+		     
+		     var detailData = null;
+		     
+		     $.ajax({
+		           url : '/mngr/cmmnMng/selectDetailCommonCode',
+		           data : {"groupCode" : groupCode},
+		           success : function(data){
+		                detailData = JSON.parse(data);
+		                fn_setDetailGrid(detailData);
+		           }, error:function() {
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+		           
+		     });
+		}
+		function fn_setDetailGrid(detailData){
+		     
+		     var columns = [
+		           {header : '상세코드', name : 'cmmnCode', whiteSpace: 'normal', sortable: true, align: 'center', width: 400},
+		           {header : '상세코드명', name : 'cmmnCodeNm', whiteSpace: 'normal', sortable: true},
+		           /*
+		           {header : '설명', name : 'cmmnCodeDc'},
+		           {header : '순번', name : 'cmmnUpperCode'},
+		           */
+		           {header : '사용여부', name : 'useAt', whiteSpace: 'normal', sortable: true, width: 80, align: 'center'},
+		           {header : '비고', name : 'release', whiteSpace: 'normal', width: 120, align: 'center', formatter: function(value, options){
+		                var html  = "";
+		                html += "<input type='button' class='btn_select' data-value='UDT' data-toggle='modal' data-target='#codeDetailModal' data-backdrop='static' data-keyboard='false' value='수정'/>";
+		                return html;
+		           }}
+		     ];
+		     
+		     const detailGrid = new tui.Grid({
+		           el : document.getElementById("detailGrid"),
+		           data : detailData,
+		           scrollX : false,
+		           scrollY : false,
+		           rowHeight : 40,
+		           minBodyHeight : 40,
+		           header: {
+		             height: 50
+		           },
+		           columns : columns
+		     });
+		     
+		     const extOptions = {
+		           cell: {
+		                focused: {
+		                 border: 0 // 선택 셀 강조 표시 x
+		             }
+		           }
+		     };
+		     
+		     tui.Grid.applyTheme('default', extOptions);
+		     
+		     
+		     detailGrid.on('click', function(ev) {
+		           
+		           var inText = ev.nativeEvent.target.innerText;
+		           var obj = ev.nativeEvent.target;
+		           var mode = $(obj).data("value");
+		           if(ev.columnName === 'release' && mode != undefined){
+		                var item = detailGrid.getRow(ev.rowKey);
+		                fn_openDetailCodeLayer(mode, item);
+		           }
+		           
+		     });
+		     
+		     detailGrid.resetData(detailData);
+		}
+		
+		function fn_openDetailCodeLayer(mode, item){
+		     
+			/*레이어 열기*/
+		    $('#detailCodeLayer').addClass('on');
+
+		    $('.layer_pop_wrap').css("left","30%");
+		    $('.layer_pop_wrap').css("top","65%");
+			
+		    $('.tui-grid-container').css('z-index', 1);			// 
+		    $('.cover').show();
+			
+		     // 폼 초기화
+		     $("#detailCodeFrm")[0].reset();
+		     $("#detailCodeChk").text("");
+		     $("#detailCmmnCode").val("");
+		     $("#detailCmmnCodeNm").val("");
+		     $("#detailCmmnCodeDc").val("");
+		     $("#detailCmmnUpperCode").val("");
+		     $("#inqireOrdr").val("");
+		     $("#detailMode").val(mode);
+		     
+		     console.log("A - ", selectGroupCode);
+		     
+		     if("INS" == mode){
+		           // 수정불가 해제
+		           $("#detailGroupCode").val(selectGroupCode);
+		           $("#detailCmmnCode").attr("readonly", false);
+		           $("#detailCodeDelBtn").hide();
+		     }else{
+		           $("#detailCodeDelBtn").show();
+		     }
+		     
+		     if("UDT" == mode){
+		    	   $("#detailCodeSaveBtn").text("수정");
+		    	   // 수정불가
+		           $("#detailGroupCode").attr("readonly", true);
+		           $("#detailCmmnCode").attr("readonly", true);
+		           
+		           $("#detailGroupCode").val(item.groupCode);
+		           $("#detailCmmnCode").val(item.cmmnCode);
+		           $("#detailCmmnCodeNm").val(item.cmmnCodeNm);
+		           $("#detailCmmnCodeDc").val(item.cmmnCodeDc);
+		           $("#inqireOrdr").val(item.inqireOrdr);          
+		           $("#detailUseAt").val(item.useAt);
+		     }
+		     
+		}
+		function fn_saveDetailCode(obj){
+		     
+		     var submitChk = $("#detailCodeVdi").val();
+		     var delYn = $(obj).data("delyn");
+		     var detailCmmnCode = $("#detailCmmnCode").val();
+		     var detailCmmnCodeNm = $("#detailCmmnCodeNm").val();
+		     
+		     if(detailCmmnCode == ""){
+		           alert("상세코드를 입력하세요.");
+		           return false;
+		     }
+		     
+		     if(detailCmmnCodeNm == ""){
+		         alert("상세코드 명을 입력하세요.");
+		         return false;
+		  	 }
+		     if("Y" == delYn){
+		           
+		           if(confirm("하위코드가 존재할 시 전부 삭제됩니다. 진행하시겠습니까?")) {
+		                submitChk = true;
+		                $("#detailMode").val('DEL');
+		           }else{
+		        	   return false;
+		           }
+		     }    
+		     var frm = $("#detailCodeFrm").serialize();
+		     
+		     if(submitChk != 'false'){
+		           
+				$.ajax({
+					url: "/mngr/cmmnMng/saveDetailCommonCode",
+					data: frm,
+					success: function(data){
+						var result = JSON.parse(data);
+		                       
+						var groupCode = $("#detailGroupCode").val();
+						fn_searchDetailList(groupCode);
+						
+						if("INS" == result){
+						     alert("상세코드가 등록 되었습니다.");   
+						}else if("UDT" == result){
+						     alert("상세코드가 수정 되었습니다.");
+						}else{
+						     alert("상세코드가 삭제 되었습니다.");
+						}
+						fn_modalCloseLayer();
+		            }
+				});
+				
+		     }
+		}
+		
+		
+		
+		// 증복체크
+		$("#groupCode").change(function() {
+		     var str = $("#groupCode").val();
+		     fn_codeStrTest(str, "G","groupCodeChk", "groupCodeVdi");
+		});
+		$("#detailCmmnCode").change(function() {
+		     var str = $("#detailCmmnCode").val();
+		     fn_codeStrTest(str, "D", "detailCodeChk", "detailCodeVdi");
+		});
+		</script>
+	</div>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+	<nav th:fragment="headerFragment" class="navbar">
+	  <div class="navbar_left">
+        <a class="btn_fold" title="메뉴접기"></a>
+        <div class="navtitle_box">
+            <span class="link_txt" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? #{UIT0054} : #{UIT0055}"></span>
+            <div>
+                <p class="link_title" th:text="${session.conTitle }">MSSQL_데이터품질 측정을 위한 뎅티터베이스 연결</p>
+                <p class="link_url" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ?  ${session.conFileName } :  ${session.conDbUrl }">Jdbc:sqlserver://192.168.20.91:1433;database=DQSYS</p>
+            </div>
+        </div>
+        <!-- 
+        <span class="link_txt" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? #{UIT0054} + ' : ' + ${session.conTitle } : #{UIT0055} + ' : ' + ${session.conTitle }"></span>
+        <div class="navtitle_box">
+             <span th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? ${session.conFileName } : ${session.conDbUrl }"></span>
+        </div>
+         -->
+        </div>
+        <div class="navbar_right">
+        	<a class="btn btn-s gray in_wp120" style ="text-align:center; vertical-align: middle; margin-right: 10px;" href="/sampleData/lifecycle_Sample.xlsx" download="lifecycle_Sample.xlsx">메뉴얼 다운로드</a>
+            <div class="account_info" th:each="member : ${session.member}">
+                <span th:text="${member.userNm}"></span>
+            </div>
+            
+            <a class="logout_btn" href="#" data-toggle="modal" data-target="#logoutModal" th:title="#{UIT0051}" >
+                <span  th:text="#{UIT0051}"> 로그아웃</span>
+            </a>
+        </div>
+	</nav>
+
+</html>

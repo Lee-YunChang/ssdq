@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.UserMapper">
+
+	<select id="readUser" parameterType="String" resultType="com.webapp.dqsys.security.domain.Member">
+        SELECT 
+			INSTT_CODE AS insttCode 
+			, USER_ID AS userId
+			, USER_PASSWORD AS userPassword
+			, USER_NM AS userNm
+			<!-- , CHRG_DEPT AS chrgDept -->
+			, RECENT_CONECT_DT AS recentConectDt
+			, RECENT_CONECT_IP AS recentConectIp
+			, RM AS rm
+			, USE_AT AS useAt
+		FROM USER 
+		WHERE USER_ID = BINARY(#{userId})
+		<!-- AND USE_AT = '1' -->
+    </select>
+    
+    <select id="readAuthority" parameterType="String" resultType="String">
+        SELECT SUBSTRING_INDEX(AUTHOR_CODE, "_", -1) FROM USER WHERE USER_ID = BINARY(#{userId})
+    </select>
+    
+    <insert id="insertActionHistory" parameterType="map"> 
+		INSERT INTO ACTION_HISTORY 
+		( 
+			REQUEST_URI,
+			REQUEST_URL,
+			LOCAL_HOST,
+			LOCAL_MAC_ADDR,
+			USER_ID,
+			INSTT_CODE,
+			REGIST_DT
+		)
+		VALUES
+		(
+		 	#{requestUri},
+			#{requestUrl},
+			#{localHost},
+			#{localMacAddr},
+			#{userId},
+			#{insttCode},
+			NOW()
+		)
+	</insert>
+	
+	<select id="selLoginInfo" parameterType="String" resultType="map">
+		SELECT AUTHOR_CODE, LOGIN_FAIL_CNT FROM USER WHERE USER_ID = BINARY(#{username})
+	</select>
+	
+	<update id="updateLoginFailCnt" parameterType="map">
+		UPDATE USER SET LOGIN_FAIL_CNT = #{failCnt} WHERE USER_ID = BINARY(#{username})
+	</update>
+	
+	<update id="updateLoginInfo" parameterType="map">
+		UPDATE USER SET LOGIN_FAIL_CNT = #{failCnt} WHERE USER_ID = BINARY(#{username})
+	</update>
+
+</mapper>

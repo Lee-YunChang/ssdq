@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; PROFILING &gt; <label th:text="#{UIT0068}"></label> &gt; <label th:text="#{UIT0263}"></label> </span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0263}"> 컬럼 구조 분석</h1>
+		</div>
+	 
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="card shadow mb-4" id="dbms" name="dbms">
+					<div id="dbmsDiv" class="input_table" style="border: none;">
+						<table>
+	                        <colgroup>
+	                            <col style="width:20%">
+	                            <col style="width:25%">
+	                            <col style="width:10%">
+	                            <col style="width:25%">
+	                            <col style="width:20%">
+	                        </colgroup>
+	                        <tbody>
+	                            <tr>
+	                                <th>
+	                                	<span class="str">*</span> <label for="data" th:text="#{UIT0264}"> 스키마명</label>
+	                                </th>
+	                                <td>
+	                                     <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+	                                    	<option th:text="#{UIT0265}">선택해주세요</option>
+	                                    </select>
+	                                </td>    
+	                                <th>
+	                                	<span class="str">*</span> <label for="name" th:text="#{UIT0266}">테이블명</label>
+	                                </th>
+	                                <td>
+	                                    <select name="tableName" id="tableName" onchange="fn_changeTable()">
+	                                    	<option th:text="#{UIT0265}">선택해주세요</option>
+	                                    </select>
+	                                </td>
+	                                <td></td>
+	                            </tr>
+	                        </tbody>
+						</table>
+					</div>
+					
+					<div id="csvDiv" class="input_table" style="border: none;" disabled=true>
+						<table>
+	                        <colgroup>
+	                            <col style="width:20%">
+	                            <col style="width:25%">
+	                            <col style="width:10%">
+	                            <col style="width:25%">
+	                            <col style="width:20%">
+	                        </colgroup>
+	                        <tbody>
+	                            <tr>
+	                                <th>
+	                                	<label th:text="#{UIT0237}+' : '"> 파일명 : </label>
+	                                </th>
+	                                <td colspan=4 >
+	                                     <span id="fileName"></span>
+	                                </td>    
+	                            </tr>
+	                        </tbody>
+						</table>
+					</div>
+					
+				</div>
+				
+				<!-- 내용 -->
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<div id="columnAnalysisGrid" class="tb_type99" style="clear: both; min-height: 440px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+					
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+		var fileName = /*[[ ${conFileName} ]]*/;
+		var UIT0267 = /*[[ #{UIT0267} ]]*/; //: 검색결과가 없습니다.
+		var UIT0265 = /*[[ #{UIT0265} ]]*/; //: 선택해주세요
+		var UIT0240 = /*[[ #{UIT0240} ]]*/; //: 컬럼명
+		var UIT0255 = /*[[ #{UIT0255} ]]*/; //: Data 타입
+		var UIT0256 = /*[[ #{UIT0256} ]]*/; //: Data 길이
+		var UIT0257 = /*[[ #{UIT0257} ]]*/; //: Data 정밀도
+		var UIT0258 = /*[[ #{UIT0258} ]]*/; //: Data 스케일
+		var UIT0259 = /*[[ #{UIT0259} ]]*/; //: 널허용
+		var UIT0260 = /*[[ #{UIT0260} ]]*/; //: 디폴트값
+		var UIT0269 = /*[[ #{UIT0269} ]]*/; //: 최소값
+		var UIT0270 = /*[[ #{UIT0270} ]]*/; //: 최대값
+		var UIT0261 = /*[[ #{UIT0261} ]]*/; //: 컬럼설명
+		/*]]*/
+		
+		
+		$(document).ready(function() { 
+			// sessionCon 체크
+			isSessionConChk(sessionCon);
+			if(fileName == ''){
+				$('#dbmsDiv').css('display','block');
+				$('#csvDiv').css('display','none');
+				/* chosen Select Box 관련 추가  */
+				/* 2019-07-29 최보람 */
+				$("#tableSchema, #tableName").chosen({
+					search_contains : true,
+					width : 230,
+					no_results_text : UIT0267+" : "
+				});
+				
+				fn_selectTableSchema();
+			
+			}else{
+				$('#dbmsDiv').css('display','none');
+				$('#csvDiv').css('display','block');
+				$("#fileName").text(fileName);
+				selectCsvInfo(sessionCon);
+			}
+			
+		});
+		
+		function selectCsvInfo(sessionCon){
+			
+			var data = {
+					"dgnssDbmsId":sessionCon,
+					"tabType":'csv'
+			};
+			$.ajax({
+				url: "/mngr/basicInfo/selectDbList",
+				data : data,
+				success: function(data){
+					var obj = JSON.parse(data);
+					var dataList = obj.result;
+					var tableName = "";
+					var tableSchema = "";
+					
+					for(var i = 0; i < dataList.length; i++){
+						tableName = dataList[i].dgnssDbmsNm.replace(fileName, '');
+						tableName = tableName.replace('(', '').replace(')', '');
+						tableSchema = dataList[i].database;
+					}
+					selectColumnAnalysis(tableName, tableSchema);
+				}
+			});
+		}
+		
+		function fn_selectTableSchema(){
+			var option = "";
+			var Schema = /*[[ ${schema} ]]*/;
+			$.ajax({
+				url: "/mngr/analysis/selectColumnAnalysis",
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					for(var i = 0; i < jsonData.length; i++){
+						var selected = "";
+						if(Schema.trim().toUpperCase() == jsonData[i].OWNER.toUpperCase()) {
+							selected = "selected=true";
+							
+						}else{
+							if(jsonData.length == 1){
+								//selected = "selected=true";
+								//selDbmsTableListBox();
+							}else{
+								selected = "";
+							}
+						}
+						var option  = $("<option value="+jsonData[i].OWNER+" "+selected+">"+jsonData[i].OWNER+"</option>");
+						$("#tableSchema").append(option);
+													
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tableSchema").trigger("chosen:updated");
+						
+						
+					}
+					fn_changeSchema();
+				}
+			});
+			
+		}
+		
+		function fn_changeSchema(){
+			var option = "";
+			var tableSchema = $("#tableSchema").val();
+			if(tableSchema == ""){
+				tableSchema = /*[[ ${schema} ]]*/;
+			}
+			$("#tableName").empty();
+			$("#columnAnalysisGrid").empty();
+			
+			option  = $("<option>"+ UIT0265 +"</option>");
+			$("#tableName").append(option);
+			
+			$.ajax({
+				url: "/mngr/analysis/selectTable",
+				data: {"tableSchema":tableSchema},
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					
+					for(var i = 0; i < jsonData.length; i++){
+						option  = $("<option>"+jsonData[i].TABLENAME+"</option>");
+						$("#tableName").append(option);
+		
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tableName").trigger("chosen:updated");
+					} 
+				}
+				
+			});
+		}
+		
+		function fn_changeTable(){
+			var tableName = $("#tableName").val();
+			var tableSchema = $("#tableSchema").val();
+			
+			$("#columnAnalysisGrid").empty();
+			$.ajax({
+				url: "/mngr/analysis/selectColumnAnalysis",
+				data: {"tableName":tableName, "tableSchema":tableSchema},
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					
+					fn_setGrid(jsonData);
+				}
+			});
+			
+		}
+		
+		function selectColumnAnalysis(tableName, tableSchema){
+			
+			$("#columnAnalysisGrid").empty();
+			$.ajax({
+				url: "/mngr/analysis/selectColumnAnalysis",
+				data: {"tableName":tableName, "tableSchema":tableSchema},
+				success: function(data){
+					var jsonData = JSON.parse(data);
+					
+					fn_setGrid(jsonData);
+				}
+			});
+			
+		}
+		
+		function fn_setGrid(data){
+			var columns;
+			if(fileName == ''){
+				columns = [
+				{header: UIT0240, name: 'columnName', whiteSpace: 'normal', sortable: true, align:'center'},			
+				{header: UIT0255, name: 'dataType', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'}, 
+				{header: UIT0256, name: 'dataLength', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'}, 
+				{header: UIT0257, name: 'dataPrecision', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'}, 
+				{header: UIT0258, name: 'dataScale', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'},
+				{header: UIT0259,name: 'nullable', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'},
+				{header: UIT0260,name: 'dataDefault', whiteSpace: 'normal', sortable: true,  width: 110,align:'center'},
+				{header: UIT0269,name: 'lowValue', whiteSpace: 'normal', sortable: true, align:'left'},
+				{header: UIT0270,name: 'highValue', whiteSpace: 'normal', sortable: true, align:'left'},
+				{header: UIT0261,name: 'comments', whiteSpace: 'normal', sortable: true, align:'left'}
+				];
+			}else{
+				columns = [
+				{header: UIT0240, name: 'comments', whiteSpace: 'normal', sortable: true, align:'center'},			
+				{header: UIT0255, name: 'dataType', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'}, 
+				{header: UIT0256, name: 'dataLength', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'}, 
+				{header: UIT0257, name: 'dataPrecision', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'}, 
+				{header: UIT0258, name: 'dataScale', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'},
+				{header: UIT0259,name: 'nullable', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'},
+				{header: UIT0260,name: 'dataDefault', whiteSpace: 'normal', sortable: true,  width: 110,align:'center'},
+				{header: UIT0269,name: 'lowValue', whiteSpace: 'normal', sortable: true, align:'left'},
+				{header: UIT0270,name: 'highValue', whiteSpace: 'normal', sortable: true, align:'left'},
+				{header: UIT0261,name: 'comments', whiteSpace: 'normal', sortable: true, align:'left'}
+				];
+			}
+			const columnAnalysisGrid = new tui.Grid({
+		           el : document.getElementById("columnAnalysisGrid"),
+		           data : data,
+		           scrollX : false,
+		           scrollY : false,
+		           rowHeight : 40,
+		           minBodyHeight : 40,
+		           header: {
+		             height: 40
+		           },
+		           columns : columns
+		     });
+		     
+		     const extOptions = {
+		           cell: {
+		                focused: {
+		                 border: 0 // 선택 셀 강조 표시 x
+		             }
+		           }
+		     };
+		     
+		     tui.Grid.applyTheme('default', extOptions);
+		     
+		     columnAnalysisGrid.resetData(data);
+		}
+		
+		
+		</script>
+	</div>    
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html th:lang = "ko"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title th:text="#{UIT0057}">:: 상상스토리 ::</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="shortcut icon" th:href="@{/img/icon/favicon.ico}"  type="image/x-icon" />
+<!-- 공통으로 쓰이는 css파일을넣는다.-->
+<link rel="stylesheet" th:href="@{/vendor/fontawesome-free/css/all.css}" />
+<!-- <link rel="stylesheet" th:href="@{/css/sb-admin-3.css}" /> -->
+<link rel="stylesheet" th:href="@{/css/tui/tui-grid.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-pagination.css}" />
+<link rel="stylesheet" th:href="@{/css/sub.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.css}" />
+<link rel="stylesheet" th:href="@{/css/chosen.css}" />
+<link rel="stylesheet" th:href="@{/css/reset.css}" />
+<link rel="stylesheet" th:href="@{/css/layout.css}" />
+
+
+   <!-- 대쉬보드에서만 사용합니다. -->
+<link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<link rel="stylesheet" th:href="@{/css/NotoSansKR.css}" />
+
+<script th:src="@{/js/jquery-1.11.2.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+<script th:src="@{/js/tui/underscore.js}"></script>
+<script th:src="@{/js/tui/backbone.js}"></script>
+<script th:src="@{/js/tui/tui-code-snippet.js}"></script>
+<script th:src="@{/js/tui/tui-pagination.js}"></script>
+<script th:src="@{/js/tui/tui-grid.js}"></script>
+<script th:src="@{/js/chosen.jquery.js}"></script>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<!-- <script th:src="@{/js/tree/jquery.js}"></script> -->
+<script th:src="@{/js/tree/bootstrap-treeview.js}"></script>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<script th:src="@{/js/jquery-1.11.2.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+<script th:inline="javascript">
+	jQuery.browser = {};
+	(function () {
+	    jQuery.browser.msie = false;
+	    jQuery.browser.version = 0;
+	    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+	        jQuery.browser.msie = true;
+	        jQuery.browser.version = RegExp.$1;
+	    }
+	})();
+	
+</script>
+
+<style type="text/css">
+	#csvINS {margin:0 auto; padding:0;}
+	#csvINS li {display:none;}
+	#csvINS li:first-child {display:block;}
+	.btn_modal_box {text-align:center;margin-top:15px;}
+	.btn_modal_box button.off {cursor:default; opacity:0.5;}
+</style>
+
+<input type="hidden" id="pageIndex" name="pageIndex" value=""/>
+<input type="hidden" id="totalCnt" name="totalCnt" value=""/>
+<input type="hidden" id="searchCnt" name="searchCnt" value=""/>
+<!-- 
+<body id="page-top" th:with="userNm = ${session.member.userNm}
+							, loginInsttCode = ${session.member.insttCode}
+							, conDbUrl = ${session.conDbUrl}
+							, sessionCon = ${session.DDId}
+							, conType = ${session.conType}
+							, conFileName = ${session.conFileName}"
+>
+	<div id="wrapper">
+		<div th:replace="fragments/left :: leftAsideFragment"></div>
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				
+				<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" style="margin-bottom: 0rem !important;">
+	
+					<div style="text-align:center;">
+				        <h6>
+				            <p class="textAStyle txt_left mgn_b0">
+				                <img src="/img/icon/icon_wifi.png" alt="#{UIT0053}" class="vtc_unset">
+				                
+				                <span class="col_blue01" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? '#{UIT0054} : ' + ${session.conFileName } : '#{UIT0055} : ' + ${session.conDbUrl }"></span>
+				            </p>
+				        </h6>
+				    </div>
+			
+					상단 이동 버튼
+					<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+						<i class="fa fa-bars"></i>
+					</button>
+					
+					상단 네비
+					<ul class="navbar-nav ml-auto" style="margin-left: auto;padding-right: 50px;">
+						<div class="dropdown-item" style="width: auto; text-align: left;" th:each="member : ${session.member}">
+					        <span th:text="${member.userNm}"></span>
+					    </div>
+						
+						<div class="topbar-divider d-none d-sm-block"></div>
+						<a class="dropdown-item" style="width: 100px;" href="#" data-toggle="modal" data-target="#logoutModal">
+							<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-600" th:text="#{UIT0051}"> 로그아웃</i>
+						</a>
+					</ul>
+				</nav>
+				
+				
+				<div class="container-fluid l_position_parent" style="padding-left: 0;padding-right: 0;">
+					
+					영역
+					<article>
+						<div id="container">
+							<div class="main_spot">
+								<div class="statistics_list mt-5"  >
+                                    <img src="/img/bg_main.png" th:alt="#{UIT0059}" class="main_bg">
+                                    <div class="main_title mgnb_b100">
+                                    	<h3 style="margin:0;"><img alt="" src="/img/logo.png" style="width:300px;height:70px;"></h3>
+                                        <h3 class="title"><span style="color:#C33B3B;">SangSang</span><SUB>Story</SUB><br>SS-DQ</h3>
+                                        <p class="sub_txt" th:utext="#{UIT0060}"></p>
+                                    </div>
+                                 </div>
+                            </div>
+                            <div class="white_box" style="padding:43px;">
+                                 <div class="statistics_list mt-5">
+									<ul>
+                                        <li>
+                                            <p class="txt_center icon_area"><img src="/img/icon/icon_quick05.png" th:alt="#{UIT0061}"></p>
+                                            <h5 class="title" th:text="#{UIT0062}"></h5>
+                                            <p class="txt" th:utext="#{UIT0063}"></p>
+                                            <a href="/mngr/basicInfo/dgnssDbmsList" class="btn_type04">VIEW MORE</a>
+                                        </li>
+                                        <li>
+                                            <p class="txt_center icon_area"><img src="/img/icon/icon_quick06.png" th:alt="#{UIT0064}"></p>
+                                            <h5 class="title" th:text="#{UIT0065}"></h5>
+                                            <p class="txt" th:utext="#{UIT0066}"></p>
+                                            <a href="/mngr/analysis/analysisPatternList" class="btn_type04">VIEW MORE</a>
+                                        </li>
+                                        <li>
+                                            <p class="txt_center icon_area"><img src="/img/icon/icon_quick02.png" th:alt="#{UIT0067}"></p>
+                                            <h5 class="title" th:text="#{UIT0068}"></h5>
+                                            <p class="txt" th:utext="#{UIT0069}"></p>
+                                            <a href="/mngr/analysis/analysisTableList" class="btn_type04">VIEW MORE</a>
+                                        </li>
+                                        <li>
+                                            <p class="txt_center icon_area"><img src="/img/icon/icon_quick04.png" th:alt="#{UIT0070}"></p>
+                                            <h5 class="title" th:text="#{UIT0071}"></h5>
+                                            <p class="txt" th:utext="#{UIT0072}"></p>
+                                            <a href="/mngr/diagnosis/form1.do" class="btn_type04">VIEW MORE</a>
+                                        </li>
+                                        <li>
+                                            <p class="txt_center icon_area"><img src="/img/icon/icon_quick03.png" th:alt="#{UIT0070}"></p>
+                                            <h5 class="title" th:text="#{UIT0073}"></h5>
+                                            <p class="txt" th:utext="#{UIT0074}"></p>
+                                            <a href="/mngr/diagnosis/result/list.do" class="btn_type04">VIEW MORE</a>
+                                        </li>
+                                    </ul>
+								</div>
+							</div>
+						</div>
+					</article>
+					
+				</div>
+			</div>
+			<footer th:replace="fragments/footer :: footerFragment"></footer>
+		</div>
+	</div>
+	<div class="cover"></div>
+	상위이동 버튼
+	<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fas fa-angle-up"></i>
+	</a>
+</body> -->
+
+ <body id="page-top" class="dashboard" th:with="userNm = ${session.member.userNm}
+							, loginInsttCode = ${session.member.insttCode}
+							, conDbUrl = ${session.conDbUrl}
+							, sessionCon = ${session.DDId}
+							, conType = ${session.conType}
+							, conFileName = ${session.conFileName}">
+    <!-- wrap -->
+    <div id="wrap">
+        <!-- skip_nav -->
+        <div id="skip_nav">
+            <a href="#lnb">레프트메뉴 바로가기</a>
+            <a href="#content">본문내용 바로가기</a>
+        </div>
+        <!--// skip -->
+        <!-- container -->
+		<div class="container">
+            <!-- lnb -->
+            <div id="lnb">
+                <div class="left_area">
+                 	<div th:replace="fragments/left :: leftAsideFragment"></div>
+                 </div> 
+            </div>
+            <!--// lnb -->
+            <!-- content -->
+			<div id="content">
+                <!-- navbar -->
+                <nav class="navbar">
+                    <div class="navbar_left">
+                        <a class="btn_fold" title="메뉴접기"></a>
+                        <span class="link_txt" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? '#{UIT0054} : ' + ${session.conFileName } : '#{UIT0055} : ' + ${session.conDbUrl }"></span>
+                        <div class="navtitle_box">
+                             <span th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? '#{UIT0054} : ' + ${session.conFileName } : '#{UIT0055} : ' + ${session.conDbUrl }"></span>
+                        </div>
+                    </div>
+                    <div class="navbar_right">
+                        <span class="account_date">2020.02.12</span>
+                        <div class="account_info" th:each="member : ${session.member}">
+                            <span th:text="${member.userNm}"></span>
+                        </div>
+                        
+                        <a class="logout_btn" href="#" data-toggle="modal" data-target="#logoutModal" title="로그아웃" >
+                            <span  th:text="#{UIT0051}"> 로그아웃</span>
+                        </a>
+                    </div>
+                </nav>
+                <!--// navbar -->
+
+                <!-- content_area -->
+                <div class="content_area">
+                   <!-- dashboard_layer -->
+                    <div class="dashboard_layer">
+                        <!-- dashboard_row -->
+                        <div class="dashboard_row">
+                            <div class="in_w75">
+                                <div class="info_area">
+                                    <div>
+                                        <strong>시스템 현황</strong>
+                                    </div>
+                                    <div>
+                                        <span>단위 : 건</span>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg01">DMBS 연결 설정</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong>5</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg02">연결가능 DMBS</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong>1</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg03">연결불가 DMBS</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong>2</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card in_w25 h180">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title01 bg04">파일 데이터</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <div class="card_content_type01">
+                                            <strong>3</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="in_w25">
+                                <div class="info_area">
+                                    <div>
+                                        <strong>진단 항목 현황</strong>
+                                    </div>
+                                    <div>
+                                        <span>단위 : 건</span>
+                                    </div>
+                                </div>
+                                <div class="card in_w100 h180">
+                                    <div class="card_body bg_type04">
+                                       <ul class="card_content_type02">
+                                           <li>
+                                                <span class="txt">기본 분석 항목</span>
+                                                <span class="num">7</span>
+                                           </li>
+                                           <li>
+                                                <span class="txt">기본 패턴 항목</span>
+                                                <span class="num">36</span>
+                                           </li>
+                                           <li>
+                                                <span class="txt">사용자 정의 항목</span>
+                                                <span class="num">1007</span>
+                                           </li>
+                                       </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// dashboard_row -->
+                        
+                        <!-- dashboard_row -->
+                        <div class="dashboard_row">
+                            <div class="in_w100">
+                                <div class="info_area">
+                                    <div>
+                                        <strong>진단 현황</strong>
+                                    </div>
+                                </div>
+                                <div class="card in_w20 h255">
+                                    <div class="card_header bg_type02">
+                                        <span class="card_header_title02">기본 정보</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <ul class="card_content_type03">
+                                            <li class="bg01">
+                                                <span class="txt">테이블</span>
+                                                <span class="num">154</span>
+                                            </li>
+                                            <li class="bg02">
+                                                <span class="txt">컬럼</span>
+                                                <span class="num">154</span>
+                                            </li>
+                                            <li class="bg03">
+                                                <span class="txt">진단 항목</span>
+                                                <span class="num">154</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card in_w30 h255">
+                                    <div class="card_header bg_type03">
+                                        <span class="card_header_title02">진단율</span>
+                                    </div>
+                                    <div class="card_body bg_type04">
+                                        <span style="font-size: 20px; color:#fff;">그래프가 들어갑니다.</span>
+                                    </div>
+                                </div>
+
+                                <div class="card in_w50 h255">
+                                    <div class="card_header bg_type02">
+                                        <span class="card_header_title02">진단 항목별 불일치 건수</span>
+                                    </div>
+                                    <div class="card_body bg_type01">
+                                        <span style="font-size: 20px; color:#fff;">그래프가 들어갑니다.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// dashboard_row -->
+
+                        <!-- dashboard_row -->
+                        <div class="dashboard_row">
+                            <div class="in_w100">
+                                <div class="info_area">
+                                    <div>
+                                        <strong>월별 진단 현황</strong>
+                                        <span>2019.</span>
+                                    </div>
+                                </div>
+                                <div class="card in_w100 h210">
+                                    <div class="card_body bg_type01">
+                                        <span style="font-size: 20px; color:#fff;">그래프가 들어갑니다.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// dashboard_row -->
+                    </div>
+                    <!--// dashboard_layer -->
+
+                    <div class="btn_top"></div>
+                </div>
+                <!--// content_area -->
+                <div class="footer_area">
+                    <footer th:replace="fragments/footer :: footerFragment"></footer>
+                </div>
+            </div>
+            <!--// content -->
+        </div>
+        <!--// container -->
+    </div>
+    <!--// wrap -->
+    </body>
+
+</html>
+

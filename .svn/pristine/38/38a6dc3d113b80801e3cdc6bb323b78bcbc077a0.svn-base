@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html th:lang = "ko"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title th:text="#{UIT0057}">:: 상상스토리 ::</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="shortcut icon" th:href="@{/img/icon/favicon.ico}"  type="image/x-icon" />
+<!-- 공통으로 쓰이는 css파일을넣는다.-->
+<link rel="stylesheet" th:href="@{/vendor/fontawesome-free/css/all.css}" />
+<link rel="stylesheet" th:href="@{/css/sb-admin-3.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-grid.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-chart.css}" />
+<link rel="stylesheet" th:href="@{/css/tui/tui-pagination.css}" />
+<link rel="stylesheet" th:href="@{/css/sub.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.css}" />
+<link rel="stylesheet" th:href="@{/css/chosen.css}" />
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<link rel="stylesheet" th:href="@{/css/reset.css}" />
+<link rel="stylesheet" th:href="@{/css/layout.css}" />
+
+
+
+<!-- DATATABLE -->
+<link rel="stylesheet" th:href="@{/css/dataTable/dataTables.bootstrap4.min.css}" />
+<link rel="stylesheet" th:href="@{/css/dataTable/fixedColumns.bootstrap4.min.css}" />
+
+<script th:src="@{/js/jquery-1.11.2.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+<script th:src="@{/js/tui/underscore.js}"></script>
+<script th:src="@{/js/tui/backbone.js}"></script>
+<script th:src="@{/js/tui/tui-code-snippet.js}"></script>
+<script th:src="@{/js/tui/tui-pagination.js}"></script>
+<script th:src="@{/js/tui-grid.js}"></script>
+<script th:src="@{/js/chosen.jquery.js}"></script>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<script th:src="@{/js/tree/bootstrap-treeview.js}"></script>
+
+<!-- DATATABLE -->
+<script th:src="@{/js/dataTable/jquery.dataTables.js}"></script>
+<script th:src="@{/js/dataTable/dataTables.fixedColumns.min.js}"></script>
+<script th:src="@{/js/dataTable/dataTables.rowsGroup.js}"></script>
+
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/js/sb-admin-2.js}"></script>
+<!-- <script th:src="@{/js/jquery-1.11.2.min.js}"></script> -->
+<script th:src="@{/js/common.js}"></script>
+
+
+
+<script th:inline="javascript">
+	jQuery.browser = {};
+	(function () {
+	    jQuery.browser.msie = false;
+	    jQuery.browser.version = 0;
+	    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+	        jQuery.browser.msie = true;
+	        jQuery.browser.version = RegExp.$1;
+	    }
+	})();
+	
+</script>
+
+<style type="text/css">
+	#csvINS {margin:0 auto; padding:0;}
+	#csvINS li {display:none;}
+	#csvINS li:first-child {display:block;}
+	.btn_modal_box {text-align:center;margin-top:15px;}
+	.btn_modal_box button.off {cursor:default; opacity:0.5;}
+</style>
+
+<input type="hidden" id="pageIndex" name="pageIndex" value=""/>
+<input type="hidden" id="totalCnt" name="totalCnt" value=""/>
+<input type="hidden" id="searchCnt" name="searchCnt" value=""/>
+
+<body id="page-top" class="dashboard" th:with="userNm = ${session.member.userNm}
+							, loginInsttCode = ${session.member.insttCode}
+							, conDbUrl = ${session.conDbUrl}
+							, sessionCon = ${session.DDId}
+							, conType = ${session.conType}
+							, conFileName = ${session.conFileName}"
+>
+	<div id="wrap">
+		
+		<div id="container" class="container">
+			 <div id="lnb">
+				<div class ="left_area"> 
+					<div th:replace="fragments/left :: leftAsideFragment"></div>
+				</div>
+			</div>
+			<div id="content">
+				<div th:replace="fragments/header :: headerFragment"></div>
+				<div class="content_area">
+					<div layout:fragment="content"></div>  <!-- 실제 콘텐츠  -->
+				</div>
+				<div class="footer_area">
+					<footer th:replace="fragments/footer :: footerFragment"></footer>
+				</div>
+				<!-- 로그아웃 모달창-->
+				<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel" th:text="#{UIT0051}">로그아웃</h5>
+								<button class="close" type="button" aria-label="Close" onclick="fn_modalClose();return false;">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
+				        	<div class="modal-body" th:text="#{UIT0052}">현재 세션을 종료하시겠습니까?</div>
+							<div class="modal-footer">
+								<a class="btn btn-l gray in_wp100 alignc" th:text="#{UIT0051}" th:href="@{/logout}">로그아웃</a>
+				        	</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="cover" style="display: none;"></div>
+</body>
+
+</html>

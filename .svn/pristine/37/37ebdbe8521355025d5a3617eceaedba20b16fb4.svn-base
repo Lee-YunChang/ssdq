@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; PROPERTIES &gt; <label th:utext="#{UIT0108}"></label> </span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0109}">운영정보관리</h1>
+		</div> -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>PROPERTIES</li>
+	            <li><label th:text="#{UIT0108}">기본정보</label></li>
+            </ul>
+		</div>
+		
+		<!-- <ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="tab1" href="#none" th:text="#{UIT0110}" onclick="fn_tabLink(this)">사용자 정보</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="tab2" href="#none" th:text="#{UIT0111}" onclick="fn_tabLink(this)">고객사 정보</a>
+			</li>
+		</ul> -->
+		
+		<div class="tab_area">
+            <ul>
+                <li class="on" id="tab_area1">
+                    <a id="tab1" href="#none" th:text="#{UIT0110}" onclick="fn_tabLink(this)">
+                        <span>사용자 정보</span>
+                    </a>
+                </li>
+                <li id="tab_area2">
+                    <a id="tab2" href="#none" th:text="#{UIT0111}" onclick="fn_tabLink(this)">
+                        <span>고객사 정보</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 내용 -->
+				<div class="card shadow mb-4">
+					<input type="hidden" id="ckBtn" name="ckBtn" value="" />
+					
+					<div id="tab1_div" class="card-body">
+						<div class="button_area alignr pad100">
+							<button class='btn btn-s blue in_wp100' type='button' th:text="#{UIT0112}" onclick="fn_openUserLayer('INS', '');" >사용자 등록</button>
+			            </div>
+						<div id ="tab1_gird" class="tb_type99" style="clear: both;min-height: 440px;"></div>
+					</div>
+					
+					<div id="tab2_div" class="card-body" style="display:none;">
+						<!-- <section class="mgn_b20 txt_right">
+							<button class="btn btn-primary btn_wd100" th:text="#{UIT0088}" onclick="fn_saveInstt();" >저장</button>
+						</section> -->
+						<div class="button_area alignr pad100">
+							<button class="btn btn-s blue in_wp100" th:text="#{UIT0088}" onclick="fn_saveInstt();" >저장</button>
+			            </div>
+						
+						<form id="insttFrm">
+						<section class="l_box_type02">
+							<div class="tb_type03">
+								<div class="table_area">
+									<table class="write fixed">
+		                                <colgroup>
+		                                    <col style="width: 15%;" />
+		                                    <col style="width: auto" />
+		                                    <col style="width: 15%;" />
+		                                    <col style="width: auto" />
+		                                </colgroup>
+										<tbody>
+											<tr>
+											    <th><span class="impo"></span> <label th:text="#{UIT0113}"></label></th>
+											    <td><input type="text" id="insttNm" name="insttNm" readonly="readonly"></td>
+											    <th><span class="impo"></span> <label th:text="#{UIT0114}"></label></th>
+											    <td><input type="text" id="insttCode" name="insttCode" readonly="readonly"></td>
+											</tr>
+											<tr>
+											    <th><span class="impo"></span> <label th:text="#{UIT0115}"></label></th>
+											    <td style="text-align: left;"><input type="text" id="bsnsBgnde" name="bsnsBgnde" style="width: 200px;" readonly="readonly"></td>
+											    <th><span class="impo"></span> <label th:text="#{UIT0116}"></label></th>
+											    <td style="text-align: left;"><input type="text" id="bsnsEndde" name="bsnsEndde" style="width: 200px;" readonly="readonly"></td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0117}"></label></th>
+												<td colspan="3" style="text-align: left;">											
+													<!-- <select id="telno_1" name="telno_1" style="width: 80px;">
+														<option value="">선택</option>
+														<option value="02">02</option>
+														<option value="031">031</option>
+														<option value="032">032</option>
+														<option value="033">033</option>
+														<option value="041">041</option>
+														<option value="043">043</option>
+														<option value="042">042</option>
+														<option value="044">044</option>
+														<option value="051">051</option>
+														<option value="052">052</option>
+														<option value="053">053</option>
+														<option value="054">054</option>
+														<option value="055">055</option>
+														<option value="061">061</option>
+														<option value="062">062</option>
+														<option value="063">063</option>
+														<option value="064">064</option>
+														<option value="070">070</option>
+													</select> -->
+													<div class="selectbox float_left" style="width: 100px; height: 34px;"> 
+			                                                <label for="la_telno_1" style="font-size: 13px;">선택</label>
+			                                                <select id="telno_1" name="telno_1" style="width: 100px;"> 
+			                                                    <option value="">선택</option>
+																<option value="02">02</option>
+																<option value="031">031</option>
+																<option value="032">032</option>
+																<option value="033">033</option>
+																<option value="041">041</option>
+																<option value="043">043</option>
+																<option value="042">042</option>
+																<option value="044">044</option>
+																<option value="051">051</option>
+																<option value="052">052</option>
+																<option value="053">053</option>
+																<option value="054">054</option>
+																<option value="055">055</option>
+																<option value="061">061</option>
+																<option value="062">062</option>
+																<option value="063">063</option>
+																<option value="064">064</option>
+																<option value="070">070</option>
+			                                                </select>
+			                                            </div>
+													 - 
+													<input type="text" id="telno_2" name="telno_2" maxlength="4" style="width: 100px;" oninput="maxLengthCheck(this)"> - <input type="text" id="telno_3" name="telno_3" maxlength="4" style="width: 100px;" oninput="maxLengthCheck(this)">
+												</td>
+											</tr>
+											<tr>
+												<th><label th:text="#{UIT0118}"></label></th>
+												<td colspan="3"><input type="text" id="hmpg" name="hmpg" maxlength="80"></td>
+											</tr>
+	                                                        
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0119}"></label></th>
+												<td><input type="text" id="chargerNm" name="chargerNm" maxlength="20"></td>
+												<th><label th:text="#{UIT0120}"></label></th>
+												<td><input type="text" id="chargerEmail" name="chargerEmail" maxlength="30"></td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0121}"></label></th>
+													<td style="text-align: left;">
+														<!-- <select id="chargerTelno_1" name="chargerTelno_1" style="width: 80px;">
+															<option value="">선택</option>
+															<option value="02">02</option>
+															<option value="031">031</option>
+															<option value="032">032</option>
+															<option value="033">033</option>
+															<option value="041">041</option>
+															<option value="043">043</option>
+															<option value="042">042</option>
+															<option value="044">044</option>
+															<option value="051">051</option>
+															<option value="052">052</option>
+															<option value="053">053</option>
+															<option value="054">054</option>
+															<option value="055">055</option>
+															<option value="061">061</option>
+															<option value="062">062</option>
+															<option value="063">063</option>
+															<option value="064">064</option>
+															<option value="070">070</option>
+														</select> -->
+														<div class="selectbox float_left" style="width: 100px; height: 34px;"> 
+			                                                <label for="la_chargerTelno_1" style="font-size: 13px;">선택</label>
+			                                                <select id="chargerTelno_1" name="chargerTelno_1" style="width: 100px;"> 
+			                                                    <option value="">선택</option>
+																<option value="02">02</option>
+																<option value="031">031</option>
+																<option value="032">032</option>
+																<option value="033">033</option>
+																<option value="041">041</option>
+																<option value="043">043</option>
+																<option value="042">042</option>
+																<option value="044">044</option>
+																<option value="051">051</option>
+																<option value="052">052</option>
+																<option value="053">053</option>
+																<option value="054">054</option>
+																<option value="055">055</option>
+																<option value="061">061</option>
+																<option value="062">062</option>
+																<option value="063">063</option>
+																<option value="064">064</option>
+																<option value="070">070</option>
+			                                                </select>
+			                                            </div>
+														 - 
+														<input type="text" id="chargerTelno_2" name="chargerTelno_2" maxlength="4" style="width: 80px;" oninput="maxLengthCheck(this)"> - <input type="text" id="chargerTelno_3" name="chargerTelno_3" maxlength="4" style="width: 80px;" oninput="maxLengthCheck(this)">
+													</td>
+													<th><label th:text="#{UIT0122}"></label></th>
+													<td style="text-align: left;">
+														<!-- <select id="chargerMbtlnum_1" name="chargerMbtlnum_1" style="width: 80px;">
+															<option value="">선택</option>
+															<option value="010">010</option>
+															<option value="011">011</option>
+															<option value="016">016</option>
+															<option value="017">017</option>
+															<option value="019">019</option>
+														</select> -->
+														<div class="selectbox float_left" style="width: 100px; height: 34px;"> 
+			                                                <label for="la_chargerMbtlnum_1" style="font-size: 13px;">선택</label>
+			                                                <select id="chargerMbtlnum_1" name="chargerMbtlnum_1" style="width: 100px;"> 
+			                                                    <option value="">선택</option>
+																<option value="010">010</option>
+																<option value="011">011</option>
+																<option value="016">016</option>
+																<option value="017">017</option>
+																<option value="019">019</option>
+			                                                </select>
+			                                            </div>
+														 - 
+														<input type="text" id="chargerMbtlnum_2" name="chargerMbtlnum_2" maxlength="4" style="width: 100px;" oninput="maxLengthCheck(this)"> - <input type="text" id="chargerMbtlnum_3" name="chargerMbtlnum_3" maxlength="4" style="width: 100px;" oninput="maxLengthCheck(this)">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</section>
+						</form>                                       
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 사용자 등록 팝업 open -->
+		<div id="userInsLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 330px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0112}"></p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="manageInsFrm">
+							<input type="hidden" id="uInsMode" name="uInsMode" value="">
+							<input type="hidden" id="uSubmitChk" name="uSubmitChk" value="">
+	                        
+	                        <div class="tb_type05">
+								<div class="table_area">
+		                            <table class="write fixed">
+		                                <colgroup>
+		                                    <col style="width: 20%;" />
+		                                    <col style="width: auto" />
+		                                    <col style="width: 20%;" />
+		                                    <col style="width: auto" />
+		                                </colgroup>
+										<tbody>
+											<tr>
+												<th><span class="impo"></span><label id="uIdChk" th:text="#{UIT0123}"></label></th>
+													<td><input type="text" id="uId" name="uId" maxlength="20" oninput="inputCheck(this)"></td>
+												<th><span class="impo"></span> <label th:text="#{UIT0124}"></label></th>
+													<td><input type="password" id="uPw" name="uPw" maxlength="20"></td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0125}"></label></th>
+											 	<td colspan="3"><input type="text" id="uNm" name="uNm" maxlength="20"></td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0126}"></label></th>
+												<td>
+													<!-- <select id="uAuthorCode" name="uAuthorCode">
+														<option th:each="author : ${authorList}" th:value="${author.authorCode }" th:text="${author.authorCodeNm }"></option>
+													</select> -->
+													<div class="selectbox"> 
+		                                                <label for="la_uAuthorCode">admin</label>
+		                                                <select id="uAuthorCode" name="uAuthorCode"> 
+		                                                    <option th:each="author : ${authorList}" th:value="${author.authorCode }" th:text="${author.authorCodeNm }"></option>
+		                                                </select>
+		                                            </div>
+												</td>
+												<th><label th:text="#{UIT0086}"></label></th>
+												<td style="text-align: left;">
+													<!-- <select id="insUseAt" name="useAt" style="width: 100px;">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select> -->
+		                                            <div class="selectbox"> 
+		                                                <label for="la_insUseAt">Y</label>
+		                                                <select id="insUseAt" name="useAt">
+		                                                    <option value="Y">Y</option>
+															<option value="N">N</option>	
+		                                                </select>
+		                                            </div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								 </div>
+							 </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<!-- <p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" th:text="#{UIT0088}"  onclick="fn_saveUser(this);"></button></span>
+							</p> -->
+							<div class="button_area alignr marginb5">
+	                            <button class="btn btn-l blue in_wp100" type="button" th:text="#{UIT0088}"  onclick="fn_saveUser(this);"></button>
+	                        </div>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 사용자 등록 팝업 close -->		
+		
+		<!-- 사용자 정보 팝업 open -->
+		<div id="userInfoLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 330px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0127}"></p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="manageFrm">
+							<input type="hidden" id="manageMode" name="manageMode" value="">
+	                        
+	                        <div class="tb_type05">
+		                        <div class="table_area">
+		                            <table class="write fixed">
+		                                <colgroup>
+		                                    <col style="width: 20%;" />
+		                                    <col style="width: auto" />
+		                                    <col style="width: 20%;" />
+		                                    <col style="width: auto" />
+		                                </colgroup>
+                      					<tbody>
+											<tr>
+												<th><label th:text="#{UIT0123}"></label></th>
+												<td><input type="text" id="userId" name="userId" readonly="readonly"></td>
+												<th><span class="impo"></span> <label th:text="#{UIT0124}"></label></th>
+												<td><input type="password" id="userPw" name="userPw" maxlength="20"></td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0125}"></label></th>
+												<td colspan="3"><input type="text" id="userNm" name="userNm" maxlength="20"></td>
+											</tr>
+											<tr>
+												<th><label th:text="#{UIT0128}"></label></th>
+												<td><input type="text" id="recentConnectDt" name="recentConnectDt" readonly="readonly"></td>
+												<th><span class="impo"></span> <label th:text="#{UIT0086}"></label></th>
+												<td style="text-align: left;">
+													<!-- <select id="udtUseAt" name="useAt" style="width: 100px;">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select> -->
+													<div class="selectbox"> 
+		                                                <label for="la_udtUseAt"></label>
+		                                                <select id="udtUseAt" name="useAt">
+		                                                    <option value="Y">Y</option>
+															<option value="N">N</option>	
+		                                                </select>
+		                                            </div>
+												</td>
+											</tr>
+    				                    </tbody>
+		                            </table>
+	                            </div>
+							 </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" th:text="#{UIT0095}" onclick="fn_saveManage(this);"></button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 사용자 정보 팝업 close -->
+		
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		var UIT0044 = /*[[ #{UIT0044} ]]*/; //: 비고
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var UIT0123 = /*[[ #{UIT0123} ]]*/; //: 사용자 아이디
+		var UIT0128 = /*[[ #{UIT0128} ]]*/; //: 생성일자
+		var UIT0129 = /*[[ #{UIT0129} ]]*/; //: 사용자권한
+		var UIT0130 = /*[[ #{UIT0130} ]]*/; //: 사용자아이디
+		var UIT0131 = /*[[ #{UIT0131} ]]*/; //: 사용자명
+		var UIT0132 = /*[[ #{UIT0132} ]]*/; //: 사용유무
+		var UIT0133 = /*[[ #{UIT0133} ]]*/; //: 담당부서를 입력하세요.
+		var UIT0134 = /*[[ #{UIT0134} ]]*/; //: 사용자 명을 입력하세요.
+		var UIT0135 = /*[[ #{UIT0135} ]]*/; //: 비밀번호를 입력하세요.
+		var UIT0136 = /*[[ #{UIT0136} ]]*/; //: 사용자정보가 등록 되었습니다.
+		var UIT0137 = /*[[ #{UIT0137} ]]*/; //: 사용자정보가 수정 되었습니다.
+		var UIT0138 = /*[[ #{UIT0138} ]]*/; //: 사업 시작일을 선택하세요.
+		var UIT0139 = /*[[ #{UIT0139} ]]*/; //: 사업 종료일을 선택하세요.
+		var UIT0140 = /*[[ #{UIT0140} ]]*/; //: 사업 시작일이 종료일 보다 클 수 없습니다.
+		var UIT0141 = /*[[ #{UIT0141} ]]*/; //: 대표전화번호를 정확히 입력해 주세요.
+		var UIT0142 = /*[[ #{UIT0142} ]]*/; //: 담당자 명을 입력해 주세요.
+		var UIT0143 = /*[[ #{UIT0143} ]]*/; //: 담당자 전화번호를 정확히 입력해 주세요.
+		var UIT0144 = /*[[ #{UIT0144} ]]*/; //: 기관정보가 등록 되었습니다.
+		var UIT0145 = /*[[ #{UIT0145} ]]*/; //: 기관정보가 수정 되었습니다.
+		var UIT0146 = /*[[ #{UIT0146} ]]*/; //: 기관정보가 삭제 되었습니다.
+		var UIT0147 = /*[[ #{UIT0147} ]]*/; //: 사용자 아이디(중복)
+		var UIT0148 = /*[[ #{UIT0148} ]]*/; //: 사용자 아이디(사용가능)
+		var UIT0149 = /*[[ #{UIT0149} ]]*/; //: 사용자 아이디 중복 여부를 확인해 주세요.
+		var UIT0150 = /*[[ #{UIT0150} ]]*/; //: 사용자 명을 입력해 주십시오
+		var UIT0151 = /*[[ #{UIT0151} ]]*/; //: 사용자 아이디를 입력해 주십시오
+		var UIT0152 = /*[[ #{UIT0152} ]]*/; //: 패스워드를 입력해 주십시오
+		/*]]*/
+		
+		$(document).ready(function() {
+			var startTab = $("#tab1");
+			fn_tabLink(startTab);
+			
+			$("#bsnsBgnde, #bsnsEndde").datepicker();
+			
+//			$("#detailDiv").hide();
+//			fn_searchManageList();
+
+		});
+
+		function fn_searchTab(tabId){
+			switch (tabId) {
+				case "tab1" : fn_searchManageList();
+				break;
+			  	case "tab2" : fn_searchInsttList();
+			    break;
+			}
+		}
+
+		function fn_searchManageList(){
+
+			var manageData = "";
+			var columns = null;
+			var searchValue = $("#searchValue").val();
+			var params = { "searchValue" : searchValue };
+			
+			$.ajax({
+				url: '/mngr/cmmnMng/selectManageList',
+				data: params,
+				success: function(data){
+					manageData = JSON.parse(data);
+					fn_setManageGrid(manageData);
+				}
+			});
+		}
+
+		function fn_setManageGrid(manageData){
+			
+			$("#tab1_gird").empty();
+			
+			var columns = [
+				{header : UIT0129, name : 'authorCode', whiteSpace: 'normal', sortable: true, align: 'center'},
+				{header : UIT0130, name : 'userId', whiteSpace: 'normal', sortable: true, align: 'center'}, 
+				{header : UIT0131, name : 'userNm', whiteSpace: 'normal', sortable: true, align: 'center'}, 
+				{header : UIT0128, name : 'recentConnectDt', whiteSpace: 'normal', sortable: true, width: 150, align: 'center'}, 
+				{header : UIT0132, name : 'useAt', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'}, 
+				{header : UIT0044, name : 'etc', whiteSpace: 'normal', width: 120, align: 'center', formatter : function(value, options){
+						var html  = "";
+						if(value.row.RNUM != 1){
+							html += "<input type='button' class='btn_select' data-value='UDT' data-toggle='modal' data-target='#manageModal' data-backdrop='static' data-keyboard='false' value='"+UIT0095+"'/>";	
+							
+						}
+						return html;
+					}
+				}
+			];
+			
+			const manageGrid = new tui.Grid({
+				el : document.getElementById("tab1_gird"),
+				data : manageData,
+				scrollX : false,
+				scrollY : false,
+				rowHeight : 40,
+				minBodyHeight : 40,
+				//bodyHeight : 349,
+				header: {
+				  height: 40
+				},
+				columns : columns
+			});
+			
+			const extOptions = {
+				cell: {
+					focused: {
+			            border: 0 // 선택 셀 강조 표시 x
+			        }
+				}
+			};
+			
+			tui.Grid.applyTheme('default', extOptions);
+			
+			manageGrid.on('click', function(ev) {
+		  		var inText = ev.nativeEvent.target.innerText;
+		  		var obj = ev.nativeEvent.target;
+		  		var mode = $(obj).data("value");
+		  		
+		  		if(ev.columnName === 'etc'){
+		  			var item = manageGrid.getRow(ev.rowKey);
+		  			
+		  			if(mode != undefined){
+		  				fn_openManageLayer(mode, item);
+		  			}
+		  		} 
+		  	});
+			
+			manageGrid.resetData(manageData);
+		}
+
+
+		function fn_openManageLayer(mode, item){
+			/*레이어 열기*/
+		    $('#userInfoLayer').addClass('on');
+		    
+		    $('.layer_pop_wrap').css("left","41%");
+		    $('.layer_pop_wrap').css("top","45%");
+			
+		    $('.tui-grid-container').css('z-index', 1);			// 
+		    $('.cover').show();
+		    
+			// 폼 초기화 
+			//$("#manageFrm")[0].reset();
+			
+			$("#manageMode").val(mode);
+			
+			if(mode == 'UDT'){
+				$("#insttCode").val(item.insttCode);
+				$("#insttNm").val(item.insttNm);
+				$("#chrgDept").val(item.chrgDept);
+				$("#userId").val(item.userId);
+				$("#userNm").val(item.userNm);
+				$("#recentConnectDt").val(item.recentConnectDt);
+				//$("#udtUseAt").val(item.useAt);
+				$("label[for='la_udtUseAt']").text(item.useAt);
+			}
+			
+		}
+
+		function fn_saveManage(obj){
+			
+			var chrgDept = $("#chrgDept").val();
+			var userNm = $("#userNm").val();
+			var userPw = $("#userPw").val();
+			var submitChk = true;
+			
+			if(chrgDept == ""){
+				alert(UIT0133);
+				submitChk = false;
+			}
+			
+			if(userNm == ""){
+				alert(UIT0134);
+				submitChk = false;
+			}
+			
+			if(userPw == ""){
+				alert(UIT0135);
+				submitChk = false;
+			}
+			
+			var frm = $("#manageFrm").serialize();
+			
+			if(submitChk){
+				
+				$.ajax({
+					url: "/mngr/cmmnMng/saveManageInfo",
+					data: frm,
+					success: function(data){
+						var result = JSON.parse(data);
+						
+						fn_searchManageList();
+						
+						if("INS" == result){
+							alert(UIT0136);	
+						}else if("UDT" == result){
+							alert(UIT0137);
+						}else{
+							alert(UIT0397);
+						}
+						fn_modalCloseLayer();
+					}
+				});
+			}
+		}
+
+
+		/****************************************************************************/
+
+		function fn_searchInsttList(){
+
+			var insttData = "";
+			var searchValue = $('#searchValue').val();
+			var loginInsttCode = /*[[ ${loginInsttCode} ]]*/;
+			var params = { "loginInsttCode" : loginInsttCode };
+			
+			$.ajax({
+				url: '/mngr/cmmnMng/selectManageInsttList',
+				data: params,
+				success: function(data){
+					insttData = JSON.parse(data);
+					
+					//fn_setInsttGrid(insttData);
+					
+					$.each(insttData, function(index, value) {
+						var str1 = value.reprsntTlphon;
+						var str2 = value.chargerTelno;
+						var str3 = value.chargerMbtlnum;
+
+						$("#insttNm").val(value.insttNm);
+						$("#insttCode").val(value.insttCode);
+						$("#bsnsBgnde").val(value.bsnsBgnde);
+						$("#bsnsEndde").val(value.bsnsEndde);
+						
+						$("#chargerNm").val(value.chargerNm);
+						$("#chargerEmail").val(value.chargerEmail);
+						
+						if(str1 != undefined){
+							var splitStr1 = str1.split('-');
+							if(splitStr1[0] != ""){
+								$("label[for='la_telno_1']").text(splitStr1[0]);
+							}
+							//$("#telno_1").val(splitStr1[0]);
+							$("#telno_2").val(splitStr1[1]);
+							$("#telno_3").val(splitStr1[2]);
+						}else{
+							$("#telno_1").val("");
+							$("#telno_2").val("");
+							$("#telno_3").val("");
+						}
+						
+						if(str2 != undefined){
+							var splitStr2 = str2.split('-');
+							if(splitStr2[0] != ""){
+								$("label[for='la_chargerTelno_1']").text(splitStr2[0]);
+							}
+							$("#chargerTelno_1").val(splitStr2[0]);
+							$("#chargerTelno_2").val(splitStr2[1]);
+							$("#chargerTelno_3").val(splitStr2[2]);
+						}else{
+							$("#chargerTelno_1").val("");
+							$("#chargerTelno_2").val("");
+							$("#chargerTelno_3").val("");
+						}
+						
+						if(str3 != undefined){
+							var splitStr3 = str3.split('-');
+							if(splitStr3[0] != ""){
+								$("label[for='la_chargerMbtlnum_1']").text(splitStr3[0]);
+							}
+							//$("#chargerMbtlnum_1").val(splitStr3[0]);
+							$("#chargerMbtlnum_2").val(splitStr3[1]);
+							$("#chargerMbtlnum_3").val(splitStr3[2]);
+						}else{
+							$("#chargerMbtlnum_1").val("");
+							$("#chargerMbtlnum_2").val("");
+							$("#chargerMbtlnum_3").val("");
+						}
+						
+						$("#hmpg").val(value.hmpg);
+					});
+				}
+			});
+		}
+
+		function fn_saveInstt(obj){
+			var insttCode = $("#insttCode").val();
+			var bsnsBgnde = $("#bsnsBgnde").val().replace(/-/gi, '');
+			var bsnsEndde = $("#bsnsEndde").val().replace(/-/gi, '');
+			var telno_1 = $("#telno_1").val();
+			var telno_2 = $("#telno_2").val();
+			var telno_3 = $("#telno_3").val();
+			
+			var chargerNm = $("#chargerNm").val();
+			var chargerEmail = $("#chargerEmail").val();
+			var chargerTelno_1 = $("#chargerTelno_1").val();
+			var chargerTelno_2 = $("#chargerTelno_2").val();
+			var chargerTelno_3 = $("#chargerTelno_3").val();
+			
+			var chargerMbtlnum_1 = $("#chargerMbtlnum_1").val();
+			var chargerMbtlnum_2 = $("#chargerMbtlnum_2").val();
+			var chargerMbtlnum_3 = $("#chargerMbtlnum_3").val();
+			
+			var hmpg = $("#hmpg").val();
+			
+			var submitChk = true;
+			
+			if(bsnsBgnde == ""){
+				alert(UIT0138);
+				return false;
+			}
+			
+			if(bsnsEndde == ""){
+				alert(UIT0139);
+				return false;
+			}
+			
+			if(Number(bsnsBgnde) > Number(bsnsEndde)){
+				alert(UIT0140);
+				return false;
+			}
+			
+			if(telno_1 == "" || telno_2 == "" || telno_3 == ""){
+				alert(UIT0141);
+				return false;
+			}
+			
+			if(chargerNm == "" || chargerNm == null){
+				alert(UIT0142);
+				return false;
+			}
+			
+			if(chargerTelno_1 == "" || chargerTelno_2 == "" || chargerTelno_3 == ""){
+				alert(UIT0143);
+				return false;
+			}
+			
+			var params = {
+				"insttMode" : "UDT",
+				"insttCode" : insttCode,
+				"bsnsBgnde" : bsnsBgnde,
+				"bsnsEndde" : bsnsEndde,
+				"reprsntTlphon" : telno_1+"-"+telno_2+"-"+telno_3,
+				"chargerNm" : chargerNm,
+				"chargerEmail" : chargerEmail,
+				"chargerTelno" : chargerTelno_1+"-"+chargerTelno_2+"-"+chargerTelno_3,
+				"chargerMbtlnum" : chargerMbtlnum_1+"-"+chargerMbtlnum_2+"-"+chargerMbtlnum_3,
+				"hmpg" : hmpg
+			}
+			
+			//var frm = $("#insttFrm").serialize();
+			
+			if(submitChk){
+				
+				$.ajax({
+					url: "/mngr/cmmnMng/saveManageInsttInfo",
+					data: params,
+					success: function(data){
+						var result = JSON.parse(data);
+						fn_searchInsttList();
+						
+						if("INS" == result){
+							alert(UIT0144);	
+						}else if("UDT" == result){
+							alert(UIT0145);
+						}else{
+							alert(UIT0146);
+						}
+						
+						fn_modalCloseLayer();
+						
+					}, error:function() {
+						alert(UIT0041);
+						return;
+					}
+				});
+			}
+		}
+
+		function fn_openUserLayer(mode, item){
+			
+			/*레이어 열기*/
+		    $('#userInsLayer').addClass('on');
+		    
+		    $('.layer_pop_wrap').css("left","41%");
+		    $('.layer_pop_wrap').css("top","45%");
+			
+		    $('.tui-grid-container').css('z-index', 1);			// 
+		    $('.cover').show();
+			
+			// 폼 초기화
+			$("#manageInsFrm")[0].reset();
+			$("#uIdChk").text(UIT0123);
+			//$("#uIdChk").css("color", "#858796");
+			
+			document.getElementById("uId").addEventListener("blur", function(){
+				var userId = $("#uId").val(); 
+				
+				$.ajax({
+					type : 'post',
+					url : '/mngr/selectUserIdChk',
+					data : {'userId' : userId},
+					datatype:'json',
+					success : function(data){
+						var obj = $.parseJSON(data);
+						var result = obj.result;
+						
+						if(!result){
+							$("#uIdChk").text(UIT0147);
+							$("#uIdChk").css("color", "red");
+							$("#uSubmitChk").val("N");
+							
+						}else if (userId == "" || userId == null){
+							$("#uIdChk").text(UIT0123);
+							$("#uIdChk").css("color", "#858796");
+							$("#uSubmitChk").val("Y");
+							
+						}else {
+							$("#uIdChk").text(UIT0148);
+							$("#uIdChk").css("color", "blue");
+							$("#uSubmitChk").val("Y");
+							
+						}
+					
+					}, error:function() {
+						alert(UIT0041);
+						return;
+					}
+			    });
+			});
+		}
+
+		function fn_saveUser(obj){
+			
+			var frmChk = true;
+			var chk = $("#uSubmitChk").val();
+			var uId = $("#uId").val();
+			var uPw = $("#uPw").val();
+			var uNm = $("#uNm").val();
+			var uAuthorCode = $("#uAuthorCode").val();
+			var useAt = $("#insUseAt").val();
+			
+			if(chk != "Y"){
+				alert(UIT0149);
+				return false;
+			} else {
+				if(uNm.length == 0 ){alert(UIT0150); frmChk = false;}			
+				else if(uId.length == 0 ){alert(UIT0151); frmChk = false;}
+				else if(uPw.length == 0){alert(UIT0152); frmChk = false;}
+			}
+			
+			if(frmChk){
+				var arr = [];
+				var obj = {};
+				obj.insttCode = /*[[ ${loginInsttCode} ]]*/;
+				obj.uId = uId;
+				obj.uPw = uPw;
+				obj.uNm = uNm;
+				obj.uAuthorCode = uAuthorCode;
+				obj.useAt = useAt;
+				
+				arr.push(obj);
+				
+				if(arr.length > 0){
+					$.ajax({
+						url: '/mngr/saveUserInfo',
+						method : 'POST',
+						data: {insertList : JSON.stringify(arr)},
+						success: function(data){
+							var obj = JSON.parse(data);
+							var item = obj.result;
+							fn_searchManageList();
+							
+							fn_modalCloseLayer();
+												
+				        }, error:function() {
+							alert(UIT0041);
+							return;
+						}
+				    });
+				}
+			}
+		}
+
+		</script>
+	</div>
+</html>

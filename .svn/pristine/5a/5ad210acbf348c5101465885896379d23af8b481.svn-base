@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<!-- Main Footer -->
+	<div th:fragment="leftAsideFragment" class="left_area">
+ 		<h1>
+            <a href="/mngr/main" title="메인페이지로 이동">
+                <img src="/img/common/logo.png" alt="SS-DQ STD Data Quality Management" />
+            </a>
+        </h1>
+        <div class="lnb_menu">
+			<ul style="padding-bottom: 0px;">
+				<!-- 대시보드 -->
+				<!-- <li class="menu01">
+				<a class="nav-link" id="test" href="/mngr/main">
+					<span th:text="#{UIT0396}">MAIN PAGE</span>
+				</a>
+				</li> -->
+				<li>
+					<strong>HOME</strong>
+					<ul>
+						<li class="menu01">
+							<a class="nav-link" id="test" href="/mngr/main">
+								<span th:text="#{UIT0396}">MAIN PAGE</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<!-- <li>
+					<div id = "menuDiv"></div>
+				</li> -->
+				<!-- 토글 버튼 -->
+				<!-- <div class="text-center d-none d-md-inline">
+					<button class="rounded-circle border-0" id="sidebarToggle"></button>
+				</div> -->
+			</ul>
+			<ul id="menuDiv" style="padding-top: 0px;"></ul>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+		var idx = 2;
+		$(document).ready(function() {
+			
+			var getUrlParameter = function getUrlParameter(sParam) {
+			    var sPageURL = window.location.search.substring(1),
+			        sURLVariables = sPageURL.split('&'),
+			        sParameterName,
+			        i;
+		
+			    for (i = 0; i < sURLVariables.length; i++) {
+			        sParameterName = sURLVariables[i].split('=');
+		
+			        if (sParameterName[0] === sParam) {
+			            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+			        }
+			    }
+			};
+			
+			var up = getUrlParameter('up');
+			var sn = getUrlParameter('sn');
+			
+			$("#"+up).show();
+			
+			console.log("up == ",up);
+			
+			if(up == 'collapse0'){
+				$("[data-menuSn="+sn+"]").parent('li').addClass("on");
+			}else{
+				if($("[data-menuSn="+sn+"]").siblings('ul.sub_menu').length != 0){
+					$("[data-menuSn="+sn+"]").removeClass("closed").addClass("open");
+				}
+				/* $("[data-menuSn="+sn+"]").parent('li').parent('ul').parent('li').addClass("on"); */
+				$("[data-menuSn="+sn+"]").parents("li[class*=menu]").addClass("on");
+				
+				$("[data-menuSn="+sn+"] span").css("color", "#8de1f6");
+			}
+			
+		});
+	
+		var data = /*[[ ${session.menuList} ]]*/ "";
+		
+		var html = "";
+		var groupBy = data.slice(0).sort()[0].menuGroupSn;
+		
+		$.each(data, function(index, value) {
+			if(groupBy < value.menuGroupSn){
+				groupBy++;
+			}
+			
+			if(groupBy == value.menuGroupSn){
+				/* html += '<hr class="sidebar-divider">';
+				html += '<div class="sidebar-heading">'+value.menuGroupNm+'</div>'; */
+				html += '<li>';
+				html += '<strong>'+value.menuGroupNm+'</strong>';
+				html += fn_liList(data, value.menuGroupSn);
+				html += '</li>';
+				
+				groupBy++;
+			}	
+		});
+		
+		$("#menuDiv").append(html);
+		
+		
+		
+		
+		function fn_liList(data, menuGroupSn){
+			var cHtml = "";
+			cHtml += '<ul>';
+			$.each(data, function(index, value) {
+				if(menuGroupSn == value.menuGroupSn && value.upperMenuSn == 0){
+					if(idx < 10){
+						cHtml += '<li class="menu0'+idx+'">';
+					}else{
+						cHtml += '<li class="menu'+idx+'">';
+					}
+					//cHtml += '<li class="fas fa-fw '+value.menuIcon+'">';
+					//cHtml += '<li>';
+					if(value.isLast != 'N'){
+						cHtml += '	<a href="#" class="" data-menuSn='+value.menuSn+' onclick="menuLink(\''+value.menuUrl+'\', \''+value.menuSn+'\', \'collapse'+value.upperMenuSn+'\'); return false;">';
+					}else{
+						/* cHtml += '	<a href="#" class="closed" collapsed" href="#" onclick="return false;" data-toggle="collapse" data-target="#collapse'+value.menuSn+'" aria-expanded="true" aria-controls="collapseOne" >'; */
+						cHtml += '	<a href="#" class="closed" collapsed" href="#" onclick="return false;" data-target="#collapse'+value.menuSn+'" aria-expanded="true" aria-controls="collapseOne" >';
+					}
+					//cHtml += '		<i class="fas fa-li '+value.menuIcon+'"></i>';
+					cHtml += '		<span>'+value.menuNm+'</span>';
+					cHtml += '	</a>';
+					
+					if(value.isLast == 'N'){
+						cHtml += fn_children(data, value.menuSn);
+					}
+					
+					cHtml += '</li>';
+					idx++;
+				}
+				
+			});
+			cHtml += '</ul>';
+			
+			return cHtml;
+		}
+		
+		function fn_children(data, menuSn){
+			
+			var cHtml = "";
+			
+			cHtml += '<ul id="collapse'+menuSn+'" class="sub_menu" aria-labelledby="headingTwo" data-parent="#accordionSidebar">';
+			/* cHtml += '	<li class="bg-white py-2 collapse-inner rounded">'; */
+			
+			$.each(data, function(index, value) {
+				if(menuSn == value.upperMenuSn){
+					cHtml += '	<li>';
+					cHtml += '<a href="#" class="" data-menuSn='+value.menuSn+' onclick="menuLink(\''+value.menuUrl+'\', \''+value.menuSn+'\', \'collapse'+value.upperMenuSn+'\'); return false;">';
+					cHtml += '<span>'+value.menuNm+'</span>';
+					cHtml +='</a>';
+					cHtml += '	</li>';
+				}
+			});
+			
+			/* cHtml += '	</li>'; */
+			cHtml += '</ul>';
+			
+			return cHtml;
+	
+		}
+		
+		function menuLink(menuUrl, menuSn, upMenuSn){
+			
+			window.location.href = menuUrl + "?up="+upMenuSn+"&sn="+menuSn;
+			
+		}
+		
+		</script>			
+	</div>
+
+
+</html>

@@ -1,0 +1,545 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+
+		<title>Insert title here</title>
+	</head>
+	<body id="page-top">
+		<div id="wrapper">
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+			
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+					<!-- 상단영역 nav -->
+					<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />	
+				
+					<!-- 본문 -->
+					<div class="container-fluid">
+	
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+                  			<span class="col_gray01 font_14 mgn_b0"><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> BASIC &gt; 기본정보</span>
+	                    </div>
+	                    
+	                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim"> 기본정보</h1>
+							<!-- <h1 class="col_grey font_23 font_slim"></i> 진단 대상 데이터베이스 연결 설정 (DBMS)</h1> -->
+	                    </div>
+						
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<div class="card shadow mb-4">
+									<div class="card-body">
+										<div id="dataTable_filter" class="dataTables_filter">
+	                                         <section class="mgn_b20 txt_right">
+	                                         	<button class="btn btn-secondary btn_wd100" onclick="goList('list')" >목록보기</button>
+	                                            <button class="btn btn-secondary btn_wd120" onclick="connectTest('list')" >연결테스트</button>
+	                                            <button class="btn btn-primary btn_wd100" id="btnSave" name="btnSave"  onclick="connectSave('save');" >저장</button>
+	                                            <!-- <button class="btn btn-primary btn_wd100" onclick="goCsvFileAdd()" >CSV</button> -->
+	                                        </section>
+											 <form action="">
+											 	<input type="hidden" id="conCheck" name="conCheck" value="N">
+											 	<input type="hidden" id="dbmsId" name="dbmsId" value="">
+											 	<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" value="${dgnssDbmsId}">
+	                                            <section class="l_box_type02">                                    
+	                                                <div class="tb_type03">
+	                                                    <table>
+	                                                        <tbody>
+	                                                            <tr>
+	                                                                <th><label for="dbmsKnd"><span class="str">*</span> DB종류</label></th>
+	                                                                <td style="text-align: left;">
+	                                                                    <select id="dbmsKnd" name="dbmsKnd" style="width: 200px;" onchange="onChangeDb();">
+	                                                                        <option value="00" >선택</option>
+	                                                                    </select>                                                                
+	                                                                </td>
+	                                                                
+	                                                                <th><label for="dbmsVerId"> DB버전</label></th>
+	                                                                <td style="text-align: left;">
+	                                                                    <select id="dbmsVerId" name="dbmsVerId" style="width: 200px;" >
+	                                                                        <option value="00" >선택</option>
+	                                                                    </select>                                                                
+	                                                                </td>
+	                                                            </tr>
+	                                                            <tr>
+	                                                                <th><label for="ip"><span class="str">*</span> 서버 IP</label></th>
+	                                                                <td><input type="text" id="ip" name="ip" value="${ip }" maxlength="20" onchange="changeInput();"></td>
+	                                                                <th><label for="port"><span class="str">*</span> 서버 Port</label></th>
+	                                                                <td><input type="text" id="port" name="port" value="${port }" maxlength="4" onchange="changeInput();"></td>
+	                                                            </tr>
+	                                                            <tr>
+	                                                                <th><label for="sid"><span class="str">*</span> SID</label></th>
+	                                                                <td><input type="text" id="sid" name="sid" value="${sid }" maxlength="30" onchange="changeInput();"></td>
+	                                                                <th><label for="database"><span class="str">*</span> Database</label></th>
+	                                                                <td><input type="text" id="database" name="database" value="${database }" maxlength="20" onchange="changeInput();"></td>
+	                                                            </tr>
+	                                                            <tr>
+	                                                                <th><label for="id"><span class="str">*</span> 로그인 ID</label></th>
+	                                                                <td><input type="text" id="id" name="id" value="${id}" maxlength="20" onchange="changeInput();"></td>
+	                                                                <th><label for="pwd"><span class="str">*</span> Password</label></th>
+	                                                                <td><input type="password" id="pwd" name="pwd" value="" maxlength="20" onchange="changeInput();"></td>
+	                                                            </tr>
+	                                                            <tr>
+	                                                                <th><label for="dgnssDbmsNm"><span class="str">*</span> 진단대상<br>데이터베이스명</label></th>
+	                                                                <td colspan="3"><input type="text" id="dgnssDbmsNm" name="dgnssDbmsNm" value="${dgnssDbmsNm }" maxlength="30" onchange="changeInput();"></td>
+	
+	                                                            </tr>
+	                                                            <tr>                                                                
+	                                                                <td colspan="4" align="center"><input type="text" id="dbUrl" name="dbUrl" value="" style="text-align:center;border: none;"  readonly="readonly"></td>
+	                                                            </tr>
+	                                                        </tbody>
+	                                                    </table>
+	                                                </div>
+	                                            </section>
+	                                        </form>                                       
+										</div>
+									</div>
+								<!-- 내용 -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+			</div>
+		</div>
+		
+	</body>
+	
+	
+	<script type="text/javascript"  class="code-js">
+
+		$(document).ready(function() {
+
+			var dbmsKnd = "${dbmsKnd}";
+			var dbmsVerId = "${dbmsVerId}";
+			var dbmsId = "${dbmsId}";
+			var dgnssDbmsId = "${dgnssDbmsId}";
+			
+			if(dbmsKnd == ""){
+				dbmsKnd = "00";
+			}
+			if(dbmsVerId == ""){
+				dbmsVerId = "00";
+			}
+			if(dbmsId == ""){
+				dbmsVerId = "00";
+			}
+			
+			selDbmsKindListBox(dbmsKnd);
+			if("00" != dbmsVerId){
+				selDbmsVerListBox(dbmsId);
+			}
+			if(dgnssDbmsId > -1 && "" != dgnssDbmsId){
+				$("#btnSave").text("수정");
+				$("#dbmsKnd").attr('disabled',true);
+				loadUrl();
+			}
+		});
+
+		// db종류 조회
+		function selDbmsKindListBox(dbmsKnd){
+			$.ajax({
+				url: '/mngr/basicInfo/selDbmsKindList',
+				method : 'POST',
+				success: function(dataList){
+					for(var i = 0; i < dataList.length; i++){
+						var selected = "";
+						if(dbmsKnd == dataList[i].dbmsKnd) {
+							selected = "selected=true";
+							$("#dbmsId").val(dataList[i].dbmsId);
+							selDbmsVerListBox(dataList[i].dbmsId);
+						}else{
+							selected = "";
+						}
+						var option  = $("<option value="+dataList[i].dbmsKnd+" "+selected+">"+dataList[i].dbmsKnd+"</option>");
+						$("#dbmsKnd").append(option);
+					}
+		        },
+		    });
+
+		}
+
+		// db버전 조회
+		function selDbmsVerListBox(dbmsId){
+			var dbmsVerId = "${dbmsVerId}";
+			$.ajax({
+				url: '/mngr/basicInfo/selDbmsVerList',
+				method : 'POST',
+				data: {dbmsId : dbmsId},
+				success: function(dataList){
+					for(var i = 0; i < dataList.length; i++){
+						var selected = "";
+						if(dbmsVerId == dataList[i].dbmsVerId) {
+							selected = "selected=true";
+						}else{
+							selected = "";
+						}
+						var option  = $("<option value="+dataList[i].dbmsVerId+" "+selected+">"+dataList[i].dbmsVerId+"</option>");
+						$("#dbmsVerId").append(option);
+					}
+		        },
+		    });
+
+		}
+	
+		function connectTest(type){
+			
+			var arr = [];
+			var obj = {};
+			var mode = "";
+				
+			var dbmsKnd = $("#dbmsKnd").val();
+			var id = $("#id").val();
+			var pwd = $("#pwd").val();
+			var ip = $("#ip").val();
+			var port = $("#port").val();
+			var sid = $("#sid").val();
+			var database = $("#database").val();
+			var dbmsVerId = $("#dbmsVerId").val();
+			var database = $("#database").val();
+			
+			if(dbmsKnd == "00" || dbmsKnd == null){
+				alert("DB종류를 선택해 주세요.");
+				$("#dbmsKnd").focus();
+				return false;
+			}
+
+			if(dbmsVerId == "00" || dbmsVerId == null){
+				alert("DB버전를 선택해 주세요.");
+				$("#dbmsVerId").focus();
+				return false;
+			}
+
+			if(ip == "" || ip == null){
+				alert("서버IP를  반드시 입력해 주세요.");
+				$("#ip").focus();
+				return false;
+			}
+
+			if(port == "" || port == null){
+				alert("서버Port를  반드시 입력해 주세요.");
+				$("#port").focus();
+				return false;
+			}
+
+			if(sid == "" || sid == null){
+				alert("SID를  반드시 입력해 주세요.");
+				$("#sid").focus();
+				return false;
+			}			
+
+			if(database == "" || database == null){
+				alert("Database를 반드시 입력해 주세요.");
+				$("#database").focus();
+				return false;
+			}
+			
+			if(id == "" || id == null){
+				alert("로그인ID를 반드시 입력해 주세요.");
+				$("#id").focus();
+				return false;
+			}
+			
+			if(pwd == "" || pwd == null){
+				alert("Password를 반드시 입력해 주세요.");
+				$("#pwd").focus();
+				return false;
+			}
+			wrapWindowByMask();
+			
+			obj.dbmsKnd = dbmsKnd ;
+			obj.id = id;
+			obj.pwd = pwd;
+			obj.ip = ip;
+			obj.port = port;
+			obj.sid = sid;
+			obj.database = database;
+			arr.push(obj);
+			
+			if(arr != null){
+				
+				$.ajax({
+					url: '/mngr/basicInfo/dataConnPropCheckDb.do',
+					method : 'POST',
+					data: {mode : mode, type : type, dataList : JSON.stringify(arr)},
+					success: function(data){
+						var obj = $.parseJSON(data);
+						var result = obj.result;
+						closeWindowByMask();
+						if(result){ 
+							alert("연결에 성공하였습니다.");
+							$("#conCheck").val("Y");
+							//window.open("/mngr/basicInfo/conResSuccess","result","width=260, height=145,left=800,top=280");
+						}else{
+							alert("연결에 실패하였습니다.\n입력정보를 확인해주세요.");
+							$("#conCheck").val("N");
+							//window.open("/mngr/basicInfo/conResFail","result","width=260, height=145,left=800,top=280");
+						}
+			        }, error:function() {
+			        	closeWindowByMask();
+			        	alert("연결에 실패하였습니다.\n입력정보를 확인해주세요.");
+						$("#conCheck").val("N");
+			        	//window.open("/mngr/basicInfo/conResFail","result","width=260, height=145,left=800,top=280");
+		                return;
+		           }
+			    });
+				
+			}
+			
+		}			
+
+		function doSave() {
+			
+			// 업로드 파일 확인
+			if($("#fileName").val() == "") {
+				alert("업로드할 파일을 선택해주세요");
+				return;
+			}
+			
+			if(confirm("저장하시겠습니까?")) {
+				$("#frm").submit();
+			}
+			
+		}
+
+		function onChangeDb(){
+			var dbmsKnd = $("#dbmsKnd").val();
+			var dbmsId = $("#dbmsId").val();
+			if(dbmsKnd == ""){
+				dbmsKnd = "00"
+			}
+			if(dbmsId == ""){
+				dbmsId = "00"
+			}
+			// 선택 초기
+			if(dbmsKnd == "00"){
+				location.href = "/mngr/basicInfo/dataConnProp.do?dbmsId="+dbmsId+"&dbmsKnd="+dbmsKnd;
+			}
+			// oracle
+			if(dbmsKnd == "Oracle"){
+				location.href = "/mngr/basicInfo/dataConnProp.do?dbmsId="+dbmsId+"&dbmsKnd="+dbmsKnd;
+			}
+			// Maria
+			if(dbmsKnd == "Maria"){
+				location.href = "/mngr/basicInfo/dataConnProp.do?dbmsId="+dbmsId+"&dbmsKnd="+dbmsKnd;
+			}
+			// csv
+			if(dbmsKnd == "CSV"){
+				location.href = "/mngr/basicInfo/csvFileAdd.do?dbmsId="+dbmsId+"&dbmsKnd="+dbmsKnd;
+			}
+		}
+
+		function goCsvFileAdd(){
+			location.href = "/mngr/basicInfo/csvFileAdd.do";
+		}
+
+		function connectSave(type){
+			var arr = [];
+			var obj = {};
+			var mode = "INS";
+				
+			var dbmsKnd = $("#dbmsKnd").val();
+			var dbmsVerId = $("#dbmsVerId").val();
+			var id = $("#id").val();
+			var pwd = $("#pwd").val();
+			var dgnssDbmsId = $("#dgnssDbmsId").val();
+			var dgnssDbmsNm = $("#dgnssDbmsNm").val();
+			var ip = $("#ip").val();
+			var port = $("#port").val();
+			var sid = $("#sid").val();
+			var database = $("#database").val();
+			var conCheck = $("#conCheck").val();
+			
+			if(dbmsKnd == "00" || dbmsKnd == null){
+				alert("DB종류를 선택해 주세요.");
+				$("#dbmsKnd").focus();
+				return false;
+			}
+
+			if(dbmsVerId == "00" || dbmsVerId == null){
+				alert("DB버전을 선택해 주세요.");
+				$("#dbmsVerId").focus();
+				return false;
+			}
+
+			if(ip == "" || ip == null){
+				alert("서버IP를  반드시 입력해 주세요.");
+				$("#ip").focus();
+				return false;
+			}
+
+			if(port == "" || port == null){
+				alert("서버Port를  반드시 입력해 주세요.");
+				$("#port").focus();
+				return false;
+			}
+
+			if(sid == "" || sid == null){
+				alert("SID를  반드시 입력해 주세요.");
+				$("#sid").focus();
+				return false;
+			}
+
+			if(database == "" || database == null){
+				alert("Database를  반드시 입력해 주세요.");
+				$("#database").focus();
+				return false;
+			}			
+			
+			if(id == "" || id == null){
+				alert("로그인ID를 반드시 입력해 주세요.");
+				$("#id").focus();
+				return false;
+			}
+			
+			if(pwd == "" || pwd == null){
+				alert("Password를 반드시 입력해 주세요.");
+				$("#pwd").focus();
+				return false;
+			}
+
+			if(dgnssDbmsNm == "" || dgnssDbmsNm == null){
+				alert("진단대상데이터베이스명을  반드시 입력해 주세요.");
+				$("#dgnssDbmsNm").focus();
+				return false;
+			}
+			
+
+			if(conCheck == "N" || conCheck == "" || conCheck == null){
+				alert("연결테스트 버튼을 클릭해 주세요.");
+				return false;
+			}
+			
+			obj.dbmsKnd = dbmsKnd ;
+			obj.dbmsVerId = dbmsVerId;
+			obj.id = id;
+			obj.pwd = pwd;
+			obj.dgnssDbmsNm = dgnssDbmsNm;
+			obj.ip = ip;
+			obj.port = port;
+			obj.sid = sid;
+			obj.database = database;
+			obj.dgnssDbmsId = dgnssDbmsId;
+			
+			arr.push(obj);
+
+
+			if(arr != null){
+				wrapWindowByMask();
+				$.ajax({
+					url: '/mngr/basicInfo/dataConnPropSave.do',
+					method : 'POST',
+					data: {mode : mode, type : type, dataList : JSON.stringify(arr)},
+					success: function(data){
+						closeWindowByMask();
+						if(data){ 
+							alert('정상적으로 등록 되었습니다.');
+							connectDbms(obj);
+							//location.href = "/mngr/basicInfo/dgnssDbmsList";
+						}else{
+							alert('등록에 실패하였습니다. 다시 등록해 주시기 바랍니다.');
+						}
+			        }, error:function() {
+			        	closeWindowByMask();
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+			    });
+				
+			}
+			
+		}
+
+		function changeInput(){
+			
+			var dbmsKnd = $("#dbmsKnd").val();
+			var dbmsVerId = $("#dbmsVerId").val();
+			var id = $("#id").val();
+			var pwd = $("#pwd").val();
+			var dgnssDbmsId = $("#dgnssDbmsId").val();
+			var dgnssDbmsNm = $("#dgnssDbmsNm").val();
+			var ip = $("#ip").val();
+			var port = $("#port").val();
+			var sid = $("#sid").val();
+			var database = $("#database").val();
+			var conCheck = $("#conCheck").val();
+			var url = "";
+			if("" == dbmsKnd){
+				dbmsKnd = "${dbmsKnd}";
+			}
+			if(dbmsKnd == 'Oracle'){
+				// jdbc:Oracle:thin:@125.7.207.6:1522:ORCL
+				url = "jdbc:"+dbmsKnd+":thin:@"+ip+":"+port+":"+sid;
+			}else if(dbmsKnd == 'Maria'){
+				// jdbc:maria://localhost:3389/test
+				url = "jdbc:"+dbmsKnd+"://"+ip+":"+port+"/";
+			}else if(dbmsKnd == 'MySql'){
+				// jdbc:mysql://localhost:3389/test
+				url = "jdbc:"+dbmsKnd+"://"+ip+":"+port+"/";
+			}else if(dbmsKnd == 'MsSql'){
+				// jdbc:maria://localhost:3389/test
+				url = "jdbc:"+dbmsKnd+"://"+ip+":"+port+"/";
+			}
+			$("#dbUrl").val(url);
+		}
+
+		// 수정으로 접근시 URL 정보 표시
+		function loadUrl(){
+			var dbmsKnd = "${dbmsKnd}";
+			var dbmsVerId = "${dbmsVerId}";
+			var id = "${id}";
+			var pwd = "${pwd}";
+			var dgnssDbmsId = "${dgnssDbmsId}";
+			var dgnssDbmsNm = "${dgnssDbmsNm}";
+			var ip = "${ip}";
+			var port = "${port}";
+			var sid = "${sid}";
+			var database = "${database}";
+			var url = "";
+			if(dbmsKnd == 'Oracle'){
+				// jdbc:Oracle:thin:@125.7.207.6:1522:ORCL
+				url = "jdbc:"+dbmsKnd+":thin:@"+ip+":"+port+":"+sid;
+			}else if(dbmsKnd == 'Maria'){
+				// jdbc:maria://localhost:3389/test
+				url = "jdbc:"+dbmsKnd+"://"+ip+":"+port+"/";
+			}else if(dbmsKnd == 'MySql'){
+				// jdbc:mysql://localhost:3389/test
+				url = "jdbc:"+dbmsKnd+"://"+ip+":"+port+"/";
+			}else if(dbmsKnd == 'MsSql'){
+				// jdbc:maria://localhost:3389/test
+				url = "jdbc:"+dbmsKnd+"://"+ip+":"+port+"/";
+			}
+			$("#dbUrl").val(url);
+		}
+
+		// 선택된 지정 DB 접속 정보를 세션에 등록한다.
+		function connectDbms(obj){
+			
+			var dgnssDbmsId = obj.dgnssDbmsId;
+			
+			$.ajax({
+				url: "/mngr/basicInfo/connectDbms",
+				data: {dgnssDbmsId : dgnssDbmsId} ,
+				success: function(data){
+					// 처리 완료시 페이지를 리로드 하여 세션에 저장된 접속 URL 정보를 확인 한다.
+					location.href = "/mngr/basicInfo/dgnssDbmsList";
+				}
+			});
+				
+		}
+
+		function goList(type){
+			location.href = "/mngr/basicInfo/dgnssDbmsList";
+		}
+		
+	</script>
+</html>

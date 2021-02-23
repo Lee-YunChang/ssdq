@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.LifecycleMapper">
+	<select id="AjaxSelLifecycleList" parameterType="map" resultType="map">
+		SELECT 	
+			*
+		FROM(
+			SELECT 
+				A.*
+				, CONCAT(period," ",periodCl) AS addPeriod
+				, (@rownum2 := @rownum2+1) AS RNUM
+			from (
+			SELECT 
+				INSTT_CODE as insttCode 
+				,ANALS_ID as analsId
+				, ANALS_TY AS analsTy
+				, FIELD_NM AS fieldNm
+				, PERIOD AS period
+				, PERIOD_CL AS periodCl
+				, RM AS rm
+				, USE_AT AS useAt
+				, REGIST_DT AS registDt
+				, (@rownum := @rownum+1) AS RN
+			FROM LIFECYCLE_ANALS, (SELECT @rownum :=0) AS R
+			where USE_AT = 'Y'
+			<if test="searchLifecycleCl != '' and searchLifecycleCl != NULL">
+				AND ANALS_TY LIKE CONCAT('%',#{searchLifecycleCl},'%')
+			</if>
+			<if test="searchLifecycleNm != '' and searchLifecycleNm != NULL">
+				AND FIELD_NM LIKE CONCAT('%',#{searchLifecycleNm},'%')
+			</if>
+			ORDER BY LENGTH(analsId),analsId
+			) A, (SELECT @rownum2 :=0) AS A2
+		) A3
+		WHERE 1=1		
+		AND RNUM BETWEEN #{start_row} AND #{end_row}
+	</select>
+	
+	<select id="AjaxSelLifecycleListTotalCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) 
+		FROM LIFECYCLE_ANALS
+		where USE_AT = 'Y'
+		<if test="searchLifecycleCl != '' and searchLifecycleCl != NULL">
+			AND ANALS_TY LIKE CONCAT('%',#{searchLifecycleCl},'%')
+		</if>
+		<if test="searchLifecycleNm != '' and searchLifecycleNm != NULL">
+			AND FIELD_NM LIKE CONCAT('%',#{searchLifecycleNm},'%')
+		</if>
+	</select>
+	
+	<insert id="AjaxInsLifecycleList" parameterType="map">
+		INSERT INTO	LIFECYCLE_ANALS
+		(	INSTT_CODE
+			, ANALS_ID
+			, ANALS_TY
+			, FIELD_NM
+			, PERIOD_CL
+			, PERIOD
+			, RM
+			, USE_AT
+			, REGIST_DT
+		)VALUES(
+			#{insttCode}
+			, #{analsId}
+			, #{analsTy}
+			, #{fieldNm}
+			, #{periodCl}
+			, ${period}
+			, #{rm}
+			, 'Y'
+			, now()
+			)
+	</insert>
+	
+	<select id="selInttCode" parameterType="map" resultType="String">
+		SELECT INSTT_CODE FROM INSTT
+	</select>
+	
+	<select id="selMaxId" parameterType="map" resultType="String">
+		SELECT COUNT(ANALS_ID)+1 FROM LIFECYCLE_ANALS
+	</select>
+	
+	<update id="AjaxUdtLifecycleList" parameterType="map">
+		UPDATE LIFECYCLE_ANALS
+			SET	ANALS_TY = #{analsTy}
+				, FIELD_NM = #{fieldNm}
+				, PERIOD = ${period}
+				, PERIOD_CL = #{periodCl}
+				, RM = #{rm}
+			WHERE 1=1
+				AND INSTT_CODE = #{insttCode} 
+				AND ANALS_ID = #{analsId}
+	</update>
+	
+	<update id="AjaxDelLifecycleList" parameterType="map">
+		UPDATE LIFECYCLE_ANALS 
+			SET USE_AT = 'N'
+		WHERE ANALS_ID = #{analsId}	
+	</update>
+	
+	<select id="AjaxSelLifecycleFiledNm" parameterType="map" resultType="map">
+		SELECT 
+			ANALS_ID AS analsId 
+			, FIELD_NM AS fieldNm 
+		FROM LIFECYCLE_ANALS 
+		ORDER BY LENGTH(ANALS_ID),ANALS_ID
+	</select>
+	
+	<select id="selectAnalysisPeriod" parameterType="map" resultType="map">
+		SELECT
+			ANALS_TY AS analsTy
+			, PERIOD AS period 
+			, PERIOD_CL AS periodCl
+		FROM LIFECYCLE_ANALS 
+		WHERE ANALS_ID = #{analsId}
+	</select>
+	
+	<insert id="insertLifecycleSchema" parameterType="map">
+		INSERT INTO LIFECYCLE_TABLES
+		(	DGNSS_DBMS_ID
+			, INSTT_CODE
+			, DGNSS_INFO_ID
+			, DGNSS_NM
+			, SCHEMA_NM
+			, ALL_CO
+			, EXC_BEGIN_TIME
+			, EXC_END_TIME
+			, EXC_STTUS
+			, REGIST_DT
+		)VALUES(
+			#{dgnssDbmsId}
+			, #{insttCode}
+			, #{dgnssInfoId}
+			, #{dgnssNm}
+			, #{tableSchema}
+			, ${allCo}
+			, NOW()
+			, NULL
+			, 'S'
+			, NOW()
+		)
+			
+	</insert>
+	
+	<insert id="insertLifecycleTableAnalysis" parameterType="map">
+		INSERT INTO lifecycle_tables_res
+			(	INSTT_CODE
+				, DGNSS_DBMS_ID
+				, DGNSS_INFO_ID
+				, TABLE_NM
+				, ANALS_ID
+				, COULUMN_NM
+				, TOTAL_CO
+				, MTCHG_CO
+				, MISS_CO
+				, REGIST_DT
+			)VALUES(
+				#{insttCode}
+				, #{dgnssDbmsId}
+				, #{dgnssInfoId}
+				, #{tableName}
+				, #{analsId}
+				, #{columnName}
+				, ${totalCnt}
+				, ${mtchgCnt}
+				, ${missCnt}
+				, NOW()
+			)
+	</insert>
+	
+	<select id="selectLifecycleSchemaList" parameterType="map" resultType="map">
+		SELECT
+			INSTT_CODE AS insttCode
+			, DGNSS_DBMS_ID AS dgnssDbmsId
+			, DGNSS_INFO_ID AS dgnssInfoId
+			, DGNSS_NM AS dgnssNm
+			, SCHEMA_NM AS schemaNm
+			, ALL_CO AS allCo
+			, DATE_FORMAT(EXC_BEGIN_TIME, '%Y-%m-%d %H:%i:%s') AS excBeginTime
+			, DATE_FORMAT(EXC_END_TIME, '%Y-%m-%d %H:%i:%s') AS excEndTime
+			, CONCAT((CASE WHEN TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME) = '0'
+							THEN 1
+							ELSE TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME)
+							END ), 's') AS workTime
+			, EXC_STTUS AS excSttus
+			, REGIST_DT AS registDt
+		FROM
+			LIFECYCLE_TABLES
+		ORDER BY
+			REGIST_DT DESC
+		LIMIT
+			#{startIdx}, ${perPage}
+	</select>
+	
+	<select id="selectLifecycleSchemaListCnt" parameterType="map" resultType="int">
+		SELECT
+			COUNT(*) AS cnt
+		FROM
+			LIFECYCLE_TABLES
+	</select>
+	
+	<update id="updateLifecycleSchema" parameterType="map">
+		UPDATE LIFECYCLE_TABLES
+			SET EXC_END_TIME = NOW()
+				, EXC_STTUS = #{excSttus}
+		WHERE 1=1
+		AND DGNSS_INFO_ID = #{dgnssInfoId}
+		AND DGNSS_NM = #{dgnssNm}
+	</update>
+	
+	<select id="selectLifecycleSchema" parameterType="map" resultType="sangsmap">
+		SELECT
+			INSTT_CODE
+			, DGNSS_DBMS_ID
+			, DGNSS_INFO_ID
+			, DGNSS_NM
+			, SCHEMA_NM
+			, ALL_CO
+			, DATE_FORMAT(EXC_BEGIN_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_BEGIN_TIME
+			, DATE_FORMAT(EXC_END_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_END_TIME
+			, CONCAT((CASE WHEN TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME) = '0'
+							THEN 1
+							ELSE TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME)
+							END ), 's') AS WORK_TIME
+			, EXC_STTUS
+			, REGIST_DT
+		FROM
+			LIFECYCLE_TABLES
+		WHERE 1=1
+		AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+		AND DGNSS_INFO_ID = #{dgnssInfoId}
+		ORDER BY
+			REGIST_DT DESC
+	</select>
+	
+	<select id="selectLifecycleSummery" parameterType="map" resultType="sangsmap">
+			SELECT 
+				A.*
+				, ROUND((MTCHG_CO / TOTAL_CO)*100, 2) AS MTCHG_PER
+				, ROUND((MISS_CO / TOTAL_CO)*100, 2) AS MISS_PER
+				, ROUND(((TOTAL_CO - (MTCHG_CO + MISS_CO)) / TOTAL_CO)*100, 2) AS ERR_PER
+				, (TOTAL_CO - (MTCHG_CO + MISS_CO)) AS ERR_CO
+			FROM (
+				SELECT 
+					 SUM(TOTAL_CO) AS TOTAL_CO
+					 , SUM(MTCHG_CO) AS MTCHG_CO
+					 , SUM(MISS_CO) AS MISS_CO
+				FROM LIFECYCLE_TABLES_RES
+				WHERE 1=1
+				AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+				AND DGNSS_INFO_ID = #{dgnssInfoId}
+			) A
+	</select>
+	
+	<select id="selectLifecycleSummeryCnt" parameterType="map" resultType="int">
+		SELECT 
+			 ALL_CO AS allCo
+		FROM LIFECYCLE_TABLES
+		WHERE 1=1
+		AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+		AND DGNSS_INFO_ID = #{dgnssInfoId}
+	</select>
+	
+	<select id="selectLifecycleTableRes" parameterType="map" resultType="sangsmap">
+		SELECT 
+			T1.TABLE_NM
+			, T1.COULUMN_NM
+			, T1.TOTAL_CO
+			, T1.MTCHG_CO
+			, T1.MISS_CO
+			, (T1.TOTAL_CO - (T1.MTCHG_CO + T1.MISS_CO)) AS ERR_CO
+			, T1.ANALS_ID
+			, T2.FIELD_NM
+		FROM LIFECYCLE_TABLES_RES T1 LEFT OUTER JOIN LIFECYCLE_ANALS T2
+		ON T1.ANALS_ID =T2.ANALS_ID
+		WHERE 1=1
+		AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+		AND DGNSS_INFO_ID = #{dgnssInfoId}
+	</select>
+	
+	<select id="ajaxSelChkFiledNm" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) 
+		FROM LIFECYCLE_ANALS 
+		WHERE 1=1
+		AND FIELD_NM = #{fieldNm}
+	</select>
+</mapper>

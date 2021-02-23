@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MSSQL.DiagnosisMapper">
+
+	<select id="selectTableList" resultType="string">
+		SELECT
+			TABLE_NAME
+		FROM
+			INFORMATION_SCHEMA.TABLES
+		WHERE
+			TABLE_CATALOG = #{schemaName}
+	</select>
+
+	<select id="selectColumnList" resultType="map">
+		SELECT 
+			A.TABLE_NAME, 
+			C.VALUE AS TABLE_COMMENT,
+			A.COLUMN_NAME, 
+			A.DATA_TYPE,
+			ISNULL(CAST(A.CHARACTER_MAXIMUM_LENGTH AS VARCHAR),  
+			CAST(A.NUMERIC_PRECISION AS VARCHAR) + ',' + CAST(A.NUMERIC_SCALE AS VARCHAR)) AS DATA_LENGTH,
+			A.COLUMN_DEFAULT, 
+			A.IS_NULLABLE,
+			B.VALUE AS COLUM_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS A 
+			LEFT OUTER JOIN 
+			SYS.EXTENDED_PROPERTIES B 
+			ON B.MAJOR_ID = OBJECT_ID(A.TABLE_NAME)
+			AND A.ORDINAL_POSITION = B.MINOR_ID
+			LEFT OUTER JOIN 
+			(SELECT OBJECT_ID(OBJNAME) AS TABLE_ID, VALUE
+				FROM ::FN_LISTEXTENDEDPROPERTY(NULL, 'USER','DBO','TABLE', NULL, NULL, NULL)
+			) C
+			ON OBJECT_ID(A.TABLE_NAME) = C.TABLE_ID
+		WHERE A.TABLE_NAME = #{tableName}
+		AND A.TABLE_CATALOG = #{schemaName}
+		AND NOT DATA_TYPE IN ('TEXT')
+		ORDER BY A.ORDINAL_POSITION 
+	</select>
+
+	<select id="selectSelColumnList" resultType="map">
+		SELECT 
+			A.TABLE_NAME, 
+			C.VALUE AS TABLE_COMMENT,
+			A.COLUMN_NAME, 
+			A.DATA_TYPE,
+			ISNULL(CAST(A.CHARACTER_MAXIMUM_LENGTH AS VARCHAR),  
+			CAST(A.NUMERIC_PRECISION AS VARCHAR) + ',' + CAST(A.NUMERIC_SCALE AS VARCHAR)) AS DATA_LENGTH,
+			A.COLUMN_DEFAULT, 
+			A.IS_NULLABLE,
+			B.VALUE AS COLUM_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS A 
+			LEFT OUTER JOIN 
+			SYS.EXTENDED_PROPERTIES B 
+			ON B.MAJOR_ID = OBJECT_ID(A.TABLE_NAME)
+			AND A.ORDINAL_POSITION = B.MINOR_ID
+			LEFT OUTER JOIN 
+			(SELECT OBJECT_ID(OBJNAME) AS TABLE_ID, VALUE
+				FROM ::FN_LISTEXTENDEDPROPERTY(NULL, 'USER','DBO','TABLE', NULL, NULL, NULL)
+			) C
+			ON OBJECT_ID(A.TABLE_NAME) = C.TABLE_ID
+		WHERE A.TABLE_NAME = #{tableName}
+		AND A.TABLE_CATALOG = #{schemaName}
+		AND NOT DATA_TYPE IN ('TEXT')
+		AND A.COLUMN_NAME IN
+		(
+				<foreach item="columnName" separator="," collection="columnList">#{columnName}</foreach>
+		)
+		ORDER BY A.ORDINAL_POSITION 
+		
+	</select>
+
+	<select id="selectColumnComment" resultType="string">
+		SELECT 
+			B.VALUE AS COLUM_COMMENT
+		FROM INFORMATION_SCHEMA.COLUMNS A 
+			LEFT OUTER JOIN 
+			SYS.EXTENDED_PROPERTIES B 
+			ON B.MAJOR_ID = OBJECT_ID(A.TABLE_NAME)
+			AND A.ORDINAL_POSITION = B.MINOR_ID
+		WHERE A.TABLE_NAME = #{tableName}
+		AND A.TABLE_CATALOG = #{schemaName}
+		AND A.COLUMN_NAME = #{columnName}
+	</select>
+
+	<select id="selectDataList" resultType="map">
+		SELECT
+			*
+		FROM
+			(SELECT ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS ROWNUM, * FROM ${schemaName}.dbo.${tableName}) T
+		WHERE T.ROWNUM &lt;= ${rowCount}
+	</select>
+
+	<select id="selectSelDataList" resultType="map">
+		SELECT
+			<foreach item="columnName" separator="," collection="columnList">${columnName}</foreach>
+		FROM
+			(SELECT ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS ROWNUM, * FROM ${schemaName}.dbo.${tableName}) T
+		WHERE T.ROWNUM &lt;= ${rowCount}
+	</select>
+
+	<select id="selectRowCount" resultType="int">
+		SELECT COUNT(*) FROM ${tableNm}
+	</select>
+
+	<select id="selectSQLCount" resultType="int">
+		${value}
+	</select>
+
+	<select id="selectPatternCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${tableNm}
+		WHERE ${columnNm} IS NOT NULL
+			AND ${columnNm} LIKE '%'#{analsFrmla}'%'
+	</select>
+	
+	<select id="selectPatternList" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+		SELECT
+			${columnNm}
+			, ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS ROWNUM
+		FROM
+			${tableNm}
+		WHERE
+			${columnNm} IS NOT NULL
+			) T
+			<if test="startInt != null and endInt != null">
+			WHERE T.ROWNUM bETWEEN #{startInt} AND #{endInt}
+			</if>
+			
+	</select>
+	
+	<select id="selectDownLoadList" resultType="map">
+		SELECT
+			${columnNm}
+			, ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS DWINDEX
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${tableNm}
+	</select>
+
+	<select id="selectRangeCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${tableNm}
+		WHERE
+		<choose>
+			<when test="analsSe.equals('AG000603')">
+			CONVERT(varchar, ${columnNm}, 23) BETWEEN CONVERT(varchar, #{beginValue}, 23) AND CONVERT(varchar, #{endValue}, 23)
+			</when>
+			<when test="analsSe.equals('AG000602')">
+			${columnNm} LIKE #{beginValue}+'%' AND ${columnNm} LIKE '%'+#{endValue}
+			</when>
+			<otherwise>
+			${columnNm} BETWEEN #{beginValue} AND #{endValue}
+			</otherwise>
+		</choose>
+		AND ${columnNm} IS NOT NULL
+	</select>
+
+	<select id="selectFrqAnalCountList" resultType="sangsmap">
+		SELECT
+			R.*
+		FROM
+		(
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS SN, 
+				${columnNm} AS DATA_VALUE,
+				COUNT(*) AS DATA_CO
+			FROM
+				${tableNm}
+			GROUP BY
+				${columnNm}
+		) R
+		WHERE SN &lt;= 10
+		ORDER BY     DATA_CO DESC 
+	</select>
+
+	<select id="selectPKList" resultType="string">
+		SELECT COLUMN_NAME 
+		FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+		WHERE TABLE_NAME = #{tableNm}
+	<!-- 
+		SELECT  
+		    STUFF((SELECT ',' + COLUMN_NAME
+		            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE B
+		           WHERE A.TABLE_NAME = B.TABLE_NAME
+		           FOR XML PATH('')), 1, 1, '') AS COLUMN_NAME 
+		FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE A
+		WHERE A.TABLE_NAME = #{tableNm}
+	 -->
+	</select>
+
+	<select id="selectPatternNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+			, ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS ROWNUM
+		FROM
+			${tableNm}
+		WHERE
+		<choose>
+			<when test="matchMm.equals('mis')">
+			(
+					${columnNm} NOT LIKE '%'#{analsFrmla}'%'		
+			)
+			</when>
+			<otherwise>
+			(
+					${columnNm} LIKE '%'#{analsFrmla}'%'
+			)		
+			</otherwise>
+		</choose>
+		<!-- 목록 제한 건수  -->
+			AND ROWNUM &lt;= #{limit}
+		
+	</select>
+	
+	<select id="selectSqlNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+			, ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS ROWNUM
+		FROM
+			${tableNm}
+		WHERE
+			<choose>
+				<when test="matchMm.equals('mis')">
+					(
+						${columnNm} NOT IN(${analsFrmla})
+						OR ${columnNm} IS NULL
+					)
+				</when>
+				<otherwise>
+					(
+						${columnNm} IN(${analsFrmla})
+						AND ${columnNm} IS NOT NULL
+					)
+				</otherwise>
+			</choose>
+			<!-- 목록 제한 건수 -->
+			AND ROWNUM &lt;= #{limit}
+			
+
+	</select>
+
+	<select id="selectRangeNotMatchList" resultType="map">
+		SELECT 
+			* 
+		FROM(
+			SELECT
+				${columnNm}
+				<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+				, ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS ROWNUM
+			FROM
+				${tableNm}
+			WHERE
+			<choose>
+					<when test="analsSe.equals('AG000603')">
+						(
+							CONVERT(varchar, ${columnNm}, 23) NOT BETWEEN CONVERT(varchar, #{beginValue}, 23) AND CONVERT(varchar, #{endValue}, 23)
+							OR ${columnNm} IS NULL
+						)
+					</when>
+					<when test="analsSe.equals('AG000602')">
+						(
+							${columnNm} NOT LIKE #{beginValue}+'%' OR ${columnNm} NOT LIKE '%'+#{endValue}
+							OR ${columnNm} IS NULL
+						)
+					</when>
+					<when test="analsSe.equals('AG000601')">
+						(
+							${columnNm} NOT BETWEEN #{beginValue} AND #{endValue}
+							OR ${columnNm} IS NULL
+						)
+					</when>
+				<otherwise>
+					(
+						${columnNm} BETWEEN #{beginValue} AND #{endValue}
+					)
+					OR ${columnNm} IS NULL
+				</otherwise>
+			</choose>
+			) A
+		<!-- 목록 제한 건수 -->
+		WHERE A.ROWNUM &lt;= #{limit}
+	</select>
+	
+	<select id="selectRangeMatchList" resultType="map">
+		SELECT 
+			*
+		FROM(
+			SELECT
+				${columnNm}
+				<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+				, ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS ROWNUM
+			FROM
+				${tableNm}
+			WHERE
+			<choose>
+				<when test="analsSe.equals('AG000603')">
+						(
+							CONVERT(varchar, ${columnNm}, 23) BETWEEN CONVERT(varchar, #{beginValue}, 23) AND CONVERT(varchar, #{endValue}, 23)
+						)
+					</when>
+					<when test="analsSe.equals('AG000602')">
+						(
+							${columnNm} LIKE CONCAT(N#{beginValue},'%') AND ${columnNm} LIKE CONCAT('%',N#{endValue})
+						)
+					</when>
+					<when test="analsSe.equals('AG000601')">
+						(
+							${columnNm} BETWEEN #{beginValue} AND #{endValue}
+						)
+					</when>
+				<otherwise>
+					(
+						${columnNm} BETWEEN #{beginValue} AND #{endValue}
+					)
+					OR ${columnNm} IS NULL
+				</otherwise>
+			</choose>
+			)A
+			<!-- 목록 제한 건수 -->
+			WHERE A.ROWNUM &lt;= #{limit}
+	</select>
+
+</mapper>

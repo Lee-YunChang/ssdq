@@ -1,0 +1,516 @@
+package com.webapp.dqsys.mngr.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.webapp.dqsys.mngr.service.CommonService;
+
+@Controller
+public class CommonController {
+
+	@Autowired
+	CommonService commonService;
+	
+	/**
+	 * 최상위 경로 호출 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/")
+    public void index(Model model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		res.sendRedirect("/mngr/basic");
+    }
+	
+	/**
+	 * 초기설정 경로 호출 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/basic")
+    public String setView(Model model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		boolean isData =  commonService.isInstt();
+		
+		if(isData){
+			return "redirect:/mngr/main";
+		}else {
+			return "mngr/basic/createView";
+		}
+    }
+	
+	/**
+	 * 기관 리스트 호출 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/selectInsttList")
+    public void selectInsttList(@RequestParam Map<String, String> params, Model model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		commonService.selectInsttList(params, req, res); 
+	}
+	
+	/**
+	 * 초기Data insert 호출 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/saveInsttInfo")
+    public void saveInsttInfo(@RequestParam Map<String, String> params, Model model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		commonService.saveInsttInfo(params, req, res);
+    }
+	
+	/**
+	 * 사용자 insert 호출 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/saveUserInfo")
+    public void saveUserInfo(@RequestParam Map<String, String> params, Model model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		commonService.saveUserInfo(params, req, res);
+    }
+	
+	/**
+	 * 입력 userId 중복 체크
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/selectUserIdChk")
+	public void selectUserIdChk(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+			
+			commonService.selectUserIdChk(params, res);
+			
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+	
+	
+	/**
+	 *  메인 페이지 호출 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/main")
+    public String main(Model model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		return "mngr/main";
+    }
+	
+	/**
+	 * 공통 페이지 링크 
+	 * @param linkPage
+	 * @param menuNm
+	 * @param session
+	 * @param model
+	 * @param req
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/common/pageLink.do")
+	public String pageLink(
+			@RequestParam("link") String linkPage, 
+			@RequestParam(value = "menuNm", required = false) String menuNm, HttpSession session, ModelMap model, HttpServletRequest req) throws Exception {
+		
+		String link = linkPage;
+		// service 사용하여 리턴할 결과값 처리하는 부분은 생략하고 단순 페이지 링크만 처리함
+		if (linkPage == null || linkPage.equals("")) {
+			link = "/common/cmmn_error";
+		} else {
+			if (link.indexOf(',') > -1) {
+				link = link.substring(0, link.indexOf(','));
+			}
+		}
+		return link;
+	}
+
+	/**
+	 * 로그인 호출
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/login")
+	public String login(Model model, HttpServletRequest request) throws Exception {
+		String referrer = request.getHeader("Referer");
+	    request.getSession().setAttribute("prevPage", referrer);
+	    boolean isData =  commonService.isInstt();
+		
+		if(isData){
+			return "mngr/cmmn/login";
+		}else {
+			return "mngr/basic/createView";
+		}
+	}
+	
+	/**
+	 * 로그아웃 호출
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value = "/logout")
+	public String pageLogin(HttpServletRequest request, HttpSession session){
+		session.invalidate();
+		return "mngr/cmmn/login";
+	}
+	
+	/**
+	 * 메뉴 리스트 
+	 * @return
+	 */
+	@RequestMapping(value = "/mngr/menuMng/menuManage")
+	public String menuList() {
+		return "mngr/menuMng/menu_manage";
+	}
+	
+	/**
+	 * 최상위 메뉴 리스트 조회
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/menuMng/selectUpMenuList")
+	public void selectUpMenuList(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+			
+			commonService.selectUpMenuList(params, res);
+			
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+	
+	/**
+	 * 메뉴 그룹리스트 조회
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/menuMng/selectMenuGroupList")
+	public void selectMenuGroupList(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+		
+			commonService.selectMenuGroupList(params, res);
+		
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+	
+	
+	/**
+	 * 메뉴 정보 저장
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/menuMng/saveMenu")
+	public void saveMenu(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+		
+			commonService.saveMenu(params, req, res);
+		
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+	
+	/**
+	 * 메뉴 정보 삭제
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/menuMng/deleteMenu")
+	public void deleteMenu(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+		
+			commonService.deleteMenu(params, req, res);
+		
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+	
+	
+	/**
+	 * 메뉴 유저 권한 리스트
+	 * @return
+	 */
+	@RequestMapping(value = "/mngr/menuMng/menuAuthor")
+	public String menuAuthor(@RequestParam Map<String, String> params, ModelMap model) throws Exception{
+		try {
+			
+			List<?> authorList = commonService.selectUserAuthList(params);
+			model.addAttribute("authorList", authorList);
+			
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+		return "mngr/menuMng/menu_author";
+	}
+	
+	/**
+	 * 권한 메뉴 리스트
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/menuMng/selectUserAuthMenuList")
+	public void selectUserAuthMenuList(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+			
+			commonService.selectUserAuthMenuList(params, res);
+			
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+	
+
+	
+	/**
+	 * 권한 메뉴 저장
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/menuMng/saveAuthMenuList")
+	public void saveAuthMenuList(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+			
+			commonService.saveAuthMenuList(params, req, res);
+			
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+
+	/**
+	 * 공통코드 관리
+	 * @return
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/cmmnCode")
+	public String cmmnCode() {
+		return "mngr/cmmnMng/cmmn_code_list";
+	}
+	
+
+	/**
+	 * 그룹코드 조회
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/selectCommonCode")
+	public void selectCommonCode(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+
+		try {
+			commonService.selectCommonCode(params, res);
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}	
+
+	}
+	
+	/**
+	 * 그룹코드 등록 / 수정 / 삭제
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/saveCommonCode")
+	public void saveCommonCode(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) throws Exception {
+		try {
+			commonService.saveCommonCode(params, res, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * 상세코드 조회
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/selectDetailCommonCode")
+	public void selectDetailCommonCode(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+		try {
+			commonService.selectDetailCommonCode(params, res, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+	}
+	
+	/**
+	 * 상세코드 등록 / 수정 / 삭제
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/saveDetailCommonCode")
+	public void saveDetailCommonCode(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+		try {
+			commonService.saveDetailCommonCode(params, res, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	/**
+	 * 코드 중복 체크
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 */
+
+	@RequestMapping(value = "/mngr/cmmnMng/selectCodeDoubleChk")
+	public void selectCodeDoubleChk(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+		try {
+			commonService.selectCodeDoubleChk(params, res, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 관리자 관리
+	 * @return
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/cmmnManage")
+	public String cmmnManage(@RequestParam Map<String, String> params, ModelMap model) {
+		
+		try {
+			List<?> authorList = commonService.selectUserAuthList(params);
+			model.addAttribute("authorList", authorList);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "mngr/cmmnMng/cmmn_manage_list";
+	}
+	
+	/**
+	 * 관리자 조회
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/selectManageList")
+	public void selectManageList(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+		try {
+			commonService.selectManageList(params, res, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+	}
+	
+	/**
+	 * 관리자 정보 수정
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/saveManageInfo")
+	public void saveManageInfo(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+		try {
+			commonService.saveManageInfo(params, res, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	/**
+	 * 관리자 소속기관 조회
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/selectManageInsttList")
+    public void selectManageInsttList(@RequestParam Map<String, String> params, Model model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		commonService.selectManageInsttList(params, res);
+	}
+	
+	
+	/**
+	 * 관리자 소속기관 정보 수정
+	 * @param params
+	 * @param req
+	 * @param res
+	 * @param model
+	 */
+	@RequestMapping(value = "/mngr/cmmnMng/saveManageInsttInfo")
+	public void saveManageInsttInfo(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+		try {
+			commonService.saveManageInsttInfo(params, res, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+}

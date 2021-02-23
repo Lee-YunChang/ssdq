@@ -1,0 +1,362 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+
+		<title>Insert title here</title>
+		<style>
+			.textStyle{
+				border:none;
+				width:100px;
+				background-color:white;
+			}
+			.textAStyle{
+				border:none; 
+				width:600px; 
+				background-color:white;"
+			}
+		</style>
+		<script type="text/javascript"  class="code-js">
+
+			$(document).ready(function() {
+				if(sessionCon == ''){
+					alert('진단대상 데이터베이스 설정이 안되어 있습니다.\n\n 설정페이지로 이동합니다.');
+					location.href = "/mngr/basicInfo/dgnssDbmsList";
+					return false;
+				}
+
+				selDbmsSchemaListBox();
+				var analsId = "${analsId}";
+				if(analsId > -1 && "" != analsId){
+					$("#btnSave").text("수정");
+				}
+				
+				/* chosen Select Box 관련 추가  */
+				/* 2019-07-29 최보람 */
+				$("#schema, #tables").chosen({
+					search_contains : true,
+					width : 230,
+					no_results_text : "검색결과가 없습니다. : "
+				});
+			});
+
+
+			// 스키마정보 조회
+			function selDbmsSchemaListBox(){
+				//var schema = $("#schema").val();	
+				var schema = "${schema}";	
+				if("${schema}" == ""){
+					schema = $("#schema").val();
+				}
+				$.ajax({
+					url: '/mngr/ruleMng/selectSchemasList',
+					method : 'POST',
+					data: {dgnssDbmsId : sessionCon},
+					success: function(dataList){
+						for(var i = 0; i < dataList.length; i++){
+							var selected = "";
+							if(schema.trim() == dataList[i].OWNER) {
+								selected = "selected=true";
+								selDbmsTableListBox();
+							}else{
+								if(dataList.length == 1){
+									//selected = "selected=true";
+									//selDbmsTableListBox();
+								}else{
+									selected = "";
+								}
+							}
+							var option  = $("<option value="+dataList[i].OWNER+" "+selected+">"+dataList[i].OWNER+"</option>");
+							$("#schema").append(option);
+														
+							/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+							$("#schema").trigger("chosen:updated");
+						}
+			        }, error:function() {
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+			    });
+			}
+
+			// 테이블정보 조회
+			function selDbmsTableListBox(){
+				//var tables = $("#tables").val();
+				//var schema = $("#schema").val();
+				var schema = "${schema}";	
+				var tables = "${tables}";
+				if("${schema}" == ""){
+					schema = $("#schema").val();
+				}
+				if("${tables}" == ""){
+					tables = $("#tables").val();
+				}
+				$("#tables").empty();
+				var option  = $("<option value='00'>테이블 선택</option>");
+				$("#tables").append(option);
+				
+				$.ajax({
+					url: '/mngr/ruleMng/selectSchemaTablesList',
+					method : 'POST',
+					data: {dgnssDbmsId : sessionCon, tableSchema : schema},
+					success: function(dataList){
+						for(var i = 0; i < dataList.length; i++){
+							var selected = "";
+							if(tables.trim() == dataList[i].TABLENAME) {
+								selected = "selected=true";
+							}else{
+								if(dataList.length == 1){
+									//selected = "selected=true";
+								}else{
+									selected = "";
+								}
+								
+							}
+							option  = $("<option value="+dataList[i].TABLENAME+" "+selected+">"+dataList[i].TABLENAME+"</option>");
+							$("#tables").append(option);
+							
+							/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+							$("#tables").trigger("chosen:updated");
+
+													}
+			        }, error:function() {
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+			    });
+			}
+			
+
+			// 입력된 SQL 정보 등록
+			function fn_saveSql(){
+				var arr = [];
+				var obj = {};
+				var tables = $("#tables").val();
+				var schema = $("#schema").val();
+				var analsNm = $("#analsNm").val();
+				var analsFrmla = $("#analsFrmla").val();
+				var rm = $("#rm").val();
+				var checkYn = $("#checkYn").val();
+				var analsId = $("#analsId").val();
+				
+				if(analsNm == "" || analsNm == null){
+					alert("SQL명을 반드시 입력해 주세요.");
+					$("#analsNm").focus();
+					return false;
+				}
+				
+				if(schema == "00" || schema == null){
+					alert("스키마를 선택해 주세요.");
+					$("#schema").focus();
+					return false;
+				}
+				if(tables == "00" || tables == null){
+					alert("테이블을 선택해 주세요.");
+					$("#tables").focus();
+					return false;
+				}
+				if(analsFrmla == "" || analsFrmla == null){
+					alert("where 절를  반드시 입력해 주세요.");
+					$("#analsFrmla").focus();
+					return false;
+				}
+				/*
+				if(rm == "" || rm == null){
+					alert("설명을  입력해 주세요.");
+					$("#rm").focus();
+					return false;
+				}
+				*/
+
+				if(checkYn == "N" || checkYn == null){
+					alert("유효성체크버튼을 클릭해 주세요..");
+					return false;
+				}
+				obj.tables = tables ;
+				obj.schema = schema;
+				obj.analsNm = analsNm;
+				obj.analsFrmla = analsFrmla;
+				obj.rm = rm;
+				obj.analsId = analsId;
+				arr.push(obj);
+				
+				if(confirm("해당 정보를 등록 하시겠습니까?")){
+					
+					$.ajax({
+						url: "/mngr/ruleMng/saveRuleSql",
+						data: {dataList : JSON.stringify(arr), analsId : analsId},
+						success: function(data){
+							if(data=='true'){
+								alert("정상적으로 등록되었습니다.");
+								// 처리 완료시 페이지를 조회 페이지로 이동하여 등록 결과 목록을 확인 한다.
+								location.href = "/mngr/analysis/analysisPatternList";
+							}else{
+								alert("처리중 에러가 발생하였습니다");
+							}
+							
+						}, error:function() {
+			                alert("처리중 에러가 발생하였습니다");
+			                return;
+			           }
+					});
+					
+				}
+			}
+
+			
+			function fn_checkSql(){
+				var tables = $("#tables").val();
+				var schema = $("#schema").val();
+				var analsFrmla = $("#analsFrmla").val();
+				var checkText = $("#checkText").val();
+				
+				if(schema == "00" || schema == null){
+					alert("스키마를 선택해 주세요.");
+					$("#schema").focus();
+					return false;
+				}
+				if(tables == "00" || tables == null){
+					alert("테이블을 선택해 주세요.");
+					$("#tables").focus();
+					return false;
+				}
+				if(analsFrmla == "" || analsFrmla == null){
+					alert("where 절를  반드시 입력해 주세요.");
+					$("#analsFrmla").focus();
+					return false;
+				}
+				$.ajax({
+					url: "/mngr/ruleMng/checkRuleSql",
+					data: {tables : tables, schema : schema, analsFrmla : analsFrmla},
+					success: function(data){
+						if(data == "true"){
+							alert("정상적인 SQL 문입니다.");
+							$("#checkYn").val("Y");
+							// 처리 완료시 페이지를 조회 페이지로 이동하여 등록 결과 목록을 확인 한다.
+							//location.href = "/mngr/analysis/analysisPatternList";
+						}else{
+							alert("WHERE 절 문에 오류가 있습니다.");
+							$("#checkYn").val("N");
+						}
+						
+					}, error:function() {
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+				});
+					
+			}
+
+
+			function resetYn(){
+				$("#checkYn").val("N");
+			}
+
+			function resetTables(){
+				$("#tables").reset();
+			}
+			
+			function goList(type){
+				location.href = "/mngr/analysis/analysisPatternList";
+			}
+			
+		</script>
+	</head>
+	<body id="page-top">
+		<div id="wrapper">
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+			
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+					<!-- 상단영역 nav -->
+					<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />	
+				
+					<!-- 본문 -->
+					<div class="container-fluid">
+						
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+                  			<span class="col_gray01 font_14 mgn_b0"><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> RULE &gt; 업무규칙 관리 &gt; 사용자 정의(SQL)</span>
+	                    </div>
+	                    
+	                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim"> 사용자 정의(SQL)</h1>
+	                    </div>
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<div class="card shadow mb-4">
+								<div class="card-body">
+                                    <section class="mgn_b20 txt_right">
+                                        <button class="btn btn-secondary btn_wd120" onclick="goList('list')" >목록보기</button>
+                                        <button class="btn btn-secondary btn_wd120" onclick="fn_checkSql();">유효성체크</button>
+                                        <button class="btn btn-primary btn_wd100" id="btnSave" name="btnSave" onclick="fn_saveSql();">저장</button>
+                                    </section>
+                                    <!-- 영역 -->
+                                    <form action="">
+                                    	<input type="hidden" id="analsSe" name="analsSe" value="AG000400">
+                                    	<input type="hidden" id="analsTy" name="analsTy" value="AT000100">
+                                    	<input type="hidden" id="analsId" name="analsId" value="${analsId}">
+                                        <input type="hidden" id="checkYn" name="checkYn" value="N">
+                                        <section class="l_box_type02">                                    
+                                                <div class="tb_type03">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>                                                                
+                                                                <th><span class="str">*</span> SQL명</th>
+                                                                <td colspan="3">
+                                                                    <input type="text" id="analsNm" name="analsNm" class=" " maxlength="30" value="${analsNm}">
+                                                                </td>                                                                
+                                                            </tr>
+                                                            <tr>     
+                                                                <th><span class="str">*</span> Schema/Table</th>
+                                                                <td style="text-align: left;">
+                                                                    <select id="schema" name="schema" class="" style="width: 200px; margin-right: 20px;" onchange="selDbmsTableListBox();">
+                                                                    	<option value="00" >스키마 선택</option>
+                                                                    </select>                                                                
+                                                                
+                                                                    <select id="tables" name="tables" class="" style="width: 200px;" >
+                                                                        <option value="00" >테이블 선택</option>
+                                                                    </select>                                                                
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><span class="str">*</span> where 절</th>
+                                                                <td colspan="3">
+                                                                    <textarea id="analsFrmla" name= "analsFrmla" type="text" onchange="resetYn();" placeholder="WHERE 제외 입력  &#13;&#10;ex) 컬럼 명 = '비교값' ">${analsFrmla}</textarea>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>설명</th>
+                                                                <td colspan="3">
+                                                                    <textarea id="rm" name="rm" type="text" >${rm}</textarea>
+                                                                </td>
+                                                            </tr>                                                                                                   
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </section>
+                                         </form>
+                                </div> 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+				
+			
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+				
+			</div>
+		</div>
+		
+	</body>
+	
+</html>

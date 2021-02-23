@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+	
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; BASIC &gt; <label th:text="#{UIT0498}"></label> &gt; <label th:text="#{UIT0499}"></label></span>
+		</div>
+                
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0499}"> 표준화 항목 관리</h1>
+		</div>
+		
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="tab1" href="#none" onclick="fn_tabLink(this)" th:text="#{UIT0500}">도메인</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="tab2" href="#none" onclick="fn_tabLink(this)" th:text="#{UIT0501}">표준용어</a>
+			</li>
+		</ul>
+	
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="card shadow mb-4">
+					<div class="input_table">
+						<table>
+							<caption th:text="#{UIT0077}"></caption>
+							<colgroup>
+								<col style="width:10%">
+								<col style="width:25%">
+								<col style="width:10%">
+								<col style="width:25%">
+								<col style="width:20%">
+								<col style="width:10%">
+							</colgroup>
+							<tbody>
+								<tr id="domainSearchArea">
+									<th>
+										<label for="type2" th:text="#{UIT0502}">분류</label>
+									</th>
+									<td>
+										<input type="text" name="searchDomainCl" id="searchDomainCl" th:title="#{UIT0504}" maxlength="50" th:placeholder="#{UIT0504}">
+									</td>
+									<th>
+										<label for="type2" th:text="#{UIT0503}">도메인명</label>
+									</th>
+									<td>
+										<input type="text" name="searchDomainNm" id="searchDomainNm" th:title="#{UIT0505}" maxlength="50" th:placeholder="#{UIT0505}">
+									</td>
+									<th><label th:text="#{UIT0529}">DBMS</label> </th>
+									<td style="text-align: left; ">
+										<select id="searchDomainDbms" name="searchDomainDbms" style="width: 100px;">
+											<option value="">선택</option>
+											<option value="1">Oracle</option>
+											<option value="2">CSV</option>
+											<option value="3">MySQL</option>
+											<option value="4">Tibero</option>
+											<option value="5">MSSQL</option>
+										</select>
+									</td>
+									<td>
+									<button class='btn btn-primary wd_50' type='button' th:text="#{UIT0084}" onclick="fn_selDataList();" >조회</button>
+									</td>
+								</tr>
+								<tr id="wordSearchArea" style="display:none;">
+									<th>
+										<label for="type2" th:text="#{UIT0506}">표준용어명</label>
+									</th>
+									<td>
+										<input type="text" name="searchWordNm" id="searchWordNm" th:title="#{UIT0508}" maxlength="50" th:placeholder="#{UIT0508}">
+									</td>
+									<th>
+										<label for="type2" th:text="#{UIT0507}">표준용어영문명</label>
+									</th>
+									<td>
+										<input type="text" name="searchWordEngNm" id="searchWordEngNm" th:title="#{UIT0509}" maxlength="50" th:placeholder="#{UIT0509}">
+									</td>
+									<th><label th:text="#{UIT0529}">DBMS</label> </th>
+									<td style="text-align: left; ">
+										<select id="searchWordDbms" name="searchWordDbms" style="width: 100px;">
+											<option value="">선택</option>
+											<option value="1">Oracle</option>
+											<option value="2">CSV</option>
+											<option value="3">MySQL</option>
+											<option value="4">Tibero</option>
+											<option value="5">MSSQL</option>
+										</select>
+									</td>
+									<td>
+									<button class='btn btn-primary wd_50' type='button' th:text="#{UIT0084}" onclick="fn_selDataList();" >조회</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="card shadow mb-4">
+					<input type="hidden" id="ckBtn" name="ckBtn" value="" />
+					<div class="card-body">
+						<section class="mgn_b20 txt_right">
+							<button class='btn btn-primary btn_wd100' type='button' th:text="#{UIT0087}" onclick="fn_openModalLayer('DELETE');">삭제</button>
+							<button class='btn btn-primary btn_wd100' type='button' th:text="#{UIT0085}" onclick="fn_openModalLayer('');">등록</button>
+							<button class='btn btn-primary btn_wd120' type='button' th:text="#{UIT0293}" onclick="fn_openModalLayer('CSV');">CSV 파일등록</button>
+						</section>
+						
+						<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+						<div id ="grid" class="tb_type99" style="clear: both; min-height: 440px;"></div>
+                        <div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- modal 창 -->
+		<!-- 도메인 등록 팝업 open -->
+		<div id="domainSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 520px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0516}">도메인 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="domainFrm">
+	                        <div class="tb_type03">
+	                            <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0502}">분류</label> </th>
+											<td><input type="text" id="domainCl" name="domainCl" maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0503}">도메인명</label></th>
+											<td><input type="text" id="domainNm" name="domainNm"  maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0510}">데이터타입</label> </th>
+											<td><input type="text" id="domainTy" name="domainTy" maxlength="20"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0511}">데이터길이</label></th>
+											<td><input type="text" id="domainLt" name="domainLt" maxlength="4" oninput="inputCheck(this)"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0529}">DBMS</label> </th>
+											<td style="text-align: left; ">
+												<select id="domainDbms" name="domainDbms" style="width: 100px;">
+													<option value="">선택</option>
+													<option value="1">Oracle</option>
+													<option value="2">CSV</option>
+													<option value="3">MySQL</option>
+													<option value="4">Tibero</option>
+													<option value="5">MSSQL</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0092}">설명</label></th>
+											<td>
+												<textarea id="domainRm" name="domainRm"></textarea>
+											</td>
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="domainSaveBtn" th:text="#{UIT0088}" onclick="fn_saveDomain();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<div id="domainCsvSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 310px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0516}">도메인 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form name="domainCsvUploadFrm" id="domainCsvUploadFrm"  method="post" action="" enctype="multipart/form-data">
+	                        <section class="l_box_type02">                                    
+	                            <div class="tb_type03">
+	                                <table style="margin-top:10px;">
+	                                    <tbody>
+	                                        <tr>
+	                                            <th><span class="str">*</span> <label th:text="#{UIT0290}">파일 업로드</label></th>
+	                                            <td style="text-align: left; width:600px;">
+	                                                <div class="filebox bs3-primary" style="text-align: left; width:600px;">
+	                                                    <input id="domainFileFullPath" name="domainFileFullPath" class="upload-name in_box_type01 in_length400" value="파일선택" style="width: 475px;" disabled="disabled">
+	                                                    <label for="domainFileName" class="mgn_b0" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+	                                                    <input type="file" name="domainFileName" id="domainFileName" style="width: 100px;" class="upload-hidden" onchange="fn_setFileInfo(event);"> 
+	                                                </div>
+	                                            </td>
+	                                        </tr>                                                                                                   
+	                                    </tbody>
+	                                </table>
+                            	</div>
+                       		</section>
+                    	</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="domainCsvSaveBtn" th:text="#{UIT0088}" onclick="fn_saveCsvData();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 도메인 등록 팝업 close -->
+		
+		<!-- 표준용어 등록 팝업 open -->
+		<div id="wordSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 520px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0517}">표준 용어 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="wordFrm">
+	                        <div class="tb_type03">
+	                            <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0506}">표준용어명</label> </th>
+											<td><input type="text" id="wordNm" name="wordNm" maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0507}">표준용어영문명</label></th>
+											<td><input type="text" id="wordEngNm" name="wordEngNm"  maxlength="80"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0512}">영문약어</label> </th>
+											<td><input type="text" id="wordEngAb" name="wordEngAb" maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0529}">DBMS</label> </th>
+											<td style="text-align: left; ">
+												<select id= "wordDbms" name="wordDbms" style="width: 100px;">
+													<option value="">선택</option>
+													<option value="1">Oracle</option>
+													<option value="2">CSV</option>
+													<option value="3">MySQL</option>
+													<option value="4">Tibero</option>
+													<option value="5">MSSQL</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0092}">설명</label></th>
+											<td>
+												<textarea id="wordRm" name="wordRm"></textarea>
+											</td>
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="wordSaveBtn" th:text="#{UIT0088}" onclick="fn_saveWord();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<div id="wordCsvSaveLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 310px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0517}">표준 용어 등록</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form name="wordCsvUploadFrm" id="wordCsvUploadFrm"  method="post" action="" enctype="multipart/form-data">
+	                        <section class="l_box_type02">                                    
+	                            <div class="tb_type03">
+	                                <table style="margin-top:10px;">
+	                                    <tbody>
+	                                        <tr>
+	                                            <th><span class="str">*</span> <label th:text="#{UIT0290}">파일 업로드</label></th>
+	                                            <td style="text-align: left; width:600px;">
+	                                                <div class="filebox bs3-primary" style="text-align: left; width:600px;">
+	                                                    <input id="wordFileFullPath" name="wordFileFullPath" class="upload-name in_box_type01 in_length400" value="파일선택" style="width: 475px;" disabled="disabled">
+	                                                    <label for="wordFileName" class="mgn_b0" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+	                                                    <input type="file" name="wordFileName" id="wordFileName" style="width: 100px;" class="upload-hidden" onchange="fn_setFileInfo(event);"> 
+	                                                </div>
+	                                            </td>
+	                                        </tr>                                                                                                   
+	                                    </tbody>
+	                                </table>
+                            	</div>
+                       		</section>
+                    	</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="wordCsvSaveBtn" th:text="#{UIT0088}" onclick="fn_saveCsvData();">저장</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 표준용어 등록 팝업 close -->
+		
+		<!-- 도메인 수정 팝업 open -->
+		<div id="domainUpdateLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 520px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0525}">도메인 수정</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="domainFrm">
+	                        <div class="tb_type03">
+	                        	<input type="hidden" id="domainId" name="domainId" />
+	                            <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0502}">분류</label> </th>
+											<td><input type="text" id="domainCl" name="domainCl" maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0503}">도메인명</label></th>
+											<td><input type="text" id="domainNm" name="domainNm"  maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0510}">데이터타입</label> </th>
+											<td><input type="text" id="domainTy" name="domainTy" maxlength="20"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0511}">데이터길이</label></th>
+											<td><input type="text" id="domainLt" name="domainLt" maxlength="4" oninput="inputCheck(this)"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0092}">설명</label></th>
+											<td>
+												<textarea id="domainRm" name="domainRm"></textarea>
+											</td>
+											
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="domainUpdateBtn" th:text="#{UIT0095}" onclick="fn_updateDomain();">수정</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 도메인 수정 팝업 close -->
+		<!-- 표준 용어 수정 팝업 open -->
+		<div id="wordUpdateLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 520px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0527}">표준 용어 수정</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="wordFrm">
+	                        <div class="tb_type03">
+	                        	<input type="hidden" id="wordId" name="wordId"/>
+	                            <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0506}">표준용어명</label> </th>
+											<td><input type="text" id="wordNm" name="wordNm" maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0507}">표준용어영문명</label></th>
+											<td><input type="text" id="wordEngNm" name="wordEngNm"  maxlength="80"></td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0512}">영문약어</label> </th>
+											<td><input type="text" id="wordEngAb" name="wordEngAb" maxlength="40"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> <label th:text="#{UIT0513}">구분</label> </th>
+											<td style="text-align: left; ">
+												<select id="wordCl" name="wordCl" style="width: 100px;">
+													<option value="">선택</option>
+													<option value="0">표준어</option>
+													<option value="1">동의어</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th><label th:text="#{UIT0092}">설명</label></th>
+											<td>
+												<textarea id="wordRm" name="wordRm"></textarea>
+											</td>
+											
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<p class="l_box_type02_p">
+								<span><button class="btn btn-primary" type="button" id="wordUpdateBtn" th:text="#{UIT0095}" onclick="fn_updateWord();">수정</button></span>
+							</p>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 표준 용어 수정 팝업 close -->
+		
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var chkTabId = /*[[${tabId}]]*/;
+		var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		
+		var UIT0307 = /*[[ #{UIT0307} ]]*/; //: 업로드할 파일을 선택해주세요
+		var UIT0308 = /*[[ #{UIT0308} ]]*/; //: 파일명은 영문자/숫자 조합만 가능 합니다.
+		var UIT0309 = /*[[ #{UIT0309} ]]*/; //: 확장자 명이 csv 파일만 등록 가능합니다.
+		var UIT0310 = /*[[ #{UIT0310} ]]*/; //: 저장하시겠습니까?
+		var UIT0314 = /*[[ #{UIT0314} ]]*/; //: 정상적으로 등록 되었습니다.
+		var UIT0315 = /*[[ #{UIT0315} ]]*/; //: 등록에 실패하였습니다. 다시 등록해 주시기 바랍니다.
+		var UIT0320 = /*[[ #{UIT0320} ]]*/; //: 해당 파일을 업로드 하시겠습니까?
+		var UIT0321 = /*[[ #{UIT0321} ]]*/; //: 정상적으로 업로드 되었습니다.
+		
+		var UIT0092 = /*[[ #{UIT0092} ]]*/; //: 설명
+		var UIT0502 = /*[[ #{UIT0502} ]]*/; //: 분류
+		var UIT0503 = /*[[ #{UIT0503} ]]*/; //: 도메인명
+		var UIT0506 = /*[[ #{UIT0506} ]]*/; //: 표준용어명
+		var UIT0507 = /*[[ #{UIT0507} ]]*/; //: 표준용어영문명
+		var UIT0510 = /*[[ #{UIT0510} ]]*/; //: 데이터타입
+		var UIT0511 = /*[[ #{UIT0511} ]]*/; //: 데이터길이
+		var UIT0512 = /*[[ #{UIT0512} ]]*/; //: 영문약어
+		var UIT0513 = /*[[ #{UIT0513} ]]*/; //: 구분
+		var UIT0518 = /*[[ #{UIT0518} ]]*/; //: 분류를 입력해 주세요
+		var UIT0519 = /*[[ #{UIT0519} ]]*/; //: 도메인명을 입력해 주세요
+		var UIT0520 = /*[[ #{UIT0520} ]]*/; //: 데이터타입을 입력해 주세요
+		var UIT0521 = /*[[ #{UIT0521} ]]*/; //: 표준용어명을 입력해 주세요
+		var UIT0522 = /*[[ #{UIT0522} ]]*/; //: 구분을 선택해 주세요
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var domainChkArr = [];
+		var wordChkArr = [];
+		var domainChk;
+		var wordChk;
+		var dataList;
+		var totalCnt;
+		
+		var UIT0529 = /*[[ #{UIT0529} ]]*/; //: DBMS
+		var UIT0530 = /*[[ #{UIT0530} ]]*/; //: DBMS를 선택해 주세요
+		var UIT0531 = /*[[ #{UIT0531} ]]*/; //: 표준용어영문명을 입력해 주세요
+
+	/*]]*/
+	
+		var tabType = "";
+		
+		// 도메인 등록
+		function fn_saveDomain(){
+			var frmChk = true;
+			var domainCl = $("#domainCl").val(); // 분류
+			var domainNm = $("#domainNm").val(); // 도메인명
+			var domainTy = $("#domainTy").val(); // 데이터타입
+			var domainLt = $("#domainLt").val(); // 데이터길이
+			var domainRm = $("#domainRm").val(); // 설명
+			var domainDbms= $("#domainDbms").val() // dbms
+			
+			// validation 체크
+			if(domainCl.length == 0) {
+				alert(UIT0518);
+				frmChk = false;
+			}
+			else if(domainNm.length == 0) {
+				alert(UIT0519);
+				frmChk = false;
+			}
+			else if(domainNm.length == 0) {
+				alert(UIT0519);
+				frmChk = false;
+			}
+			else if(domainTy.length == 0) {
+				alert(UIT0520);
+				frmChk = false;
+			}
+			else if(domainDbms.length == 0) {
+				alert(UIT0530);
+				frmChk = false;
+			}
+			
+			if(frmChk){
+				var arr = [];
+				var obj = {};
+				obj.domainCl = domainCl;
+				obj.domainNm = domainNm;
+				obj.domainTy = domainTy;
+				obj.domainLt = domainLt;
+				obj.domainRm = domainRm;
+				obj.domainDbms = domainDbms;
+				
+				arr.push(obj);
+				
+				if(arr.length > 0){
+					$.ajax({
+						url: '/mngr/dataStandard/saveDomainInfo',
+						method : 'POST',
+						data: {insertList : JSON.stringify(arr)},
+						beforeSend: function() {
+							wrapWindowByMask();
+						},
+						success: function(data){
+							var obj = JSON.parse(data);
+							var isSuccess = obj.result;
+							
+							if( isSuccess ) {
+								fn_searchTab(chkTabId);
+								
+								fn_modalCloseLayer();
+							}
+							else {
+								alert(UIT0041);
+								return;
+							}
+				        },
+				        error:function() {
+							alert(UIT0041);
+							return;
+						},
+						complete: function() {
+							closeWindowByMask();
+							window.location.reload();//체크박스에 id값은 그리드를 만들때 넣어지기 때문에 페이지 초기화 처리
+						}
+				    });
+				}
+			}
+		}
+
+		// 도메인 csv 등록
+		function domainCsvUpload(){
+	        var form = $('#domainCsvUploadFrm')[0];
+	        var csvFile = new FormData(form);
+	        
+			$.ajax({
+				url: '/mngr/dataStandard/saveDomainCsv',
+				method : 'POST',
+				enctype: 'multipart/form-data',
+				processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+				data: csvFile,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var isSuccess = obj.result;
+					
+					if( isSuccess ) {
+						fn_searchTab(chkTabId);
+						
+						fn_modalCloseLayer();
+					}
+					else {
+						alert(UIT0041);
+						return;
+					}
+		        },
+		        error:function() {
+		        	alert(UIT0041);
+					return;
+	            },
+				complete: function() {
+					closeWindowByMask();
+				}
+		    });
+		}
+		
+		// 표준 용어 등록
+		function fn_saveWord(){
+			var frmChk = true;
+			var wordNm	  = $("#wordNm").val();
+			var wordEngNm = $("#wordEngNm").val();
+			var wordEngAb = $("#wordEngAb").val();
+			//var wordCl 	  = $("#wordCl").val();
+			var wordCl 	  = "0"; //표준어
+			var wordRm 	  = $("#wordRm").val();
+			var wordDbms  = $("#wordDbms").val();
+			
+			if(wordNm.length == 0 ) {
+				alert(UIT0521);
+				frmChk = false;
+			}			
+			if(wordEngNm.length == 0 ) {
+				alert(UIT0531);
+				frmChk = false;
+			}			
+			if(wordDbms.length == 0 ) {
+				alert(UIT0530);
+				frmChk = false;
+			}			
+		
+			
+			if(frmChk){
+				var arr = [];
+				var obj = {};
+				obj.wordNm = wordNm;
+				obj.wordEngNm = wordEngNm;
+				obj.wordEngAb = wordEngAb;
+				obj.wordCl = wordCl;
+				obj.wordRm = wordRm;
+				obj.wordDbms = wordDbms;
+				
+				arr.push(obj);
+				
+				if(arr.length > 0){
+					$.ajax({
+						url: '/mngr/dataStandard/saveWordInfo',
+						method : 'POST',
+						data: {insertList : JSON.stringify(arr)},
+						beforeSend: function() {
+							wrapWindowByMask();
+						},
+						success: function(data){
+							var obj = JSON.parse(data);
+							var isSuccess = obj.result;
+							
+							if( isSuccess ) {
+								fn_searchTab(chkTabId);
+								
+								fn_modalCloseLayer();
+							}
+							else {
+								alert(UIT0041);
+								return;
+							}
+				        },
+				        error:function() {
+							alert(UIT0041);
+							return;
+						},
+						complete: function() {
+							closeWindowByMask();
+							window.location.reload();//체크박스에 id값은 그리드를 만들때 넣어지기 때문에 페이지 초기화 처리
+						}
+				    });
+				}
+			}
+		}
+		
+		// 표준 용어 csv 등록
+		function wordCsvUpload(){
+	        var form = $('#wordCsvUploadFrm')[0];
+	        var csvFile = new FormData(form);
+	        
+			$.ajax({
+				url: '/mngr/dataStandard/saveWordCsv',
+				method : 'POST',
+				enctype: 'multipart/form-data',
+				processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+				data: csvFile,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var isSuccess = obj.result;
+					
+					if( isSuccess ) {
+						fn_searchTab(chkTabId);
+						
+						fn_modalCloseLayer();
+					}
+					else {
+						alert(UIT0041);
+						return;
+					}
+		        },
+		        error:function() {
+		        	alert(UIT0041);
+					return;	
+	            },
+				complete: function() {
+					closeWindowByMask();
+				}
+		    });
+		}
+		
+		// csv 저장 이벤트
+		function fn_saveCsvData(){
+			var csvFileChk= true;
+			
+			var fileName = '';
+			if(chkTabId == 'tab2'){
+				fileName = $("#wordFileName").val();
+            }
+            else {
+            	fileName = $("#domainFileName").val();
+            }
+			
+			var fileNames = fileName.split("\\");
+			var len = fileNames.length -1;
+			var checkNms = fileNames[len].split(".");
+			
+			var checkNm = checkNms[0].trim();
+			var checkDns = checkNms[1].trim();			
+			
+			// 업로드 파일 확인
+			if(fileName == "") {
+				alert(UIT0307);
+				csvFileChk = false;
+				return false;
+			}
+			if ((new RegExp(/[^a-z0-9_]/gi)).test(checkNm)) {
+				alert(UIT0308);
+				csvFileChk = false;
+				return false;
+			}
+			if ((new RegExp(/^csv/gi)).test(checkDns.toLowerCase())== false) {
+				alert(UIT0309);
+				csvFileChk = false;
+				return false;
+			}
+
+			if(csvFileChk==true){
+				// csv 등록
+				if(chkTabId == 'tab2'){
+					wordCsvUpload();
+	            }
+	            else {
+	            	domainCsvUpload();
+	            }
+			}
+		}
+		
+		// 선택된 파일 정보
+		function fn_setFileInfo(evt){
+			var files = evt.target.files;
+
+            var file = files[0];
+            var fileName = file.name;
+            var fileSize = file.size;
+            if(chkTabId == 'tab2'){
+            	$("#wordFileFullPath").val(fileSize+ ' Byte'+' / '+fileName);
+            }
+            else {
+				$("#domainFileFullPath").val(fileSize+ ' Byte'+' / '+fileName);
+            }
+		}
+		
+		// 등록  팝업
+		function fn_openModalLayer(mode){
+			
+			/*레이어 열기*/
+			var popSaveForm = {};
+			chkTabId = $('a.active').attr('id');
+			if(chkTabId == 'tab2'){ 
+				if( mode === 'CSV' ) {
+					$('#wordCsvSaveLayer').addClass('on');
+				}
+				else if (mode === 'DELETE') {//삭제
+					if(confirm("정말 삭제하시겠습니까?")){
+						fn_deleteWord();
+					}
+					else {
+						domainChkArr = [];//삭제 버튼 취소시 배열 초기화
+						wordChkArr = []; //삭제후 배열 비우기
+						$("input[type=checkbox]").attr("checked", false);
+						return false;					
+					}
+				}
+				else {//등록
+					popSaveForm = $("#wordFrm").serializeArray();
+					$('#wordSaveLayer').addClass('on');	
+				}
+			}
+			else {
+				if( mode === 'CSV' ) {
+					$('#domainCsvSaveLayer').addClass('on');
+				}
+				else if (mode === 'DELETE') {//삭제
+					if(confirm("정말 삭제하시겠습니까?")){
+						fn_deleteDomain();
+					}
+					else {
+						domainChkArr = [];//삭제 버튼 취소시 배열 초기화
+						wordChkArr = []; //삭제후 배열 비우기
+						$("input[type=checkbox]").attr("checked", false);
+						return false;
+					}
+				}
+				else {//등록
+					popSaveForm = $("#domainFrm").serializeArray();
+					$('#domainSaveLayer').addClass('on');
+				}
+			}
+			
+			// 폼 초기화
+			if( mode === 'CSV' ) {
+				if(chkTabId == 'tab2'){
+					if ( isBrowserMsie() ){
+					    $("#wordFileName").replaceWith( $("#wordFileName").clone(true) );
+					} else {
+					    $("#wordFileName").val("");
+					}
+				    $("#wordFileFullPath").val("");
+				}
+				else {
+					if ( isBrowserMsie() ){
+					    $("#domainFileName").replaceWith( $("#domainFileName").clone(true) );
+					} else {
+					    $("#domainFileName").val("");
+					}
+				    $("#domainFileFullPath").val("");
+				}
+			}
+			else {
+				$.each(popSaveForm, function(i, v){
+					$('#'+v.name).val('');
+				});
+			}
+			
+		    $('.layer_pop_wrap').css("left","30%");
+		    $('.layer_pop_wrap').css("top","35%");
+			
+		    $('.tui-grid-container').css('z-index', 1); 
+		    $('.cover').show();
+		}
+		
+		// 페이지 이동시 사용
+		function fn_search(){
+			fn_selDataList();
+		}
+		
+		// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+		function fn_setDataListGrid(listData){
+			// 화면 초기화 처리
+			$("#grid").empty();
+			// 조회 컬럼 목록
+			
+			var columns = "";
+			
+			tabType = tabType === undefined ? 'domain' : tabType;
+			
+			if(tabType == 'domain'){
+				columns = [
+					{header : UIT0502, title : UIT0502, name : 'domainCl', whiteSpace: 'normal', sortable: true,  width: 200, align: 'center'},
+					{header : UIT0503, title : UIT0503, name : 'domainNm', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'}, 
+					{header : UIT0510, title : UIT0510, name : 'domainTy', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'}, 
+					{header : UIT0511, title : UIT0511, name : 'domainLt', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'},
+					{header : UIT0092, title : UIT0092, name : 'rm', whiteSpace: 'normal', sortable: true, align: 'center'},
+					{header : UIT0095, title : UIT0095, name : 'domainAlter', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'}
+				];
+			}else{
+ 				columns = [
+					{header : UIT0506, title : UIT0506, name : 'wordNm', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'},
+					{header : UIT0507, title : UIT0507, name : 'wordEngNm', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'}, 
+					{header : UIT0512, title : UIT0512, name : 'wordEngAb', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'}, 
+					{header : UIT0513, title : UIT0513, name : 'wordCl', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'},
+					{header : UIT0092, title : UIT0092, name : 'rm', whiteSpace: 'normal', sortable: true, align: 'center'},
+					{header : UIT0095, title : UIT0095, name : 'wordAlter', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'}
+				];
+			}
+			
+			const dataListGrid = new tui.Grid({
+				el : document.getElementById("grid"),
+				data : listData,
+				rowHeaders: [{type: 'rowNum'},{type: 'checkbox'}],
+				scrollX : false,
+				scrollY : false,
+				rowHeight : 40,
+				minBodyHeight : 40,
+				header: {
+					height: 40
+				},
+				columns : columns
+			});
+			
+			const extOptions = {
+				cell: {
+					focused: {
+			            border: 1 // 선택 셀 강조 표시 x
+			        }
+				}
+			};
+			
+			tui.Grid.applyTheme('default', extOptions);
+		
+		}
+		
+		// 목록 정보를 Ajax를 이용하여 가지고 온다.
+		function fn_selDataList(){
+			if('' == tabType){
+				tabType = 'domain';
+			}
+			
+			var params = {
+				"searchDomainCl" : $('#searchDomainCl').val(),
+				"searchDomainNm" : $('#searchDomainNm').val(),
+				"searchDomainDbms" : $('#searchDomainDbms').val(),
+				"searchWordNm" : $('#searchWordNm').val(),
+				"searchWordEngNm" : $('#searchWordEngNm').val(),
+				"searchWordDbms" : $('#searchWordDbms').val(),
+				"pageIndex" : $('#pageIndex').val(),
+				"itemsPerPage" : $("#itemsPerPage").val(),
+				"tabType" : tabType
+			}
+			
+			$.ajax({
+				url: '/mngr/dataStandard/selectStandardItemManageList',
+				data: params,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					if( obj == null ) {
+						alert(UIT0041);
+						return;
+					}
+					else {
+						
+						dataList = obj.dataList;
+						totalCnt = obj.totalCnt;
+						
+						for(i=0; totalCnt > i; i++){
+
+							if(obj.tabType == "domain"){
+								//수정버튼 추가
+								dataList[i].domainAlter = "<input type='button' class='btn btn_select btn_wd30' name='domainUdtBtn' data-value='"+dataList[i].domainId+"' value='"+UIT0095+"'/>&nbsp;&nbsp;";
+								dataList[i].domainChk = "<input type='checkbox' class='btn btn_select btn_wd30'name='domainChk'  data-value='"+dataList[i].domainId+"' value='checkbox'/>";
+								
+							}else{
+								//수정버튼 추가
+								dataList[i].wordAlter = "<input type='button' class='btn btn_select btn_wd30' name='wordUdtBtn' data-value='"+dataList[i].wordId+"' value='"+UIT0095+"'/>&nbsp;&nbsp;";
+								dataList[i].wordChk = "<input type='checkbox' class='btn btn_select btn_wd30' name='wordChk' data-value='"+dataList[i].wordId+"' value='checkbox' />";
+							}	
+						}
+						
+						tabType = obj.tabType;
+						
+						fn_setDataListGrid(dataList);
+							
+						
+						/* 페이징 function 호출 */
+						fn_pagination(totalCnt);
+						
+						//조회버튼 클릭시 체크박스 id값 넣고 수정창 팝업 띄우는 이벤트
+						switch(chkTabId){						
+							case "tab1":
+								setTimeout(function(){
+									
+									//도메인 탭 클릭시 체크박스에 id값 넣기 이벤트
+									$(".tui-grid-body-area input[type='checkbox']").each(function(idx,e){
+										console.log("dataList: " + dataList);
+										var len = $(".tui-grid-body-area input[type='checkbox']").length;
+										
+										for(i=0; i<len; i++){
+											
+											$(".tui-grid-body-area input[type='checkbox']").eq(i).val(dataList[i].domainId);
+																					
+										}
+									}); 	
+									
+									//그리드 완성후 도메인 수정팝업 띄우기 이벤트 
+									$("input[name=domainUdtBtn]").click(function(){   
+										
+										var alterBtn = $(this);
+										var tr = alterBtn.parent().parent().parent();
+										var td = tr.children();			
+										var domainId = $(this).data('value');
+										var domainCl = td.eq(0).text();
+										var domainNm = td.eq(1).text();
+										var domainTy = td.eq(2).text();
+										var domainLt = td.eq(3).text();
+										var rm = td.eq(4).text();
+										
+										//table값을 수정 modal창에 띄우는 작업
+										$("#domainUpdateLayer #domainId").val(domainId); //도메인 id	
+										$("#domainUpdateLayer #domainCl").val(domainCl); // 분류
+										$("#domainUpdateLayer #domainNm").val(domainNm); // 도메인명
+										$("#domainUpdateLayer #domainTy").val(domainTy); // 데이터타입
+										$("#domainUpdateLayer #domainLt").val(domainLt); // 데이터길이
+										$("#domainUpdateLayer #domainRm").val(rm); // 설명 
+							  			$('#domainUpdateLayer').addClass('on');	
+							
+									});
+									
+								},1000);
+								
+								break;
+							case "tab2":
+								
+								setTimeout(function(){
+									
+									//표준 용어 탭 클릭시 체크박스에 id값 넣기 이벤트
+									$(".tui-grid-body-area input[type='checkbox']").each(function(idx,e){
+										console.log("dataList: " + dataList);
+										var len = $(".tui-grid-body-area input[type='checkbox']").length;
+										
+										for(i=0; i<len; i++){
+														
+											$(".tui-grid-body-area input[type='checkbox']").eq(i).val(dataList[i].wordId);
+																							
+										}
+									}); 	
+									
+									//그리드 완성후 표준 용어 수정팝업 띄우기 이벤트 
+									$("input[name=wordUdtBtn]").click(function(){   
+										
+										var alterBtn = $(this);
+										var tr = alterBtn.parent().parent().parent();
+										var td = tr.children();			
+										var wordId = $(this).data('value');
+										var wordNm = td.eq(0).text();
+										var wordEngNm = td.eq(1).text();
+										var wordEngAb = td.eq(2).text();
+										var wordRm = td.eq(4).text();
+										
+										//table값을 수정 modal창에 띄우는 작업
+										$("#wordUpdateLayer #wordId").val(wordId); //표준용어 id
+										$("#wordUpdateLayer #wordNm").val(wordNm); // 표준용어명
+										$("#wordUpdateLayer #wordEngNm").val(wordEngNm); // 표준용어영문명
+										$("#wordUpdateLayer #wordEngAb").val(wordEngAb); // 영문약어
+										$("#wordUpdateLayer #wordRm").val(wordRm); // 구분
+										
+										if (td.eq(3).text() == "표준어"){ // 설명 
+											$("#wordUpdateLayer #wordCl").val("0").attr("selected", "selected");
+										}
+										else if (td.eq(3).text() == "동의어"){
+											$("#wordUpdateLayer #wordCl").val("1").attr("selected", "selected");
+										}
+										
+							  			$('#wordUpdateLayer').addClass('on');
+									});
+									
+								},1000);
+					  			
+								break;
+						}					
+					}
+				},
+				error: function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();	
+				}
+			});
+		}
+		
+		// 텝 클릭시 이동
+		function fn_searchTab(tabId){
+			// 페이지 초기화
+			$('#pageIndex').val('');
+			chkTabId = tabId;
+			
+			// 페이지 설정
+			switch (tabId) {
+				case "tab1" : 
+					tabType="domain";
+					$('#domainSearchArea').find('input').val('');
+					fn_selDataList();
+					$('#wordSearchArea').hide();
+					$('#domainSearchArea').show();
+					break;
+			  	case "tab2" : 
+			  		tabType="word";
+					$('#wordSearchArea').find('input').val('');
+			  		fn_selDataList();
+					$('#domainSearchArea').hide();
+					$('#wordSearchArea').show();
+			    	break;
+			}
+		}
+		
+		// 페이지 로드시 적용 설정
+		$(document).ready(function() {
+			var startTab = $("#tab1");
+			if(chkTabId == 'tab2'){
+				startTab = $("#tab2");	
+			}
+			
+			// 검색어 조회 키 입력 이벤트
+			$('.input_table').find('input').keydown(function(key) {
+                if (key.keyCode == 13) {
+                	fn_selDataList();
+                }
+            });
+
+			// 리스트 조회
+			fn_tabLink(startTab);
+			
+			//체크 했다가 다시 체크 해제할시 배열 초기화 이벤트
+			$(".tui-grid-header-area input[type='checkbox']").click(function(){
+				
+				if($(".tui-grid-body-area input[type='checkbox']:checked").length >0){
+                    domainChkArr=[];
+                }
+				console.log("fn_deleteDomain: " + domainChkArr);
+				
+			});
+			
+			//페이지 로드시 id값과 수정버튼 생성
+			fn_setup();
+			
+		});
+		
+		// 도메인 수정
+		function fn_updateDomain(){
+			var frmChk = true;
+			var domainId = $("#domainUpdateLayer #domainId").val(); // 분류
+			var domainCl = $("#domainUpdateLayer #domainCl").val(); // 분류
+			var domainNm = $("#domainUpdateLayer #domainNm").val(); // 도메인명
+			var domainTy = $("#domainUpdateLayer #domainTy").val(); // 데이터타입
+			var domainLt = $("#domainUpdateLayer #domainLt").val(); // 데이터길이
+			var domainRm = $("#domainUpdateLayer #domainRm").val(); // 설명
+			
+			// validation 체크
+			if(domainCl.length == 0) {
+				alert(UIT0518);
+				frmChk = false;
+			}
+			else if(domainNm.length == 0) {
+				alert(UIT0519);
+				frmChk = false;
+			}
+			else if(domainNm.length == 0) {
+				alert(UIT0519);
+				frmChk = false;
+			}
+			else if(domainTy.length == 0) {
+				alert(UIT0520);
+				frmChk = false;
+			}
+			
+			if(frmChk){
+				var arr = [];
+				var obj = {};
+				
+				obj.domainId = domainId;
+				obj.domainCl = domainCl;
+				obj.domainNm = domainNm;
+				obj.domainTy = domainTy;
+				obj.domainLt = domainLt;
+				obj.domainRm = domainRm;
+				
+				arr.push(obj);
+				
+				if(arr.length > 0){
+					$.ajax({
+						url: '/mngr/dataStandard/updateDomainInfo',
+						method : 'POST',
+						data: {insertList : JSON.stringify(arr)},
+						beforeSend: function() {
+							wrapWindowByMask();
+						},
+						success: function(data){
+							var obj = JSON.parse(data);
+							var isSuccess = obj.result;
+							
+							if( isSuccess ) {
+								fn_searchTab(chkTabId);
+								
+								fn_modalCloseLayer();
+							}
+							else {
+								alert(UIT0041);
+								return;
+							}
+				        },
+				        error:function() {
+							alert(UIT0041);
+							return;
+						},
+						complete: function() {
+							closeWindowByMask();
+							window.location.reload();
+						}
+				    });
+				}
+			}
+		}
+		
+		// 표준 용어 수정
+		function fn_updateWord(){
+			var frmChk = true;
+			var wordId = $("#wordUpdateLayer #wordId").val();
+			var wordNm = $("#wordUpdateLayer #wordNm").val();
+			var wordEngNm = $("#wordUpdateLayer #wordEngNm").val();
+			var wordEngAb = $("#wordUpdateLayer #wordEngAb").val();
+			var wordCl = $("#wordUpdateLayer #wordCl").val();
+			var wordRm = $("#wordUpdateLayer #wordRm").val();
+			
+			if(wordNm.length == 0 ) {
+				alert(UIT0521);
+				frmChk = false;
+			}			
+			else if(wordCl.length == 0) {
+				alert(UIT0522);
+				frmChk = false;
+			}
+			
+			if(frmChk){
+				var arr = [];
+				var obj = {};
+				obj.wordId = wordId;
+				obj.wordNm = wordNm;
+				obj.wordEngNm = wordEngNm;
+				obj.wordEngAb = wordEngAb;
+				obj.wordCl = wordCl;
+				obj.wordRm = wordRm;
+				
+				arr.push(obj);
+				
+				if(arr.length > 0){
+					$.ajax({
+						url: '/mngr/dataStandard/updateWordInfo',
+						method : 'POST',
+						data: {insertList : JSON.stringify(arr)},
+						beforeSend: function() {
+							wrapWindowByMask();
+						},
+						success: function(data){
+							var obj = JSON.parse(data);
+							var isSuccess = obj.result;
+							
+							if( isSuccess ) {
+								fn_searchTab(chkTabId);
+								
+								fn_modalCloseLayer();
+							}
+							else {
+								alert(UIT0041);
+								return;
+							}
+				        },
+				        error:function() {
+							alert(UIT0041);
+							return;
+						},
+						complete: function() {
+							closeWindowByMask();
+							window.location.reload();
+						}
+				    });
+				}
+			}
+		}
+		
+		//도메인 삭제
+		function fn_deleteDomain(){
+				
+			var chkLen =  $(".tui-grid-body-area input[type='checkbox']:checked").length;
+			if(chkLen > 0){
+				
+				$(".tui-grid-body-area input[type='checkbox']:checked").each(function(idx, ele){
+					domainChkArr.push($(ele).val());
+					
+				});
+				
+				$.ajax({
+					url: '/mngr/dataStandard/deleteDomainInfo',
+					method : 'POST',
+					data: "jsonData=" + domainChkArr,
+					beforeSend: function() {
+						wrapWindowByMask();
+					},
+					success: function(data){
+						var obj = JSON.parse(data);
+						var isSuccess = obj.result;
+						
+						if( isSuccess ) {
+							fn_searchTab(chkTabId);
+							
+							fn_modalCloseLayer();
+						}
+						else {
+							alert(UIT0041);
+							return;
+						}
+			        },
+			        error:function() {
+						alert(UIT0041);
+						return;
+					},
+					complete: function() {
+						closeWindowByMask();
+						window.location.reload();
+					}
+			    });
+			}
+			else{
+				alert("삭제할 내용을 먼저 체크해주십시오");
+				window.location.reload();//화면이 검은색이 되서 리로드처리
+			}	
+		}
+		
+		//표준 용어 삭제
+		function fn_deleteWord(){
+			
+			var chkLen =  $(".tui-grid-body-area input[type='checkbox']:checked").length;
+			console.log(chkLen);
+			if(chkLen > 0){
+				
+				$(".tui-grid-body-area input[type='checkbox']:checked").each(function(idx, ele){
+					wordChkArr.push($(ele).val());
+					console.log("wordChkArr: " + wordChkArr);
+					
+				});
+				
+				$.ajax({
+					url: '/mngr/dataStandard/deleteWordInfo',
+					method : 'POST',
+					data: "jsonData=" + wordChkArr,
+					beforeSend: function() {
+						wrapWindowByMask();
+					},
+					success: function(data){
+						var obj = JSON.parse(data);
+						var isSuccess = obj.result;
+						
+						if( isSuccess ) {
+							fn_searchTab(chkTabId);
+							
+							fn_modalCloseLayer();
+						}
+						else {
+							alert(UIT0041);
+							return;
+						}
+			        },
+			        error:function() {
+						alert(UIT0041);
+						return;
+					},
+					complete: function() {
+						closeWindowByMask();
+						window.location.reload();
+					}
+			    });
+			}else{
+				alert("삭제할 내용을 먼저 체크해주십시오");
+				window.location.reload();//화면이 검은색이 되서 리로드처리
+			}	
+		} 
+		
+		function fn_setup(){
+			setTimeout(function(){
+				//그리드 완성후 체크박스에 id값 넣기 이벤트
+				$(".tui-grid-body-area input[type='checkbox']").each(function(idx,e){
+					console.log("dataList: " + dataList);
+					var len = $(".tui-grid-body-area input[type='checkbox']").length;
+					
+					for(i=0; i<len; i++){
+
+						$(".tui-grid-body-area input[type='checkbox']").eq(i).val(dataList[i].domainId);
+										
+					}
+				}); 	
+				//그리드 완성후 도메인 수정팝업 띄우기 이벤트 
+				$("input[name=domainUdtBtn]").click(function(){   
+					
+					var alterBtn = $(this);
+					var tr = alterBtn.parent().parent().parent();
+					var td = tr.children();			
+					var domainId = $(this).data('value');
+					var domainCl = td.eq(0).text();
+					var domainNm = td.eq(1).text();
+					var domainTy = td.eq(2).text();
+					var domainLt = td.eq(3).text();
+					var rm = td.eq(4).text();
+					
+					//table값을 수정 modal창에 띄우는 작업
+					$("#domainUpdateLayer #domainId").val(domainId); //도메인 id	
+					$("#domainUpdateLayer #domainCl").val(domainCl); // 분류
+					$("#domainUpdateLayer #domainNm").val(domainNm); // 도메인명
+					$("#domainUpdateLayer #domainTy").val(domainTy); // 데이터타입
+					$("#domainUpdateLayer #domainLt").val(domainLt); // 데이터길이
+					$("#domainUpdateLayer #domainRm").val(rm); // 설명 
+		  			$('#domainUpdateLayer').addClass('on');	
+		
+				});
+				//그리드 완성후 표준 용어 수정팝업 띄우기 이벤트 
+				$("input[name=wordUdtBtn]").click(function(){   
+					
+					var alterBtn = $(this);
+					var tr = alterBtn.parent().parent().parent();
+					var td = tr.children();			
+					var wordId = $(this).data('value');
+					var wordNm = td.eq(0).text();
+					var wordEngNm = td.eq(1).text();
+					var wordEngAb = td.eq(2).text();
+					var wordRm = td.eq(4).text();
+					
+					//table값을 수정 modal창에 띄우는 작업
+					$("#wordUpdateLayer #wordId").val(wordId); //표준용어 id
+					$("#wordUpdateLayer #wordNm").val(wordNm); // 표준용어명
+					$("#wordUpdateLayer #wordEngNm").val(wordEngNm); // 표준용어영문명
+					$("#wordUpdateLayer #wordEngAb").val(wordEngAb); // 영문약어
+					$("#wordUpdateLayer #wordRm").val(wordRm); // 구분
+					
+					if (td.eq(3).text() == "표준어"){ // 설명 
+						$("#wordUpdateLayer #wordCl").val("0").attr("selected", "selected");
+					}
+					else if (td.eq(3).text() == "동의어"){
+						$("#wordUpdateLayer #wordCl").val("1").attr("selected", "selected");
+					}
+					
+		  			$('#wordUpdateLayer').addClass('on');
+				});
+				
+			},1000); 
+			
+			$("#tab1").click(function(){
+				fn_searchTab(chkTabId);
+				setTimeout(function(){
+					
+					//도메인 탭 클릭시 체크박스에 id값 넣기 이벤트
+					$(".tui-grid-body-area input[type='checkbox']").each(function(idx,e){
+						console.log("dataList: " + dataList);
+						var len = $(".tui-grid-body-area input[type='checkbox']").length;
+						
+						for(i=0; i<len; i++){
+							
+							$(".tui-grid-body-area input[type='checkbox']").eq(i).val(dataList[i].domainId);
+																	
+						}
+					}); 	
+					
+					//그리드 완성후 도메인 수정팝업 띄우기 이벤트 
+					$("input[name=domainUdtBtn]").click(function(){   
+						
+						var alterBtn = $(this);
+						var tr = alterBtn.parent().parent().parent();
+						var td = tr.children();			
+						var domainId = $(this).data('value');
+						var domainCl = td.eq(0).text();
+						var domainNm = td.eq(1).text();
+						var domainTy = td.eq(2).text();
+						var domainLt = td.eq(3).text();
+						var rm = td.eq(4).text();
+						
+						//table값을 수정 modal창에 띄우는 작업
+						$("#domainUpdateLayer #domainId").val(domainId); //도메인 id	
+						$("#domainUpdateLayer #domainCl").val(domainCl); // 분류
+						$("#domainUpdateLayer #domainNm").val(domainNm); // 도메인명
+						$("#domainUpdateLayer #domainTy").val(domainTy); // 데이터타입
+						$("#domainUpdateLayer #domainLt").val(domainLt); // 데이터길이
+						$("#domainUpdateLayer #domainRm").val(rm); // 설명 
+			  			$('#domainUpdateLayer').addClass('on');	
+			
+					});
+					
+				},1000);
+			});
+			
+			$("#tab2").click(function(){
+				fn_searchTab(chkTabId);
+				setTimeout(function(){
+					
+					//표준 용어 탭 클릭시 체크박스에 id값 넣기 이벤트
+					$(".tui-grid-body-area input[type='checkbox']").each(function(idx,e){
+						console.log("dataList: " + dataList);
+						var len = $(".tui-grid-body-area input[type='checkbox']").length;
+						
+						for(i=0; i<len; i++){
+										
+							$(".tui-grid-body-area input[type='checkbox']").eq(i).val(dataList[i].wordId);
+																			
+						}
+					}); 	
+					
+					//그리드 완성후 표준 용어 수정팝업 띄우기 이벤트 
+					$("input[name=wordUdtBtn]").click(function(){   
+						
+						var alterBtn = $(this);
+						var tr = alterBtn.parent().parent().parent();
+						var td = tr.children();			
+						var wordId = $(this).data('value');
+						var wordNm = td.eq(0).text();
+						var wordEngNm = td.eq(1).text();
+						var wordEngAb = td.eq(2).text();
+						var wordRm = td.eq(4).text();
+						
+						//table값을 수정 modal창에 띄우는 작업
+						$("#wordUpdateLayer #wordId").val(wordId); //표준용어 id
+						$("#wordUpdateLayer #wordNm").val(wordNm); // 표준용어명
+						$("#wordUpdateLayer #wordEngNm").val(wordEngNm); // 표준용어영문명
+						$("#wordUpdateLayer #wordEngAb").val(wordEngAb); // 영문약어
+						$("#wordUpdateLayer #wordRm").val(wordRm); // 구분
+						
+						if (td.eq(3).text() == "표준어"){ // 설명 
+							$("#wordUpdateLayer #wordCl").val("0").attr("selected", "selected");
+						}
+						else if (td.eq(3).text() == "동의어"){
+							$("#wordUpdateLayer #wordCl").val("1").attr("selected", "selected");
+						}
+						
+			  			$('#wordUpdateLayer').addClass('on');
+					});
+					
+				},1000);
+			}); 		
+			
+		}
+		</script>
+	</div>
+</html>

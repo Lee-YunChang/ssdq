@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+<head>
+    <style type="text/css">
+        .tb_type99 .tui-grid-container .tui-grid-content-area .tui-grid-lside-area .tui-grid-body-area .tui-grid-body-container {width: 40px !important;}
+        .tb_type99 .tui-grid-container .tui-grid-content-area .tui-grid-rside-area {width: calc(100% - 41px) !important;}
+    </style>
+</head> 
+    <div layout:fragment="content">
+    
+        <!-- 상단 내비 / 타이틀 -->
+        <div class="location">
+            <ul>
+                <li class="home">home</li>
+                <li>BASIC</li>
+                <li><label th:text="#{UIT0062}">데이터연결관리</label></li>
+            </ul>
+        </div>
+        <!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+            <span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; BASIC &gt; <label th:text="#{UIT0322}">데이터연결</label></span>
+        </div>
+        
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="col_grey font_23" th:text="#{UIT0322}"> 데이터연결</h1>
+        </div> -->
+        
+        <div class="tab_area">
+            <ul>
+                <li class="on" id="tab_area1">
+                    <a id="tab1" href="#none" onclick="fn_tabLink(this)">
+                        <span>DBMS</span>
+                    </a>
+                </li>
+                <li id="tab_area2">
+                    <a id="tab2" href="#none" onclick="fn_tabLink(this)">
+                        <span>CSV</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" id="tab1" href="#none" onclick="fn_tabLink(this)">DBMS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tab2" href="#none" onclick="fn_tabLink(this)">CSV</a>
+            </li>
+        </ul> -->
+                        
+        <!-- 영역 -->
+        <div class="content_body">
+	        <div class="row">
+	            <div class="col-lg mb-4">
+	                <!-- 내용 -->
+	                <div class="card shadow mb-4" style="width: 34.5%; float: left;">
+	                    <div class="card-header py-3">
+	                        <h6 id="tabH1" class="m-0 font-weight-bold text-primary">DBMS연결 설정</h6>
+	                    </div>
+	                    <!-- DBMS 연결  -->
+	                    <div id="tab1_div" class="content_body">
+	                        <div class="button_area alignr pad100">
+	                            <!-- <button class="btn btn-s gray in_wp100" type="button"th:text="#{UIT0190}" onclick="goList('list')" >목록보기</button> -->
+	                            <button class="btn btn-s gray in_wp100" type="button" onclick="resetData()" >초기화</button>
+	                            <button class="btn btn-s gray in_wp100" type="button"th:text="#{UIT0280}" id="list" onclick="connectTest('list')" >연결테스트</button>
+	                            <button class="btn btn-s gray in_wp100" type="button"th:text="#{UIT0280}" id="reCheck" onclick="connectTest('reCheck')" style="display: none;" >연결테스트</button>
+	                            <button class="btn btn-s blue in_wp100" type="button"id="btnSave" name="btnSave" th:text="#{UIT0088}"  onclick="connectSave('save');" >저장</button>
+	                            <button class="btn btn-s blue in_wp100" type="button"id="btnMod" name="btnMod" th:text="#{UIT0095}"  onclick="connectSave('MOD');" style="display: none;">수정</button>
+	                        </div>
+	                        
+	                        <form action="">
+	                            <input type="hidden" id="conCheck" name="conCheck" value="N">
+	                            <input type="hidden" id="dbmsId" name="dbmsId" value="">
+	                            <input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" th:value="${dgnssDbmsId}">
+	                            <section class="l_box_type02"> 
+	                                <div class="table_area">
+	                                    <table class="write fixed">
+	                                        <colgroup>
+	                                            <col style="width: 40%;" />
+	                                            <col style="width: auto" />
+	                                        </colgroup>
+	                                        <tbody>
+	                                            <tr>
+	                                                <th><span class="impo"></span><label for="dbmsKnd" th:text="#{UIT0281}">DB종류</label></th>
+	                                                <td>
+	                                                    <div class="selectbox" style="width: 150px;"> 
+	                                                        <label for="la_dbmsKnd">DBMS 선택</label>
+	                                                        <select id="dbmsKnd" name="dbmsKnd" class="in_w100" onchange="onChangeDb();"> 
+	                                                            <option value="00"  th:text="#{UIT0045}">선택</option>
+	                                                        </select>
+	                                                    </div>
+	                                                </td>
+	                                            </tr>
+	                                            <tr>
+	                                                <th><span class="impo"></span> <label for="ip" th:text="#{UIT0282}">서버 IP</label></th>
+	                                                <td><input type="text" id="ip" name="ip" class="in_w100" th:value="${ip }" maxlength="20" placeholder="000.000.000.000"></td>
+	                                                
+	                                            </tr>
+	                                            <tr>
+	                                                <th><span class="impo"></span> <label for="port" th:text="#{UIT0283}">서버 Port</label></th>
+	                                                <td><input type="text" id="port" name="port" class="in_w100" th:value="${port }" maxlength="4" placeholder="4자리 이내로 숫자 입력"></td>
+	                                            </tr>
+	                                            <tr>
+	                                                <th>
+	                                                    <span class="impo"></span> <label for="database">Database</label>
+	                                                </th>
+	                                                <td id="optionCol1">
+	                                                    <input type="text" id="database" name="database" class="in_w100" th:value="${database }" maxlength="20"placeholder="20자리 이내로 입력" >
+	                                                </td>
+	                                            </tr>
+	                                            <tr>
+	                                                <th id="optionOrTiTh1">
+	                                                <div id="optionOrTiLabel1" style="display: none;">
+	                                                    <span class="impo"></span> <label for="sid">SID</label>
+	                                                 </div>
+	                                                </th>
+	                                                <td id="optionOrTiTd1">
+	                                                    <div id="optionOrTiInput1" style="display: none;">
+	                                                    <input type="text" id="sid" name="sid" class="in_w100" th:value="${sid }" maxlength="30" placeholder="30자리 이내로 입력" >
+	                                                 </div>
+	                                                </td>                                               
+	                                            </tr>
+	                                            <tr>
+	                                                <th><label for="paramtr" th:text="#{UIT0286}">추가 적용 변수</label></th>
+	                                                <td><input type="text" id="paramtr" name="paramtr" class="in_w100" maxlength="100" th:value="${paramtr }" ></td>
+	
+	                                            </tr>
+	                                            <tr>
+	                                                <th><span class="impo"></span> <label for="id" th:text="#{UIT0284}"> 로그인 ID</label></th>
+	                                                <td><input type="text" id="id" name="id" class="in_w100" th:value="${id}" maxlength="20"placeholder="20자리 이내로 입력" ></td>
+	                                                
+	                                            </tr>
+	                                            <tr>
+	                                                <th><span class="impo"></span> <label for="pwd" th:text="#{UIT0285}">Password</label></th>
+	                                                <td><input type="password" id="pwd" name="pwd" class="in_w100" value="" maxlength="20"placeholder="20자리 이내로 입력" ></td>
+	                                            </tr>
+	                                            <tr>
+	                                                <!-- <th><span class="impo"></span> <label for="dgnssDbmsNm" th:utext="#{UIT0287}">진단대상<br>데이터베이스명</label></th> -->
+	                                                <th><span class="impo"></span> <label for="dgnssDbmsNm">진단대상<br>데이터베이스명</label></th>
+	                                                <td><input type="text" id="dgnssDbmsNm" name="dgnssDbmsNm" class="in_w100" th:value="${dgnssDbmsNm }" maxlength="30"placeholder="30자리 이내로 입력" ></td>
+	
+	                                            </tr>
+	                                            <tr>                                                                
+	                                                <td colspan="2" align="center"><input type="text" id="dbUrl" name="dbUrl" class="in_w100" value="" style="text-align:center;border: none;"  readonly="readonly"></td>
+	                                            </tr>
+	                                        </tbody>
+	                                    </table>
+	                                </div>
+	                            </section>
+	                        </form>                                       
+	                    </div>
+	                    
+	                    <!-- CSV 파일 등록  -->
+	                    <div id="tab2_div" class="content_body" style="display:none; margin-top: 0px;">
+	                        <div class="button_area alignr pad100">
+	                            <button type="button" id="csvFileInsert" class="btn btn-s blue in_wp100" th:text="#{UIT0289}" th:onclick="'javascript:fn_csvFileIns();'">파일등록</button>
+	                        </div>
+	                        <span th:text="#{UIT0288}">※ CSV 파일만 등록 가능합니다. 파일명은 영문/숫자만으로 되어 있어야 등록이 가능합니다. 파일 내용의 컬럼은 250개 이하로 작성해야 등록이 가능 합니다.</span>
+	                        <form name="csvUploadFrm" id="csvUploadFrm"  method="post" action="" enctype="multipart/form-data">
+	                            <section class="l_box_type02">                                    
+	                                <div class="table_area">
+	                                    <table class="write fixed" style="margin-top:10px;">
+	                                        <!-- <colgroup>
+	                                            <col style="width: 40%;" />
+	                                            <col style="width: auto" />
+	                                        </colgroup> -->
+	                                        <tbody>
+	                                            <!-- <tr>
+	                                                <th><span class="impo"></span> <label th:text="#{UIT0290}">파일 업로드</label></th> -->
+	                                                <!-- <td style="text-align: left; width:600px;">
+	                                                    <div class="filebox bs3-primary" style="text-align: left; width:600px;">
+	                                                        <input type="text" id="fileFullPath" name="fileFullPath" class="" value="파일선택" style="width: 400px;" disabled="disabled">
+	                                                        <label for="fileName" class="btn btn-l blue in_wp100" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+	                                                        <input type="file" name="fileName" id="fileName" style="width: 100px;" class="upload-hidden" onchange="get(event);"> 
+	                                                    </div>
+	                                                </td> -->
+	                                            <!-- </tr> -->      
+	                                            <tr>
+	                                                <td>
+	                                                    <div class="filebox bs3-primary" style="text-align: left;">
+	                                                        <input type="text" id="fileFullPath" name="fileFullPath" class="" value="파일선택" placeholder="파일선택" style="width: 70%;" disabled="disabled">
+	                                                        <label for="fileName" class="btn btn-l blue in_wp100" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+	                                                        <input type="file" name="fileName" id="fileName" style="width: 100px;" class="upload-hidden" onchange="get(event);"> 
+	                                                    </div>
+	                                                </td>
+	                                            </tr>                                                                                             
+	                                        </tbody>
+	                                    </table>
+	                                </div>
+	                            </section>
+	                        </form>
+	                    </div>
+	                </div>
+	                <div class="card shadow mb-4 margint10 float_left" style="width: 1%; border: none;"></div>
+	                <div class="card shadow mb-4" style="width: 64.5%; float: left;">
+	                    <div class="card-header py-3">
+	                        <h6 id="tabH2" class="m-0 font-weight-bold text-primary">DBMS연결 목록</h6>
+	                    </div>
+	                    <input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+	                    <input type="hidden" id="ckBtn" name="ckBtn" value="" />
+	                     
+	                    <div class="content_body">
+	                        <div class="table_area marginb40">
+	                            <div id ="grid" class="tb_type99" style="clear: both; min-height: 440px;"></div>
+	                            <div id="pagination" class="tui-pagination"></div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+		</div>
+	      
+        
+        <!-- 연결테스트 팝업 open -->
+        <div id="conResLayer" class="layer_pop_wrap" role="dialog">  <!--tabindex="-1" 삭제   (연결테스트 박스 클릭시 전체 div 테두리가 표시됨) -->
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="download-title" th:text="#{UIT0292}">연결 테스트</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p id="conResult" style="text-align:center; font-size: 25px;"></p>
+                <p id="message" style="text-align:center;"></p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" onclick="javascript:fn_modalCloseLayer();" class="btn btn-s blue in_wp70"  id="downloadclose" th:text="#{UIT0221}">확인</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 연결테스트 팝업 close -->
+        
+        <!-- CSV 파일등록 팝업 open -->
+        <div id="csvInsertLayer" class="layer_pop_wrap " style="top:40%; left:40%;">
+            <!-- <div class="txt_right mgn_b10">
+                <a href="javascript:fn_csvCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" alt="닫기 버튼"></a>
+            </div> -->
+            <div class="layer_pop" style="height: 650px;">
+                <div class="layer_header">
+                    <p th:text="#{UIT0293}">CSV 파일등록 </p>
+                    <a href="javascript:fn_csvUploadClose();" class="btn_close" ><img src="/img/icon/cancel_btn.png" th:alt="#{UIT0025}" style="width: 20px;"></a>
+                </div>
+                <section class="l_box_type02">                  
+                    <div style="width: 860px;">
+                        <ul id="csvINS">
+                            <li data-liNo="1">
+                                <form name="viewFrm" id="viewFrm"  method="post" action="#" >
+                                    <input type="hidden" id="viewFileName" name="fileName" class="textStyle" value="" >
+                                    <input type="hidden" id="viewFilePath" name="path" class="textStyle" value="" >
+                                    <div class="layer_pop_backboder">
+                                        <div class="table_area">    
+                                            <table class="write fixed" style="background-color: white;"><!-- 탭이 없어서 백그라운드 컬러 설정 -->
+                                            <colgroup>
+                                                <col style="width:20%">
+                                                <col style="width:30%">
+                                                <col style="width:20%">
+                                                <col style="width:30%">
+                                            </colgroup>
+                                                <tbody>
+                                                    <tr>
+                                                        <th th:text="#{UIT0294}">업로드 파일명 </th>
+                                                        <td colspan="3" id="csvFileName" style="text-align: left;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="width:95px;" th:text="#{UIT0295}">컬럼구분자</th>
+                                                        <td style="text-align: left;"><input type="text" id="delimiter" name="delimiter" style="font-weight:bold; width: 50px; padding-left: 7px;" value="," ></td>
+                                                        
+                                                        <th style="width:80px;" th:text="#{UIT0296}">헤더유무</th>
+                                                        <td style="text-align: left;">
+                                                             <!-- <select id="headerYn" name="headerYn" style="width:80px;" onchange="changeHeaderYn(this);">
+                                                                <option value="0" >N</option>
+                                                                <option value="1" >Y</option>
+                                                            </select>   --> 
+                                                            
+                                                            <!-- <div class="selectbox" style="display:inline-block;"> -->
+                                                            <div class="selectbox" style="display:none;">
+                                                                <label for="headerYn">Y</label>
+                                                                <select id='headerYn' name='headerYn' class='in_w100' style="width:80px; padding-top: 10px;" onchange="changeHeaderYn(this);" >
+                                                                     <option value="0" >N</option>
+                                                                     <option value="1" selected="selected" >Y</option>
+                                                                </select>
+                                                            </div> 
+                                                            <input type="text"  class="in_box_type01" id=culmLineCnt name="culmLineCnt" value="1" style="width:50px; padding-left: 6px; " oninput="maxLengthCheck(this)" maxlength="1">                                                              
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="layer_pop_backboder margint10">
+                                        <div id="csv_grid" class="tb_type99" style="overflow-x: auto;overflow-y: auto;height: 300px;"></div>
+                                    </div>
+                                </form>
+                            </li>
+                            <li data-liNo="2">
+                                <form name="detailFrm" id="detailFrm"  method="post" action="#" >
+                                    <input type="hidden" id="detailFileName" name="fileName" class="textStyle" value="" >
+                                    <input type="hidden" id="detailAttFilePath" name="attFilePath" class="textStyle" value="" >
+                                    <input type="hidden" id="detailColumnList" name="columnList" class="textStyle" value="" >
+                                    <input type="hidden" id="detailDataList" name="dataList" class="textStyle" value="" >
+                                    <input type="hidden" id="detailCulLineCnt" name="culLineCnt" class="textStyle" value="" >
+                                    <input type="hidden" id="detailDelimiter" name="delimiter" class="textStyle" value="" >
+                                    <input type="hidden" id="osKnd" name="osKnd" class="textStyle" value="" >
+                                    <div class="layer_pop_backboder">
+                                        <div id ="csv_detailGrid" class="tb_type99" style="overflow-y: auto;height: 420px;"></div>
+                                    </div>
+                                </form> 
+                            </li>
+                        </ul>
+                        <!-- <div class="btn_modal_box">
+                            <p class="l_box_type02_p">
+                                <span><button class="btn btn-primary btn_wd100 btn_csv_prev" style="display: none;" th:text="#{UIT0021}">이전</button></span>
+                                <span><button class="btn btn-primary btn_wd100 btn_csv_next" th:text="#{UIT0022}">다음</button></span>
+                                <span><button class="btn btn-primary btn_wd100 btn_csv_cancle" th:text="#{UIT0523}">취소</button></span>
+                                <span><button class="btn btn-primary btn_wd150 btn_csv_end" style="display: none;" th:text="#{UIT0290}">파일 업로드</button></span>
+                            </p>
+                        </div> -->    
+                        <div class="btn_modal_box">
+                            <div class="button_area alignc marginb5">
+                                <button class="btn btn-s blue in_wp70 btn_csv_prev" type="button" style="display: none;" th:text="#{UIT0021}">이전</button>
+                                <button class="btn btn-s blue in_wp70 btn_csv_next" type="button" th:text="#{UIT0022}">다음</button>
+                                <button class="btn btn-s blue in_wp70 btn_csv_cancle" type="button"th:text="#{UIT0523}">취소</button>
+                                <button class="btn btn-s blue in_wp100 btn_csv_end" type="button" style="display: none;" th:text="#{UIT0290}">파일 업로드</button>
+                            </div>
+                        </div>
+                    </div>                  
+                </section>
+             </div>
+        </div>
+        <!-- CSV 파일등록 팝업 close -->
+
+        <script th:inline="javascript"  class="code-js">
+        
+        /*<![CDATA[*/
+            var chkTabId = /*[[${tabId}]]*/;
+            var loginInsttCode = /*[[${loginInsttCode}]]*/;
+            var dbmsKnd = /*[[${dbmsKnd}]]*/;
+            var dbmsVerId = /*[[${dbmsVerId}]]*/;
+            var dbmsId = /*[[${dbmsId}]]*/;
+            var dgnssDbmsId = /*[[${dgnssDbmsId}]]*/;
+            var ip = /*[[${ip}]]*/;
+            var port = /*[[${port}]]*/;
+            var sid = /*[[${sid}]]*/;
+            var database = /*[[${database}]]*/;
+            var id = /*[[${id}]]*/;
+            var paramtr = /*[[${paramtr}]]*/;
+            var dgnssDbmsNm = /*[[${dgnssDbmsNm}]]*/;
+            var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+            var UIT0044 = /*[[ #{UIT0044} ]]*/; //: 비고
+            var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+            var UIT0088 = /*[[ #{UIT0088} ]]*/; //: 저장
+            var UIT0323 = /*[[ #{UIT0323} ]]*/; //: 구분
+            var UIT0324 = /*[[ #{UIT0324} ]]*/; //: 진단대상데이터베이스명
+            var UIT0325 = /*[[ #{UIT0325} ]]*/; //: 서버IP
+            var UIT0326 = /*[[ #{UIT0326} ]]*/; //: 서버PORT
+            var UIT0327 = /*[[ #{UIT0327} ]]*/; //: 접속계정
+            var UIT0328 = /*[[ #{UIT0328} ]]*/; //: 접속
+            var UIT0329 = /*[[ #{UIT0329} ]]*/; //: 상세
+            var UIT0330 = /*[[ #{UIT0330} ]]*/; //: CSV 파일 명
+            var UIT0331 = /*[[ #{UIT0331} ]]*/; //: 선택하신 DBMS로 접속 설정을 하시겠습니까?
+            var UIT0332 = /*[[ #{UIT0332} ]]*/; //: 선택하신 CSV 파일로 접속 설정을 하시겠습니까?
+            var UIT0333 = /*[[ #{UIT0333} ]]*/; //: 선택한 DBMS 연결 중 오류가 발생하였습니다.
+            var UIT0297 = /*[[ #{UIT0297} ]]*/; //: 세션정보 확인
+            var UIT0298 = /*[[ #{UIT0298} ]]*/; //: 서버IP를  반드시 입력해 주세요.
+            var UIT0299 = /*[[ #{UIT0299} ]]*/; //: 서버Port를  반드시 입력해 주세요.
+            var UIT0300 = /*[[ #{UIT0300} ]]*/; //: SID를  반드시 입력해 주세요.
+            var UIT0301 = /*[[ #{UIT0301} ]]*/; //: Database를  반드시 입력해 주세요.
+            var UIT0302 = /*[[ #{UIT0302} ]]*/; //: 로그인ID를 반드시 입력해 주세요.
+            var UIT0303 = /*[[ #{UIT0303} ]]*/; //: Password를 반드시 입력해 주세요.
+            var UIT0304 = /*[[ #{UIT0304} ]]*/; //: 진단대상 데이터베이스명을  반드시 입력해 주세요.
+            var UIT0305 = /*[[ #{UIT0305} ]]*/; //: 연결 성공
+            var UIT0306 = /*[[ #{UIT0306} ]]*/; //: 연결 실패
+            var UIT0307 = /*[[ #{UIT0307} ]]*/; //: 업로드할 파일을 선택해주세요
+            var UIT0308 = /*[[ #{UIT0308} ]]*/; //: 파일명은 영문자/숫자 조합만 가능 합니다.
+            var UIT0309 = /*[[ #{UIT0309} ]]*/; //: 확장자 명이 csv 파일만 등록 가능합니다.
+            var UIT0310 = /*[[ #{UIT0310} ]]*/; //: 저장하시겠습니까?
+            var UIT0311 = /*[[ #{UIT0311} ]]*/; //: DB종류를 선택해 주세요.
+            var UIT0312 = /*[[ #{UIT0312} ]]*/; //: 진단대상데이터베이스명을  반드시 입력해 주세요.
+            var UIT0313 = /*[[ #{UIT0313} ]]*/; //: 연결테스트 버튼을 클릭해 주세요.
+            var UIT0314 = /*[[ #{UIT0314} ]]*/; //: 정상적으로 등록 되었습니다.
+            var UIT0315 = /*[[ #{UIT0315} ]]*/; //: 등록에 실패하였습니다. 다시 등록해 주시기 바랍니다.
+            var UIT0316 = /*[[ #{UIT0316} ]]*/; //: 컬럼 구분자를 반드시 입력해 주세요.
+            var UIT0317 = /*[[ #{UIT0317} ]]*/; //: 헤더 유무를 선택해 주세요.
+            var UIT0318 = /*[[ #{UIT0318} ]]*/; //: 헤더 라인수를 입력해 주세요.
+            var UIT0319 = /*[[ #{UIT0319} ]]*/; //: 다음으로 진행 하시겠습니까?
+            var UIT0320 = /*[[ #{UIT0320} ]]*/; //: 해당 파일을 업로드 하시겠습니까?
+            var UIT0321 = /*[[ #{UIT0321} ]]*/; //: 정상적으로 업로드 되었습니다.
+        /*]]*/
+        
+            var tabType = "";
+            
+            // 페이지 로드시 적용 설정
+            $(document).ready(function() {
+                var startTab = $("#tab1");
+                if(chkTabId == 'tab2'){
+                    startTab = $("#tab2");  
+                }
+                
+                fn_tabLink(startTab);
+                
+                //셀렉트박스 라벨초기값 지정
+                if(dbmsKnd != null){
+                    $("label[for='la_dbmsKnd']").text(dbmsKnd);
+                }
+                
+                if(loginInsttCode == ''){
+                    alert(UIT0297);
+                }
+                
+                if(dbmsKnd == null || dbmsKnd == ""){
+                    dbmsKnd = "00";
+                }
+                if(dbmsVerId == null || dbmsVerId == ""){
+                    dbmsVerId = "00";
+                }
+                if(dbmsId == null || dbmsId == ""){
+                    dbmsVerId = "00";
+                }
+                //fn_makeDbmsInput(dbmsKnd);
+                selDbmsKindListBox(dbmsKnd);
+                onChangeDb();
+                
+                if(dgnssDbmsId > -1 && (dgnssDbmsId != null || dgnssDbmsId != undefined)){
+                    //$("#btnSave").text("수정");
+                    $("#dbmsKnd").attr('disabled',true);
+
+                    dbmsKndNm = dbmsKnd;
+                    
+                    fn_urlSet(dbmsKndNm, ip, port, sid);
+                }
+                $("button[class=close]").click(function(){
+                	fn_modalCloseLayer();
+                });
+                
+                //$(".inText").on('change', function(){
+                $(".in_w100").on('change', function(){
+                    var inputId = $(this).attr('id');
+                    if(inputId == "dbmsKnd"){dbmsKndNm = $("#dbmsKnd option:selected").text()};
+                    if(inputId == "ip"){ip = $(this).val()};
+                    if(inputId == "port"){port = $(this).val()};
+                    if(inputId == "sid"){sid = $(this).val()};
+                    
+                    fn_urlSet(dbmsKndNm, ip, port, sid);
+                });
+                
+                $("#fileName").on("click", function(){
+					$("#fileFullPath").val("");
+                });
+            });
+            
+            //탭 클릭시 해당 탭에 맞게 div 타이틀 변경
+            $(".tab_area").click(function(obj) {
+                var chkTabArea = obj.target.innerText;
+                
+                if(chkTabArea == 'DBMS'){
+                    document.getElementById('tabH1').innerHTML = "DBMS연결 설정";
+                    document.getElementById('tabH2').innerHTML = "DBMS연결 목록";
+                }else if(chkTabArea == 'CSV'){
+                    document.getElementById('tabH1').innerHTML = "CSV 파일 등록";
+                    document.getElementById('tabH2').innerHTML = "CSV 파일 목록";
+                }
+            
+                //탭 이동시 데이터 초기화
+                resetData()
+                
+            });
+            
+            
+                
+            //csv등록 모달 다음버튼 
+            $(".btn_csv_next").click(function() {
+                fn_openDetailGrid();
+                return false;
+            });
+            
+            //csv등록 모달 파일업로드 버튼
+            $(".btn_csv_end").click(function() {
+                csv_INS();      
+                
+            });
+            
+            $(".btn_csv_cancle").click(function() {
+                fn_csvCloseLayer();     
+                $("input[id=fileFullPath]").val(null);
+                $("input[id=fileName]").val(null);
+            });
+           $(".btn_csv_prev").click(function(){
+        	   fn_showButton(02);   
+           
+            });
+           
+            function fn_showButton(step){
+                var nextNo = $("#csvINS li:visible").next("li").attr("data-liNo");  //다음 li번호 확인용
+                
+                // 버튼 초기화
+                // open_csvLayer 초기화
+                if(!$("#csvINS li").first().is(":visible")){
+                    $("#csvINS li:visible").hide().prev("li").fadeIn("80");
+                    $(".btn_csv_prev").hide();
+                    $(".btn_csv_end").hide();
+                    $(".btn_csv_next").show();
+                    $(".btn_csv_cancle").show();
+                    
+                }
+                
+                if(step == '01'){ // 다음 버튼
+                    // 버튼
+                    if(!$("#csvINS li").last().is(":visible")){
+                        
+                        $("#csvINS li:visible").hide().next("li").fadeIn("80");
+                        $(".btn_csv_next").hide();
+                        $(".btn_csv_cancle").hide();
+                        $(".btn_csv_prev").show();
+                    }
+                    
+                    if($("#csvINS li").last().is(":visible")){
+                        $(this).hide();
+                        $(".btn_csv_end").show();
+                    }
+                }
+                if(step == '02'){ // 이전버튼
+                    // 버튼 
+                    if(!$("#csvINS li").first().is(":visible")){
+                        $("#csvINS li:visible").hide().prev("li").fadeIn("80");
+                        $(".btn_csv_next").show();
+                        $(".btn_csv_cancle").show();
+                    }
+                    
+                    if($("#csvINS li").first().is(":visible")){
+                        $(this).hide();
+                        $(".btn_csv_end").hide();
+                    }
+                }
+            }
+            
+            /* 사용자 정의 함수  */
+            function fn_urlSet(dbmsKndNm, ip, port, sid){   
+                if(dbmsKndNm == 'Oracle'){ // ORACLE
+                    url = "jdbc:"+dbmsKndNm+":thin:@"+ip+":"+port+":"+sid;
+                }else{
+                    url = "jdbc:"+dbmsKndNm+"://"+ip+":"+port+"/";
+                }
+                
+                $("#dbUrl").val(url);
+            }
+            // 파일등록 팝업창에서 팝업종료 x 버튼 눌렀을 때 이전화면 초기화
+            function fn_csvUploadClose(){
+            	$("input[id=fileFullPath]").val(null);
+                $("input[id=fileName]").val(null);
+            	fn_showButton(02);
+            	fn_modalCloseLayer();
+          	}
+            // 텝 클릭시 이동
+            function fn_searchTab(tabId){
+                // 페이지 초기화
+                $('#pageIndex').val('');
+                // 페이지 설정
+                switch (tabId) {
+                    case "tab1" : tabType="dbms";fn_selDataList();
+                    break;
+                    case "tab2" : tabType="csv";fn_selDataList();
+                    break;
+                }
+            }
+            
+            // 페이지 이동시 사용
+            function fn_search(){
+                fn_selDataList();
+            }
+            
+            // 목록 정보를 Ajax를 이용하여 가지고 온다.
+            function fn_selDataList(){
+                var pageIndex = $('#pageIndex').val();
+                var searchValue = $('#searchValue').val();
+                var itemsPerPage = $("#itemsPerPage").val();
+                
+                if('' == tabType){
+                    tabType = 'dbms';
+                }
+                var params = {
+                    "searchValue" : searchValue,
+                    "pageIndex" : pageIndex,
+                    "itemsPerPage" : itemsPerPage,
+                    "tabType" : tabType
+                }
+                
+                $.ajax({
+                    url: '/mngr/basicInfo/selectDbList',
+                    data: params,
+                    success: function(data){
+                        var obj = JSON.parse(data);
+                        var dataList = obj.result;
+                        var totalCnt = obj.totalCnt;
+                        tabType = obj.tabType;
+                        fn_setDataListGrid(dataList);
+                        /* 페이징 function 호출 */
+                        fn_pagination(totalCnt);
+                    }
+                });
+            }
+            
+            // 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+            function fn_setDataListGrid(listData){
+                // 화면 초기화 처리
+                $("#grid").empty();
+                // 조회 컬럼 목록
+                
+                var columns = "";
+                
+                tabType = tabType === undefined ? 'dbms' : tabType;
+                
+                if(tabType == 'dbms'){
+                    columns = [
+                        {header : '', title : '', name : 'dgnssDbmsId', hidden:true},
+                        {header : UIT0323, title : UIT0323, name : 'dbmsKnd', whiteSpace: 'normal', sortable: true,  width: 80, align: 'center'},
+                        {header : UIT0324, title : UIT0324, name : 'dgnssDbmsNm', whiteSpace: 'normal', sortable: true}, 
+                        {header : UIT0325, title : UIT0325, name : 'ip', whiteSpace: 'normal', sortable: true,  width: 100, align: 'center'}, 
+                        {header : UIT0326, title : UIT0326, name : 'port', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'}, 
+                        {header : 'Database', title : 'Database', name : 'database', whiteSpace: 'normal', sortable: true, width: 100, align: 'center'},
+                        {header : UIT0327, title : UIT0327, name : 'id', width: 100, whiteSpace: 'normal', sortable: true, align: 'center'},
+                        {header : UIT0044, title : UIT0044, name : 'rm', width: 100, whiteSpace: 'normal', align: 'center', formatter : function(value, options){
+                                var html  = "";
+                                var display = "";
+                                html += "<div class='button_area'>"
+                                html += "<input type='button' class='btn btn-s blue in_wp70' data-value='CON' value='"+UIT0328+"' />&nbsp;&nbsp;";
+                                if(value.value == 'dq_database'){
+                                    //display = "disable='true'";
+                                }
+                                //html += "<input type='button' class='btn btn-s gray in_wp70' data-value='SEL' value='"+UIT0329+"' />";
+                                html += "</div>"
+                                return html;
+                            }
+                        }
+                    ];
+                    
+                }else{
+                    
+                    columns = [
+                        {header : UIT0323, title : UIT0323, name : 'dbmsKnd', whiteSpace: 'normal', sortable: true,  width: 80, align: 'center',}, 
+                        {header : UIT0330, title : UIT0330, name : 'dgnssDbmsNm', whiteSpace: 'normal',  sortable: true,}, 
+                        {header : UIT0044, title : UIT0044, name : 'rm', width: 100, whiteSpace: 'normal', align: 'center', formatter : function(value, options){
+                                var html  = "";
+                                var display = "";
+                                html += "<div class='button_area'>"
+                                html += "<input type='button' class='btn btn-s blue in_wp70' data-value='CON' value='"+UIT0328+"' />&nbsp;&nbsp;";
+                                html += "</div>"
+                                if(value.value == 'dq_database'){
+                                    //display = "disable='true'";
+                                }
+                                return html;
+                            },
+                        }
+                    ];
+                }
+                
+                const dataListGrid = new tui.Grid({
+                    el : document.getElementById("grid"),
+                    data : listData,
+                    rowHeaders: ['rowNum'],
+                    scrollX : false,
+                    scrollY : false,
+                    rowHeight : 40,
+                    minBodyHeight : 40,
+                    header: {
+                        height: 40
+                    },
+                    columns : columns
+                });
+                
+                const extOptions = {
+                    cell: {
+                        focused: {
+                            border: 1 // 선택 셀 강조 표시 x
+                        }
+                    }
+                };
+                
+                tui.Grid.applyTheme('default', extOptions);
+                
+                dataListGrid.on('click', function(ev) {
+                    
+                    var inText = ev.nativeEvent.target.innerText;
+                    var obj = ev.nativeEvent.target;
+                    var mode = $(obj).data("value");
+                    var selData = listData[ev.rowKey];
+                    
+                    if(ev.columnName === 'rm'){
+                        var item = dataListGrid.getRow(ev.rowKey);
+                        
+                        if(mode != undefined){
+                            if(mode == 'CON'){
+                                fn_connectDbms(item,tabType);
+                            }
+                            if(mode == 'SEL'){
+                                /* location.href = "/mngr/basicInfo/dataConnProp.do?dgnssDbmsId="+item.dgnssDbmsId; */
+                            }
+                        }
+                      
+                    } else {
+                        //등록된 DBMS 정보 셋팅
+                        $("#dgnssDbmsId").val(selData.dgnssDbmsId);
+                        $("label[for='la_dbmsKnd']").text(selData.dbmsKnd);
+                        $("#dbmsKnd").val(selData.dbmsKnd);
+                        $("#ip").val(selData.ip);
+                        $("#port").val(selData.port);
+                        $("#id").val(selData.id);
+                        $("#pwd").val("");
+                        $("#database").val(selData.database);
+                        $("#sid").val(selData.sid);
+                        $("#paramtr").val(selData.paramtr);
+                        $("#dgnssDbmsNm").val(selData.dgnssDbmsNm);
+                        $("#dbUrl").val(selData.dbUrl);
+                        
+                        var dbmsKnd = selData.dbmsKnd;
+                        
+                        if(dbmsKnd != '00' && dbmsKnd != null){
+                            if(dbmsKnd == 'Oracle'){
+                                $('#optionOrTiLabel1').css('display','block');
+                                $('#optionOrTiInput1').css('display','block');
+                                $('#optionOrTiTh1').css('display','');
+                                $('#optionOrTiTd1').css('display','');
+                                $('#optionCol1').attr('colspan','1');
+                            }
+                            if(dbmsKnd == 'Tibero'){
+                                $('#optionOrTiLabel1').css('display','block');
+                                $('#optionOrTiInput1').css('display','block');
+                                $('#optionOrTiTh1').css('display','');
+                                $('#optionOrTiTd1').css('display','');
+                            }
+                            if(dbmsKnd == 'MySQL'){
+                                $('#optionOrTiLabel1').css('display','none');
+                                $('#optionOrTiInput1').css('display','none');
+                                $('#optionOrTiTh1').css('display','none');
+                                $('#optionOrTiTd1').css('display','none');
+                            }
+                            if(dbmsKnd == 'MSSQL'){
+                                $('#optionOrTiLabel1').css('display','none');
+                                $('#optionOrTiInput1').css('display','none');
+                                $('#optionOrTiTh1').css('display','none');
+                                $('#optionOrTiTd1').css('display','none');
+                            }
+                            selDbmsVerListBox(dbmsKnd); 
+                        }else{
+                            $('#optionOrTiLabel1').css('display','none');
+                            $('#optionOrTiInput1').css('display','none');
+                            $('#optionOrTiTh1').css('display','none');
+                            $('#optionOrTiTd1').css('display','none');
+                            $("#dbmsVerId").empty();
+                            var option  = $("<option value='00'>선택</option>");
+                            $("#dbmsVerId").append(option);
+                        }
+                        
+	                  	//상세보기시 저장버튼 -> 수정버튼으로 변경
+	                    //document.getElementById("btnSave").innerHTML = UIT0095;
+	                    $("#btnMod").show();
+	                    $("#btnSave").hide();
+	                    
+	                  	//상세보기시 연결테스트 버튼 변경
+	                    $("#reCheck").show();
+	                    $("#list").hide();
+                     }
+                    
+                  
+                });
+                
+                dataListGrid.resetData(listData);
+            }
+            
+            
+            // 선택된 지정 DB 접속 정보를 세션에 등록한다.
+            function fn_setDbms(obj,tabType){
+                
+                var dgnssDbmsId = obj.dgnssDbmsId;
+                var param = "";
+                var massage = "";
+                if(tabType=="dbms"){
+                    param = "?tabId=tab1";
+                    massage = UIT0331;
+                }else{
+                    param = "?tabId=tab2";
+                    massage = UIT0332;
+                }
+                
+                if(confirm(massage)){
+                    
+                    $.ajax({
+                        url: "/mngr/basicInfo/connectDbms",
+                        data: {dgnssDbmsId : dgnssDbmsId} ,
+                        success: function(data){
+                            // 처리 완료시 페이지를 리로드 하여 세션에 저장된 접속 URL 정보를 확인 한다.
+                            location.href = "/mngr/basicInfo/dgnssDbmsList"+param;
+                        }
+                    });
+                }
+            }
+            
+            
+            function fn_connectDbms(obj,tabType){
+            	
+                if(tabType=="dbms"){
+                    var arr = [];
+                    obj.pwd = obj.password;
+                    obj.type = "reCheck";
+                    arr.push(obj);
+                    if(arr != null){
+                        $.ajax({
+                            url: '/mngr/basicInfo/dataConnPropCheckDb.do',
+                            method : 'POST',
+                            data: {dataList : JSON.stringify(arr)},
+                            success: function(data){
+                                var objdata = $.parseJSON(data);
+                                var result = objdata.result;
+                                if(result == true){
+                                    fn_setDbms(obj,tabType);
+                                }else{
+                                    alert(UIT0333);
+                                    return false;
+                                }
+                                
+                            }, error:function() {
+                                alert(UIT0333);
+                                return false;
+                           }
+                        });
+                    }
+                }else{
+                    fn_setDbms(obj,tabType);
+                }
+            }
+            
+            function onChangeDb(){
+                var dbmsKnd = $("#dbmsKnd option:selected").val();
+                if("00" == dbmsKnd){
+                    dbmsKnd = /*[[${dbmsKnd}]]*/;
+                }
+                //fn_makeDbmsInput(dbmsKnd);
+                if(dbmsKnd != '00' && dbmsKnd != null){
+                    if(dbmsKnd == 'Oracle'){
+                        $('#optionOrTiLabel1').css('display','block');
+                        $('#optionOrTiInput1').css('display','block');
+                        $('#optionOrTiTh1').css('display','');
+                        $('#optionOrTiTd1').css('display','');
+                        $('#optionCol1').attr('colspan','1');
+                    }
+                    if(dbmsKnd == 'Tibero'){
+                        $('#optionOrTiLabel1').css('display','block');
+                        $('#optionOrTiInput1').css('display','block');
+                        $('#optionOrTiTh1').css('display','');
+                        $('#optionOrTiTd1').css('display','');
+                    }
+                    if(dbmsKnd == 'MySQL'){
+                        $('#optionOrTiLabel1').css('display','none');
+                        $('#optionOrTiInput1').css('display','none');
+                        $('#optionOrTiTh1').css('display','none');
+                        $('#optionOrTiTd1').css('display','none');
+                    }
+                    if(dbmsKnd == 'MSSQL'){
+                        $('#optionOrTiLabel1').css('display','none');
+                        $('#optionOrTiInput1').css('display','none');
+                        $('#optionOrTiTh1').css('display','none');
+                        $('#optionOrTiTd1').css('display','none');
+                    }
+                    selDbmsVerListBox(dbmsKnd); 
+                }else{
+                    $('#optionOrTiLabel1').css('display','none');
+                    $('#optionOrTiInput1').css('display','none');
+                    $('#optionOrTiTh1').css('display','none');
+                    $('#optionOrTiTd1').css('display','none');
+                    $("#dbmsVerId").empty();
+                    var option  = $("<option value='00'>선택</option>");
+                    $("#dbmsVerId").append(option);
+                }
+            }
+
+            // db종류 조회
+            function selDbmsKindListBox(dbmsKnd){
+                //$("#dbmsKnd").empty();
+                //var deOption  = $("<option value='00'>선택</option>");
+                //$("#dbmsKnd").append(deOption);
+                $.ajax({
+                    url: '/mngr/basicInfo/selDbmsKindList',
+                    method : 'POST',
+                    success: function(dataList){
+                        for(var i = 0; i < dataList.length; i++){
+                            var selected = "";
+                            if(dbmsKnd == dataList[i].dbmsKnd) {
+                                selected = "selected=true";
+                                $("#dbmsId").val(dataList[i].dbmsId);
+                                //selDbmsVerListBox(dataList[i].dbmsKnd);
+                            }else{
+                                selected = "";
+                            }
+                            
+                            var option = $("<option value="+dataList[i].dbmsKnd+" "+selected+">"+dataList[i].dbmsKnd+"</option>");
+                            $("#dbmsKnd").append(option);
+                        }
+                    },
+                });
+
+            }
+            
+            // db버전 조회
+            function selDbmsVerListBox(dbmsKnd){
+                var dbmsVerId = /*[[${dbmsVerId}]]*/;
+                $("#dbmsVerId").empty();
+                var deOption  = $("<option value='00'>선택</option>");
+                $("#dbmsVerId").append(deOption);
+                $.ajax({
+                    url: '/mngr/basicInfo/selDbmsVerList',
+                    method : 'POST',
+                    data: {dbmsKnd : dbmsKnd},
+                    success: function(dataList){
+                        for(var i = 0; i < dataList.length; i++){
+                            var selected = "";
+                            if(dbmsVerId == dataList[i].dbmsVerId) {
+                                selected = "selected=true;";
+                            }else{
+                                selected = "";
+                            }
+                            var option = $("<option value="+dataList[i].dbmsVerId+" "+selected+">"+dataList[i].dbmsVerId+"</option>");
+                            $("#dbmsVerId").append(option);
+                        }
+                    },
+                });
+
+            }
+        
+            function connectTest(type){
+                
+                var arr = [];
+                var obj = {};
+                var mode = "";
+                    
+                var dbmsKnd = $("#dbmsKnd").val();              //DB종류
+                var dbmsVerId = $("#dbmsVerId").val();          //DB버전
+                var id = $("#id").val();                        //사용자 아이디
+                var pwd = $("#pwd").val();                      //사용자 패스워드
+                var ip = $("#ip").val();                        //IP
+                var port = $("#port").val();                    //Port
+                var sid = $("#sid").val();                      //SID 
+                var database = $("#database").val();            //database
+                var dgnssDbmsNm = $("#dgnssDbmsNm").val();      //진단대상 데이터베이스명
+                var dgnssDbmsId = $("#dgnssDbmsId").val();
+                var paramtr = $("#paramtr").val();              // 추가 파라메터
+                
+                if(dbmsKnd == "00" || dbmsKnd == null){
+                    alert(UIT0311);
+                    $("#dbmsKnd").focus();
+                    return false;
+                }
+
+                if(ip == "" || ip == null){
+                    alert(UIT0298);
+                    $("#ip").focus();
+                    return false;
+                }
+
+                if(port == "" || port == null){
+                    alert(UIT0299);
+                    $("#port").focus();
+                    return false;
+                }
+                if(dbmsKnd == "Oracle" || dbmsKnd == "Tibero"){
+                    if(sid == "" || sid == null){
+                        alert(UIT0300);
+                        $("#sid").focus();
+                        return false;
+                    }
+                }
+
+                if(database == "" || database == null){
+                    alert(UIT0301);
+                    $("#database").focus();
+                    return false;
+                }
+                
+                if(id == "" || id == null){
+                    alert(UIT0302);
+                    $("#id").focus();
+                    return false;
+                }
+                
+                if(pwd == "" || pwd == null){
+                    alert(UIT0303);
+                    $("#pwd").focus();
+                    return false;
+                }
+                
+                if(dgnssDbmsNm == "" || dgnssDbmsNm == null){
+                    alert(UIT0304);
+                    $("#dgnssDbmsNm").focus();
+                    return false;
+                }
+                
+                obj.dbmsKnd = dbmsKnd ;
+                obj.id = id;
+                obj.pwd = pwd;
+                obj.ip = ip;
+                obj.port = port;
+                obj.sid = sid;
+                obj.database = database;
+                obj.dgnssDbmsNm = dgnssDbmsNm;
+                obj.dgnssDbmsId = dgnssDbmsId;
+                obj.paramtr = paramtr;
+                if(type == "reCheck"){
+                	obj.type = "reCheck";
+                } else {
+	                obj.type = "check";
+                }
+                arr.push(obj);
+                
+                if(arr != null){
+                    $.ajax({
+                        url: '/mngr/basicInfo/dataConnPropCheckDb.do',
+                        beforeSend: function() {
+    						wrapWindowByMask();
+    					},
+                        method : 'POST',
+                        data: {mode : mode, type : type, dataList : JSON.stringify(arr)},
+                        success: function(data){
+                        	closeWindowByMask();                        	
+                        	
+                            var obj = $.parseJSON(data);
+                            var result = obj.result;
+                            var message = obj.message;
+                            
+                            if(result){ 
+                                
+                                /*레이어 열기*/
+                                $('#conResLayer').addClass('on');
+                                $("#conResult").text(UIT0305);
+                                $("#conCheck").val("Y");
+                                $('#message').hide();
+                                
+                                $('.layer_pop_wrap').css("left","30%");
+                                $('.layer_pop_wrap').css("top","35%");
+                                
+                                $('.tui-grid-container').css('z-index', 1);          
+                                $('.cover').show();
+                                
+                            }else{
+                                /*레이어 열기*/
+                                $('#conResLayer').addClass('on');
+                                $('#message').show();
+                                $("#conResult").text(UIT0306);
+                                $("#conCheck").val("N");
+                                $("#message").text(message);
+                                
+                                $('.layer_pop_wrap').css("left","30%");
+                                $('.layer_pop_wrap').css("top","35%");
+                                
+                                $('.tui-grid-container').css('z-index', 1);         
+                                $('.cover').show();
+                                
+                            }
+                        }, error:function() {
+                        	closeWindowByMask();
+                        	
+                            /*레이어 열기*/
+                            $('#conResLayer').addClass('on');
+                            $("#conResult").text(UIT0306);
+                            
+                            $('.layer_pop_wrap').css("left","30%");
+                            $('.layer_pop_wrap').css("top","35%");
+                            
+                            $('.tui-grid-container').css('z-index', 1);         
+                            $('.cover').show();
+                            return;
+                       }, complete:function(){
+   		        	    closeWindowByMask();
+   		            }
+                    });
+                }
+            }           
+            
+            function doSave() {
+                var fileName = $("#fileName").val();
+                var fileNames = fileName.split("\\");
+                var len = fileNames.length -1;
+                var checkNms = fileNames[len].split(".");
+                var checkNm = checkNms[0].trim();
+                var checkDns = checkNms[1].trim();
+                // 업로드 파일 확인
+                if(fileName == "") {
+                    alert(UIT0307);
+                    return false;
+                }
+                if ((new RegExp(/[^a-z0-9_]/gi)).test(checkNm)) {
+                    alert(UIT0308); 
+                    return false;
+                }
+                if ((new RegExp(/^[(csv)]/gi)).test(checkDns.toLowerCase())== false) {
+                    alert(UIT0309);
+                    return false;
+                }
+                
+                if(confirm(UIT0310)) {
+                    $("#frm").submit();
+                }
+            }
+
+            function connectSave(type){
+                var arr = [];
+                var obj = {};
+                var conType = "DBMS";
+                var mode = "";
+                
+                if(type == 'save'){
+                	mode = "INS"; 	
+                } else if(type == 'MOD'){
+                	mode = "UDT";
+                }
+                
+                var dbmsKnd =  $("#dbmsKnd option:selected").text();
+                var dbmsVerId = $("#dbmsVerId").val();
+                var id = $("#id").val();
+                var pwd = $("#pwd").val();
+                var dgnssDbmsId = $("#dgnssDbmsId").val();
+                var dgnssDbmsNm = $("#dgnssDbmsNm").val();
+                var ip = $("#ip").val();
+                var port = $("#port").val();
+                var sid = $("#sid").val();
+                var database = $("#database").val();
+                var conCheck = $("#conCheck").val();
+                var paramtr = $("#paramtr").val();              // 추가 파라메터
+                
+                if(dbmsKnd == "00" || dbmsKnd == null){
+                    alert(UIT0311);
+                    $("#dbmsKnd").focus();
+                    return false;
+                }
+
+                if(ip == "" || ip == null){
+                    alert(UIT0298);
+                    $("#ip").focus();
+                    return false;
+                }
+
+                if(port == "" || port == null){
+                    alert(UIT0299);
+                    $("#port").focus();
+                    return false;
+                }
+                
+                if(dbmsKnd == "Oracle" || dbmsKnd == "Tibero"){
+                    if(sid == "" || sid == null){
+                        alert(UIT0300);
+                        $("#sid").focus();
+                        return false;
+                    }
+                }
+
+                if(database == "" || database == null){
+                    alert(UIT0301);
+                    $("#database").focus();
+                    return false;
+                }
+                
+                if(id == "" || id == null){
+                    alert(UIT0302);
+                    $("#id").focus();
+                    return false;
+                }
+                
+                if(pwd == "" || pwd == null){
+                    alert(UIT0303);
+                    $("#pwd").focus();
+                    return false;
+                }
+
+                if(dgnssDbmsNm == "" || dgnssDbmsNm == null){
+                    alert(UIT0303);
+                    $("#dgnssDbmsNm").focus();
+                    return false;
+                }
+
+                if(conCheck == "N" || conCheck == "" || conCheck == null){
+                    alert(UIT0313);
+                    return false;
+                }
+                
+                obj.dbmsKnd = dbmsKnd ;
+                obj.dbmsVerId = dbmsVerId;
+                
+                obj.id = id;
+                obj.pwd = pwd;
+                obj.dgnssDbmsNm = dgnssDbmsNm;
+                obj.dgnssDbmsId = dgnssDbmsId;
+                obj.ip = ip;
+                obj.port = port;
+                obj.sid = sid;
+                obj.database = database;
+                obj.paramtr = paramtr;
+                
+                arr.push(obj);
+
+                if(arr != null){
+                    
+                    $.ajax({
+                        url: '/mngr/basicInfo/dataConnPropSave.do',
+                        method : 'POST',
+                        data: {mode : mode, type : conType, dataList : JSON.stringify(arr)},
+                        success: function(data){
+                            if(data){ 
+                                alert(UIT0314);
+                                connectDbms(obj,type);
+                            }else{
+                                alert(UIT0315);
+                            }
+                        }, error:function() {
+                            alert(UIT0041);
+                            return;
+                       }
+                    });
+                    
+                }
+                
+            }
+            
+            function fn_csvFileIns(){
+            	if(  $("input[id=fileFullPath]").val()==null ||  $("input[id=fileFullPath]").val()==''){
+                alert(UIT0307);	
+        		return false;
+            	}
+            	fn_openCsvModal();
+            }
+            
+            function fn_csvFindLayer(){
+                
+                /*찾기 레이어 열기*/
+                $('#csvInsertLayer').addClass('on');
+                $('.cover').show();
+            }
+            
+            function fn_csvCloseLayer(){
+                
+                // open_csvLayer 초기화
+                if(!$("#csvINS li").first().is(":visible")){
+                    $("#csvINS li:visible").hide().prev("li").fadeIn("80");
+                    $(".btn_csv_prev").hide();
+                    $(".btn_csv_end").hide();
+                    $(".btn_csv_next").show();
+                    
+                }
+                
+                $('.layer_pop_wrap').removeClass('on');
+                $('.cover').hide();
+            }
+            
+            // csv_data 
+            function fn_openCsvModal(){
+                var csvFileChk= true;
+                
+                var fileName = $("#fileName").val();
+                var fileNames = fileName.split("\\");
+                var len = fileNames.length -1;
+                var checkNms = fileNames[len].split(".");
+                var len2 = checkNms.length -1;
+                
+                var checkNm = checkNms[0].trim();
+                var checkDns = checkNms[len2].trim();
+                
+                // 업로드 파일 확인
+                if(fileName == "") {
+                    alert(UIT0307);
+                    csvFileChk = false;
+                    return false;
+                } else {
+                	if((checkNm.length) > 21){
+                		alert("파일명은 20자를 초과할 수 없습니다.");
+               		    csvFileChk = false;
+   	                    return false;
+                	}
+	                if ((new RegExp(/[^a-z0-9_]/gi)).test(checkNm)) {
+	                    alert(UIT0308);
+	                    csvFileChk = false;
+	                    return false;
+	                }
+	                if ((new RegExp(/^[(csv)]/gi)).test(checkDns.toLowerCase())== false) {
+	                    alert(UIT0309);
+	                    csvFileChk = false;
+	                    return false;
+	                }
+                }
+
+                if(csvFileChk==true){
+                    wrapWindowByMask();
+                    csvGridView(csvFileChk);
+                    closeWindowByMask();
+                }
+            }
+            
+            function csvGridView(csvFileChk){
+                //그리드 초기화
+                $("#csv_grid").empty();
+                
+                // Get form
+                var form = $('#csvUploadFrm')[0];   // id 뒤에 '[0]'은 Html형식을 위해 필수인듯하다.
+                // Create an FormData object 
+                var csvFile = new FormData(form);
+                if(csvFileChk==true){
+                    $.ajax({
+                        url: '/mngr/basicInfo/csvFileData',
+                        method : 'POST',
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        timeout: 600000,
+                        data: csvFile,
+                        success: function(data){
+                        	
+                            var obj = JSON.parse(data);
+                            var fileName= obj.fileName;
+                            var attFileOutputFullPath= obj.attFileOutputFullPath;
+                            var csvDataList = obj.dataList;
+                            var osKnd = obj.osKnd;
+                            
+                            $("#viewFileName").val(fileName);               //form hidden
+                            $("#viewFilePath").val(attFileOutputFullPath);      //form hidden
+                            $("#csvFileName").text(fileName);
+                            $("#osKnd").val(osKnd);
+                            
+                            fn_csvFindLayer();
+                            if(csvDataList != "" && csvDataList != null && csvDataList != undefined){
+                                
+                                var columns = [
+                                    {header : 'NO', name : 'rowKey', width:60, align: 'center'},
+                                    {header : '데이터', name : 'dataMap', whiteSpace: 'normal', align: 'center'}
+                                ];
+                                
+                                const csvGrid = new tui.Grid({
+                                      el : document.getElementById("csv_grid"),
+                                      data : csvDataList,
+                                      scrollX : false,
+                                      scrollY : false,
+                                      //rowHeight : 35,
+                                      //rowHeaders: ['rowNum'],
+                                      minBodyHeight : 40,
+                                      bodyWidth : 450,
+                                      header: {
+                                        height: 40
+                                      },
+                                      columns : columns,
+                                      columnOptions: {
+                                          resizable: true
+                                      }
+                                });
+                                
+                                const extOptions = {
+                                        cell: {
+                                            focused: {
+                                                border: 0 // 선택 셀 강조 표시 x
+                                            }
+                                        }
+                                };
+                                    
+                                tui.Grid.applyTheme('default', extOptions);
+                                
+                                csvGrid.resetData(csvDataList);
+                            }
+                        }, error:function() {
+                            alert(UIT0041);
+                            return;
+                       }
+                    });
+                    
+                }
+                
+            }
+            
+            function fn_openDetailGrid(){
+                //그리드 초기화
+                $("#csv_detailGrid").empty();
+                
+                var delimiter = $("#delimiter").val();
+                var headerYn = $("#headerYn").val();
+                var culmLineCnt = $("#culmLineCnt").val();
+                
+                if(delimiter == "" || delimiter == null){
+                    alert(UIT0316);
+                    $("#delimiter").focus();
+                    return false;
+                }
+                if(headerYn == "" || headerYn == null){
+                    alert(UIT0317);
+                    $("#headerYn").focus();
+                    return false;
+                }
+
+                if(headerYn == "Y" ){
+                    if(culmLineCnt == "0" || culmLineCnt == null){
+                        alert(UIT0318);
+                        $("#culmLineCnt").focus();
+                        return false;
+                    }
+                }
+                if(confirm(UIT0319) == true){
+                    
+                    // Get form
+                    var csvDetailData = $('#viewFrm').serialize();  // 미리보기 화면의 데이터를 보내서 paser해야한다.
+                    
+                    $.ajax({
+                        url: '/mngr/basicInfo/csvFilePaser',
+                        method : 'POST',
+                        data: csvDetailData,
+                        success: function(data){
+                            var obj = JSON.parse(data);
+                            
+                            var detailColumnList = obj.columnList;                      //헤더정보
+                            var detailDataList = obj.dataList;                          //데이터
+                            var detailFileName = obj.fileName;                          //파일명
+                            var detailCulLineCnt = obj.culLineCnt;                      //헤더 위치(번호)
+                            var detailAttFilePath = obj.attFilePath;                    //파일 경로
+                            var detailDelimiter = obj.delimiter;                        //구분자
+                            
+                            $("#detailColumnList").val(detailColumnList);               //form hidden
+                            $("#detailDataList").val(detailDataList);                   //form hidden
+                            $("#detailFileName").val(detailFileName);                   //form hidden
+                            $("#detailCulLineCnt").val(detailCulLineCnt);               //form hidden
+                            $("#detailAttFilePath").val(detailAttFilePath);             //form hidden
+                            $("#detailDelimiter").val(detailDelimiter);                 //form hidden
+                            fn_showButton('01');
+                            
+                            if(detailDataList != "" && detailDataList != null && detailDataList != undefined){
+                                var columnType = [];
+                                var data = [];
+                                $.each(detailColumnList, function(index, value) {
+                                    var ctObj = {};
+                                    
+                                    // columnType
+                                    ctObj.header = value.header;
+                                    ctObj.name = value.name;
+                                    ctObj.minWidth = 200;
+                                    ctObj.align = 'center';
+                                    ctObj.whiteSpace = 'pre-line'
+                                    
+                                    columnType.push(ctObj);
+                                })
+                                $.each(detailDataList, function(index, value2) {
+                                    var dataObj = {};
+                                    dataObj.colName = '';
+                                    $.each(detailColumnList, function(index, value) {
+                                        dataObj[value.name] = $.trim(value2[value.COLUMN_NAME]);
+                                    })
+                                    data.push(dataObj); 
+                                })
+                                const csvDetailGrid = new tui.Grid({
+                                      el : document.getElementById("csv_detailGrid"),
+                                      data : data,
+                                      scrollX : true,
+                                      scrollY : false,
+                                      bodyHeight : 'auto',
+                                      rowHeight : 40,
+                                      minBodyHeight : 40,
+                                      header: {
+                                        height: 40
+                                      },
+                                      columns : columnType
+                                      //columnOptions: {
+                                      //    resizable: true,
+                                      //    width:200,
+                                      //}
+                                });
+                                    
+                                const extOptions = {
+                                        cell: {
+                                            focused: {
+                                                border: 0 // 선택 셀 강조 표시 x
+                                            }
+                                        }
+                                };
+                                    
+                                tui.Grid.applyTheme('default', extOptions);
+
+                                csvDetailGrid.resetData(detailDataList);
+                                
+                            }
+                        }
+                    });
+                }
+            }
+            
+            function csv_INS(){
+                var obj = {};
+                var dgnssDbmsId = $("#dgnssDbmsId").val();
+                var osKnd = $("#osKnd").val();
+                var type = "CSV";
+                if(confirm(UIT0320)){
+                    wrapWindowByMask();
+                    
+                    var detailFrmData = $("#detailFrm").serialize();
+                    
+                    obj.dgnssDbmsId = dgnssDbmsId;
+                    obj.osKnd = osKnd;
+                    
+                    if(detailFrmData != "" || detailFrmData != null){
+                        
+                        $.ajax({
+                            url: '/mngr/basicInfo/csvFileDataAdd.do',
+                            method : 'POST',
+                            data: detailFrmData,
+                            success: function(data){
+                                var result = JSON.parse(data);
+                                if(result.result){
+                                    alert(UIT0321);
+                                    closeWindowByMask();
+                                    fn_csvCloseLayer();
+                                    connectDbms(obj, type);
+                                    // 처리 완료시 페이지를 조회 페이지로 이동하여 등록 결과 목록을 확인 한다.
+                                    //location.href = "/mngr/basicInfo/dgnssDbmsList?tabId=tab2";
+                                }else{
+                                    alert(UIT0041);
+                                    closeWindowByMask();
+                                }
+                            }, error:function() {
+                                alert(UIT0041);
+                                closeWindowByMask();
+                                return;
+                           }
+                        });
+                    }
+                }
+            }
+            
+            function changeHeaderYn(){
+                
+                var headerYn = $("#headerYn").val();
+                if(headerYn == 1){
+                    $("#culmLineCnt").attr('disabled',false);
+                    $("#culmLineCnt").val("1");
+                }else{
+                    $("#culmLineCnt").attr('disabled',true);
+                    $("#culmLineCnt").val("0");
+                }
+            }
+            
+            function get(evt){
+                var files = evt.target.files;
+
+                var file = files[0];
+                var fileName = file.name;
+                var fileSize = file.size;
+                $("#fileFullPath").val(fileSize+ ' Byte'+' / '+fileName);
+
+            }
+            
+            // 선택된 지정 DB 접속 정보를 세션에 등록한다.
+            function connectDbms(obj,type){
+                
+                var dgnssDbmsId = obj.dgnssDbmsId;
+                var param = "";
+                if(type =="CSV"){
+                    param = "?tabId=tab2";
+                }
+                if(type=="DBMS"){
+                    param = "?tabId=tab1";
+                }
+                $.ajax({
+                    url: "/mngr/basicInfo/connectDbms",
+                    data: {dgnssDbmsId : dgnssDbmsId} ,
+                    success: function(data){
+                        // 처리 완료시 페이지를 리로드 하여 세션에 저장된 접속 URL 정보를 확인 한다.
+                        location.href = "/mngr/basicInfo/dgnssDbmsList"+param;
+                    }
+                });
+                    
+            }
+            
+            function goList(type){
+                location.href = "/mngr/basicInfo/dgnssDbmsList";
+            }
+            
+            function resetData(){
+           		//데이터 초기화
+            	$("label[for='la_dbmsKnd']").text("DBMS 선택");
+                $("#dbmsKnd").val("00");
+                $("#ip").val("");
+                $("#port").val("");
+                $("#id").val("");
+                $("#pwd").val("");
+                $("#database").val("");
+                $("#sid").val("");
+                $("#paramtr").val("");
+                $("#dgnssDbmsNm").val("");
+                $("#dbUrl").val("");
+                
+                dbmsKndNm = "";
+                ip = "";
+                port = "";
+                sid = "";
+                
+                //SID display none
+                $('#optionOrTiLabel1').css('display','none');
+                $('#optionOrTiInput1').css('display','none');
+                $('#optionOrTiTh1').css('display','none');
+                $('#optionOrTiTd1').css('display','none');
+                
+             	//초기화시 버튼 -> 저장버튼으로 변경
+                //document.getElementById("btnSave").innerHTML = UIT0088;
+                $("#btnMod").hide();
+                $("#btnSave").show();
+              
+             	//초기화시 연결테스트 버튼 변경
+                $("#reCheck").show();
+                $("#list").hide();
+            }
+
+        </script>
+    </div>  
+</html>

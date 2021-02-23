@@ -1,0 +1,651 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<e:Document xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:e="http://exerd.tomato.com/model" xmlns:mysql="http://exerd.tomato.com/mysql/model" UUID="Document_41u3cIDcEemYzuGnn3ChKg" activeBusinessArea="BArea_41wFkIDcEemYzuGnn3ChKg" activeSchema="Schema_41wsoYDcEemYzuGnn3ChKg" version="2.5.5.20190218-1817" modelVersion="3.0.0.20190111-1604" productId="com.tomato.db.mysql" openedDiagrams="Diagram_41wFkYDcEemYzuGnn3ChKg">
+  <relationManager>
+    <relation key="FKCGroup_OLEoRYEoEemYzuGnn3ChKg">
+      <value foreignKeyColumnGroup="FKCGroup_OLEoRYEoEemYzuGnn3ChKg" identifying="true"/>
+    </relation>
+    <relation key="FKCGroup_OLHEhIEoEemYzuGnn3ChKg">
+      <value foreignKeyColumnGroup="FKCGroup_OLHEhIEoEemYzuGnn3ChKg"/>
+    </relation>
+    <relation key="FKCGroup_OLHrmoEoEemYzuGnn3ChKg">
+      <value foreignKeyColumnGroup="FKCGroup_OLHrmoEoEemYzuGnn3ChKg" identifying="true"/>
+    </relation>
+    <relation key="FKCGroup_OLISpYEoEemYzuGnn3ChKg">
+      <value foreignKeyColumnGroup="FKCGroup_OLISpYEoEemYzuGnn3ChKg" identifying="true"/>
+    </relation>
+    <relation key="FKCGroup_OLI5uIEoEemYzuGnn3ChKg">
+      <value foreignKeyColumnGroup="FKCGroup_OLI5uIEoEemYzuGnn3ChKg" identifying="true"/>
+    </relation>
+    <relation key="FKCGroup_Ur4uYI17EemjW7bCulGSOw">
+      <value foreignKeyColumnGroup="FKCGroup_Ur4uYI17EemjW7bCulGSOw" identifying="true"/>
+    </relation>
+    <relation key="FKCGroup_Ur5VYY17EemjW7bCulGSOw">
+      <value foreignKeyColumnGroup="FKCGroup_Ur5VYY17EemjW7bCulGSOw" identifying="true"/>
+    </relation>
+    <relation key="FKCGroup_aALOU42CEemjW7bCulGSOw">
+      <value foreignKeyColumnGroup="FKCGroup_aALOU42CEemjW7bCulGSOw" identifying="true"/>
+    </relation>
+    <relation key="FKCGroup_aAL1So2CEemjW7bCulGSOw">
+      <value foreignKeyColumnGroup="FKCGroup_aAL1So2CEemjW7bCulGSOw" identifying="true"/>
+    </relation>
+  </relationManager>
+  <configuration termFilePath="/DQSYS/DIC.xdic">
+    <domainDefinition UUID="DDefinition_41u3cYDcEemYzuGnn3ChKg">
+      <domain UUID="Domain_41u3coDcEemYzuGnn3ChKg" name="문자" suggestedDataType="VARCHAR(255)">
+        <domain UUID="Domain_41u3c4DcEemYzuGnn3ChKg" name="주민등록번호" suggestedDataType="VARCHAR(13)"/>
+        <domain UUID="Domain_41u3dIDcEemYzuGnn3ChKg" name="주소"/>
+        <domain UUID="Domain_41vegIDcEemYzuGnn3ChKg" name="웹주소"/>
+        <domain UUID="Domain_41vegYDcEemYzuGnn3ChKg" name="전화번호" suggestedDataType="VARCHAR(127)"/>
+        <domain UUID="Domain_41vegoDcEemYzuGnn3ChKg" name="이메일" suggestedDataType="VARCHAR(255)"/>
+        <domain UUID="Domain_41veg4DcEemYzuGnn3ChKg" name="이름" suggestedDataType="VARCHAR(255)"/>
+      </domain>
+      <domain UUID="Domain_41vehIDcEemYzuGnn3ChKg" name="숫자" suggestedDataType="INTEGER">
+        <domain UUID="Domain_41vehYDcEemYzuGnn3ChKg" name="금액"/>
+      </domain>
+      <domain UUID="Domain_41vehoDcEemYzuGnn3ChKg" name="일시" suggestedDataType="DATE"/>
+      <domain UUID="Domain_41veh4DcEemYzuGnn3ChKg" name="객체" suggestedDataType="BLOB">
+        <domain UUID="Domain_41veiIDcEemYzuGnn3ChKg" name="이미지" suggestedDataType="VARBINARY"/>
+        <domain UUID="Domain_41veiYDcEemYzuGnn3ChKg" name="오디오" suggestedDataType="VARBINARY"/>
+      </domain>
+      <domain UUID="Domain_YoF_YIDpEemYzuGnn3ChKg" name="코드" suggestedDataType="VARCHAR(20)"/>
+      <domain UUID="Domain_YoF_YYDpEemYzuGnn3ChKg" name="명" suggestedDataType="VARCHAR(255)"/>
+      <domain UUID="Domain_YoF_YoDpEemYzuGnn3ChKg" name="일자" suggestedDataType="VARCHAR(8)"/>
+      <domain UUID="Domain_xx2SEIDpEemYzuGnn3ChKg" name="아이디" suggestedDataType="VARCHAR(20)"/>
+      <domain UUID="Domain_xx2SEYDpEemYzuGnn3ChKg" name="여부" suggestedDataType="VARCHAR(1)"/>
+      <domain UUID="Domain_OLCMAIEoEemYzuGnn3ChKg" name="구분"/>
+      <domain UUID="Domain_OLCMAYEoEemYzuGnn3ChKg" name="내용" suggestedDataType="VARCHAR(2048)"/>
+      <domain UUID="Domain_OLCMAoEoEemYzuGnn3ChKg" name="값"/>
+      <domain UUID="Domain_hPP-UIKdEeme8sX35mSPXw" name="비밀번호" suggestedDataType="VARCHAR(255)"/>
+      <domain UUID="Domain_Ur0c0I17EemjW7bCulGSOw" name="코드_L" suggestedDataType="VARCHAR(300)"/>
+      <domain UUID="Domain_Ur0c0Y17EemjW7bCulGSOw" name="일련번호" suggestedDataType="INT(11)"/>
+      <domain UUID="Domain_Ur0c0o17EemjW7bCulGSOw" name="넘버" suggestedDataType="INT(11)"/>
+      <domain UUID="Domain_Ur0c0417EemjW7bCulGSOw" name="순서" suggestedDataType="INT(11)"/>
+      <domain UUID="Domain_Ur0c1I17EemjW7bCulGSOw" name="이름_L" suggestedDataType="VARCHAR(300)"/>
+      <domain UUID="Domain_Ur0c1Y17EemjW7bCulGSOw" name="URL" suggestedDataType="VARCHAR(600)"/>
+      <domain UUID="Domain_Ur0c1o17EemjW7bCulGSOw" name="아이콘" suggestedDataType="VARCHAR(100)"/>
+      <domain UUID="Domain_Ur0c1417EemjW7bCulGSOw" name="코드_S" suggestedDataType="VARCHAR(4)"/>
+    </domainDefinition>
+    <viewSettingsPreset name="eXERD 기본" showAltTableName="false">
+      <cellsToShow>name</cellsToShow>
+      <cellsToShow>domain</cellsToShow>
+      <cellsToShow>dataType</cellsToShow>
+    </viewSettingsPreset>
+    <viewSettingsPreset name="엔티티 모드" showAltTableName="false">
+      <cellsToShow>name</cellsToShow>
+      <cellsToShow>domain</cellsToShow>
+    </viewSettingsPreset>
+    <viewSettingsPreset name="E-R 개요 모드" columnFilter="tableOnly" showTableComment="true">
+      <cellsToShow>name</cellsToShow>
+      <cellsToShow>domain</cellsToShow>
+      <cellsToShow>dataType</cellsToShow>
+    </viewSettingsPreset>
+    <viewSettingsPreset showColumnHeader="true" name="논리/물리 동시편집">
+      <cellsToShow>name</cellsToShow>
+      <cellsToShow>oppositeModeName</cellsToShow>
+      <cellsToShow>domain</cellsToShow>
+      <cellsToShow>dataType</cellsToShow>
+      <cellsToShow>nullable</cellsToShow>
+    </viewSettingsPreset>
+  </configuration>
+  <businessAreas UUID="BArea_41wFkIDcEemYzuGnn3ChKg" logicalName="기본 업무영역" physicalName="DEFAULT_AREA" tables="Table_YoGmd4DpEemYzuGnn3ChKg Table_osLq7IDlEemYzuGnn3ChKg Table_SsKn-oDzEemYzuGnn3ChKg Table_y8tqQoELEemYzuGnn3ChKg Table_flIVEoEMEemYzuGnn3ChKg Table_--xxI4EPEemYzuGnn3ChKg Table_NL3HpoEgEemYzuGnn3ChKg Table_idq4Z4EgEemYzuGnn3ChKg Table_x7Wua4EgEemYzuGnn3ChKg Table_Ur4HNY17EemjW7bCulGSOw Table_Ur4HOI17EemjW7bCulGSOw Table_Ur4HQI17EemjW7bCulGSOw Table_Ur4uR417EemjW7bCulGSOw Table_Ur4uVY17EemjW7bCulGSOw Table_Ur4uYo17EemjW7bCulGSOw Table_Ur5VY417EemjW7bCulGSOw">
+    <diagrams UUID="Diagram_41wFkYDcEemYzuGnn3ChKg" logicalName="진단 정보" physicalName="diagram">
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_YoGmcYDpEemYzuGnn3ChKg" location="Point(27, 82)" table="Table_YoGmd4DpEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_YoGmcoDpEemYzuGnn3ChKg" location="Point(361, 82)" table="Table_osLq7IDlEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_OLCMA4EoEemYzuGnn3ChKg" location="Point(698, 72)" table="Table_SsKn-oDzEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_OLCMBIEoEemYzuGnn3ChKg" location="Point(27, 806)" table="Table_y8tqQoELEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_OLCMBYEoEemYzuGnn3ChKg" location="Point(27, 389)" table="Table_flIVEoEMEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_OLCMBoEoEemYzuGnn3ChKg" location="Point(394, 428)" table="Table_--xxI4EPEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_OLCMB4EoEemYzuGnn3ChKg" location="Point(787, 478)" table="Table_NL3HpoEgEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_OLCMCIEoEemYzuGnn3ChKg" location="Point(787, 729)" table="Table_idq4Z4EgEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_OLCzEIEoEemYzuGnn3ChKg" location="Point(401, 778)" table="Table_x7Wua4EgEemYzuGnn3ChKg"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_Ur0c2I17EemjW7bCulGSOw" location="Point(1163, 72)" table="Table_Ur4HNY17EemjW7bCulGSOw"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_Ur0c2Y17EemjW7bCulGSOw" location="Point(1131, 213)" table="Table_Ur4HOI17EemjW7bCulGSOw"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_Ur0c2o17EemjW7bCulGSOw" location="Point(1136, 730)" table="Table_Ur4HQI17EemjW7bCulGSOw"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_Ur0c2417EemjW7bCulGSOw" location="Point(1529, 259)" table="Table_Ur4uR417EemjW7bCulGSOw"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_Ur0c3I17EemjW7bCulGSOw" location="Point(1544, 533)" table="Table_Ur4uVY17EemjW7bCulGSOw"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_Ur0c3Y17EemjW7bCulGSOw" location="Point(1544, 700)" table="Table_Ur4uYo17EemjW7bCulGSOw"/>
+      <diagramEntry xsi:type="e:TableDiagram" UUID="TDiagram_Ur0c3o17EemjW7bCulGSOw" location="Point(1529, 72)" table="Table_Ur5VY417EemjW7bCulGSOw"/>
+      <viewSettings showColumnHeader="true" showAltTableName="false">
+        <cellsToShow>name</cellsToShow>
+        <cellsToShow>domain</cellsToShow>
+        <cellsToShow>dataType</cellsToShow>
+      </viewSettings>
+      <printSettings marginTop="10" marginRight="10" marginBottom="10" marginLeft="10" paperKind="A4" paperOrientation="landscape" header="${FILE} - ${DIAGRAM} - ${PAGENUM} / ${FULLPAGE}" footter="${YEAR}-${MONTH}-${DAY} ${HOUR}:${DAY}"/>
+    </diagrams>
+  </businessAreas>
+  <databaseModel UUID="DModel_41wsoIDcEemYzuGnn3ChKg" logicalName="새 데이터베이스" physicalName="NEW_DATABASE">
+    <schema UUID="Schema_41wsoYDcEemYzuGnn3ChKg" logicalName="내 스키마" physicalName="MY_SCHEMA">
+      <tables UUID="Table_YoGmd4DpEemYzuGnn3ChKg" logicalName="기관 정보" physicalName="INSTT">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_OLCzEYEoEemYzuGnn3ChKg">
+          <partition UUID="Partition_OLCzEoEoEemYzuGnn3ChKg">
+            <partitionAlgorithm UUID="PAlgorithm_OLCzE4EoEemYzuGnn3ChKg"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_OLCzFIEoEemYzuGnn3ChKg"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_YoHNgIDpEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_YoHNgYDpEemYzuGnn3ChKg" key="PKCGroup_YoIboIDpEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_YoHNgoDpEemYzuGnn3ChKg" group="PKCGroup_YoIboIDpEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_YoHNg4DpEemYzuGnn3ChKg" logicalName="기관 명" physicalName="INSTT_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_YoHNhIDpEemYzuGnn3ChKg" logicalName="사업 시작일" physicalName="BSNS_BGNDE" domain="Domain_YoF_YoDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_YoHNhYDpEemYzuGnn3ChKg" logicalName="사업 종료일" physicalName="BSNS_ENDDE" domain="Domain_YoF_YoDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_YoH0kIDpEemYzuGnn3ChKg" logicalName="대표 전화" physicalName="REPRSNT_TLPHON" domain="Domain_41vegYDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_YoH0kYDpEemYzuGnn3ChKg" logicalName="주소" physicalName="ADRES" domain="Domain_41u3dIDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_YoH0koDpEemYzuGnn3ChKg" logicalName="홈페이지" physicalName="HMPG" domain="Domain_41vegIDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_YoH0k4DpEemYzuGnn3ChKg" logicalName="비고" physicalName="RM" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_okE3wIDlEemYzuGnn3ChKg" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_YoIboIDpEemYzuGnn3ChKg" logicalName="기관 정보 기본키" physicalName="PK_INSTT" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_YoIboYDpEemYzuGnn3ChKg" logicalName="기관 정보 기본키" physicalName="PK_INSTT" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_osLq7IDlEemYzuGnn3ChKg" logicalName="DBMS 정보" physicalName="INSTT_DBMS">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_OLDaIIEoEemYzuGnn3ChKg">
+          <partition UUID="Partition_OLDaIYEoEemYzuGnn3ChKg">
+            <partitionAlgorithm UUID="PAlgorithm_OLDaIoEoEemYzuGnn3ChKg"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_OLDaI4EoEemYzuGnn3ChKg"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_YoIbooDpEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_YoIbo4DpEemYzuGnn3ChKg" key="PKCGroup_YoJpwoDpEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_YoIbpIDpEemYzuGnn3ChKg" group="PKCGroup_YoJpwoDpEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_YoIbpYDpEemYzuGnn3ChKg" logicalName="DBMS 아이디" physicalName="DBMS_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_YoIbpoDpEemYzuGnn3ChKg" key="PKCGroup_YoJpwoDpEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_YoIbp4DpEemYzuGnn3ChKg" group="PKCGroup_YoJpwoDpEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_YoIbqIDpEemYzuGnn3ChKg" logicalName="DBMS 종류" physicalName="DBMS_KND" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLDaJIEoEemYzuGnn3ChKg" logicalName="비고" physicalName="RM" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_Sg_5wIDzEemYzuGnn3ChKg" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_YoJpwoDpEemYzuGnn3ChKg" logicalName="DBMS 정보 기본키" physicalName="PK_INSTT_DBMS" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_YoJpw4DpEemYzuGnn3ChKg" logicalName="DBMS 정보 기본키" physicalName="PK_INSTT_DBMS" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_SsKn-oDzEemYzuGnn3ChKg" logicalName="DBMS 버전 정보" physicalName="INSTT_DBMS_VER">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_OLEBMIEoEemYzuGnn3ChKg">
+          <partition UUID="Partition_OLEBMYEoEemYzuGnn3ChKg">
+            <partitionAlgorithm UUID="PAlgorithm_OLEBMoEoEemYzuGnn3ChKg"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_OLEBM4EoEemYzuGnn3ChKg"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_OLEBNIEoEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLEBNYEoEemYzuGnn3ChKg" key="PKCGroup_OLEoQ4EoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLEBNoEoEemYzuGnn3ChKg" group="PKCGroup_OLEoQ4EoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLEBN4EoEemYzuGnn3ChKg" key="FKCGroup_OLEoRYEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLEBOIEoEemYzuGnn3ChKg" group="FKCGroup_OLEoRYEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_YoIbooDpEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLEBOYEoEemYzuGnn3ChKg" logicalName="DBMS 아이디" physicalName="DBMS_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLEBOoEoEemYzuGnn3ChKg" key="PKCGroup_OLEoQ4EoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLEBO4EoEemYzuGnn3ChKg" group="PKCGroup_OLEoQ4EoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLEBPIEoEemYzuGnn3ChKg" key="FKCGroup_OLEoRYEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLEBPYEoEemYzuGnn3ChKg" group="FKCGroup_OLEoRYEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_YoIbpYDpEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLEBPoEoEemYzuGnn3ChKg" logicalName="DBMS 버전 아이디" physicalName="DBMS_VER_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLEBP4EoEemYzuGnn3ChKg" key="PKCGroup_OLEoQ4EoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLEBQIEoEemYzuGnn3ChKg" group="PKCGroup_OLEoQ4EoEemYzuGnn3ChKg" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLEBQYEoEemYzuGnn3ChKg" logicalName="DBMS 버전 정보" physicalName="DBMS_VER_INFO" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEBQoEoEemYzuGnn3ChKg" logicalName="비고" physicalName="RM" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEBQ4EoEemYzuGnn3ChKg" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_OLEoQ4EoEemYzuGnn3ChKg" logicalName="DBMS 버전 정보 기본키" physicalName="PK_INSTT_DBMS_VER" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_OLEoRIEoEemYzuGnn3ChKg" logicalName="DBMS 버전 정보 기본키" physicalName="PK_INSTT_DBMS_VER" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_OLEoRYEoEemYzuGnn3ChKg" logicalName="DBMS 정보 -> DBMS 버전 정보" physicalName="FK_INSTT_DBMS_TO_INSTT_DBMS_VER" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_YoJpwoDpEemYzuGnn3ChKg">
+          <foreignKeyConstraint UUID="FKConstraint_OLEoRoEoEemYzuGnn3ChKg" logicalName="DBMS 정보 -> DBMS 버전 정보" physicalName="FK_INSTT_DBMS_TO_INSTT_DBMS_VER" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_y8tqQoELEemYzuGnn3ChKg" logicalName="분석 정보" physicalName="ANALS">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_OLEoR4EoEemYzuGnn3ChKg">
+          <partition UUID="Partition_OLEoSIEoEemYzuGnn3ChKg">
+            <partitionAlgorithm UUID="PAlgorithm_OLEoSYEoEemYzuGnn3ChKg"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_OLEoSoEoEemYzuGnn3ChKg"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_OLEoS4EoEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLEoTIEoEemYzuGnn3ChKg" key="PKCGroup_OLFPUoEoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLEoTYEoEemYzuGnn3ChKg" group="PKCGroup_OLFPUoEoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLEoToEoEemYzuGnn3ChKg" logicalName="분석 아이디" physicalName="ANALS_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLEoT4EoEemYzuGnn3ChKg" key="PKCGroup_OLFPUoEoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLEoUIEoEemYzuGnn3ChKg" group="PKCGroup_OLFPUoEoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLEoUYEoEemYzuGnn3ChKg" logicalName="분석 구분" physicalName="ANALS_SE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEoUoEoEemYzuGnn3ChKg" logicalName="분석 타입" physicalName="ANALS_TY" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEoU4EoEemYzuGnn3ChKg" logicalName="패턴 구분" physicalName="PTTRN_SE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEoVIEoEemYzuGnn3ChKg" logicalName="분석 명" physicalName="ANALS_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEoVYEoEemYzuGnn3ChKg" logicalName="분석 식" physicalName="ANALS_FRMLA" domain="Domain_OLCMAYEoEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEoVoEoEemYzuGnn3ChKg" logicalName="시작 값" physicalName="BEGIN_VALUE" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLEoV4EoEemYzuGnn3ChKg" logicalName="종료 값" physicalName="END_VALUE" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLFPUIEoEemYzuGnn3ChKg" logicalName="DBMS 종류" physicalName="DBMS_KND" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_fZbbYIEMEemYzuGnn3ChKg" logicalName="DBMS 버전" physicalName="DBMS_VER" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLFPUYEoEemYzuGnn3ChKg" logicalName="비고" physicalName="RM" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_2Q0C0IEMEemYzuGnn3ChKg" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_2Q0C0oEMEemYzuGnn3ChKg" logicalName="등록 일시" physicalName="REGIST_DT" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_OLFPUoEoEemYzuGnn3ChKg" logicalName="분석 정보 기본키" physicalName="PK_ANALS" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_OLFPU4EoEemYzuGnn3ChKg" logicalName="분석 정보 기본키" physicalName="PK_ANALS" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_flIVEoEMEemYzuGnn3ChKg" logicalName="진단 DBMS 정보" physicalName="DGNSS_DBMS">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_OLFPVIEoEemYzuGnn3ChKg">
+          <partition UUID="Partition_OLFPVYEoEemYzuGnn3ChKg">
+            <partitionAlgorithm UUID="PAlgorithm_OLFPVoEoEemYzuGnn3ChKg"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_OLFPV4EoEemYzuGnn3ChKg"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_OLFPWIEoEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLFPWYEoEemYzuGnn3ChKg" key="PKCGroup_NL3HpIEgEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLFPWoEoEemYzuGnn3ChKg" group="PKCGroup_NL3HpIEgEemYzuGnn3ChKg" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLFPW4EoEemYzuGnn3ChKg" logicalName="진단 DBMS 아이디" physicalName="DGNSS_DBMS_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLFPXIEoEemYzuGnn3ChKg" key="PKCGroup_NL3HpIEgEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLFPXYEoEemYzuGnn3ChKg" group="PKCGroup_NL3HpIEgEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLFPXoEoEemYzuGnn3ChKg" logicalName="진단 DBMS 명" physicalName="DGNSS_DBMS_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLFPX4EoEemYzuGnn3ChKg" logicalName="DBMS 종류" physicalName="DBMS_KND" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2YIEoEemYzuGnn3ChKg" logicalName="DBMS 버전" physicalName="DBMS_VER" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2YYEoEemYzuGnn3ChKg" logicalName="아이피" physicalName="IP" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2YoEoEemYzuGnn3ChKg" logicalName="포트" physicalName="PORT" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2Y4EoEemYzuGnn3ChKg" logicalName="스키마" physicalName="SCHEMA" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2ZIEoEemYzuGnn3ChKg" logicalName="SID" physicalName="SID" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2ZYEoEemYzuGnn3ChKg" logicalName="데이터베이스" physicalName="DATABASE" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2ZoEoEemYzuGnn3ChKg" logicalName="파라미터" physicalName="PARAMTR" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2Z4EoEemYzuGnn3ChKg" logicalName="아이디" physicalName="ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2aIEoEemYzuGnn3ChKg" logicalName="비밀번호" physicalName="PASSWORD" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2aYEoEemYzuGnn3ChKg" logicalName="비고" physicalName="RM" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLF2aoEoEemYzuGnn3ChKg" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column__H42kIEfEemYzuGnn3ChKg" logicalName="등록 일시" physicalName="REGIST_DT" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_NL3HpIEgEemYzuGnn3ChKg" logicalName="진단 DBMS 정보 기본키" physicalName="PK_DGNSS_DBMS" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_OLF2boEoEemYzuGnn3ChKg" logicalName="진단 DBMS 정보 기본키" physicalName="PK_DGNSS_DBMS" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_--xxI4EPEemYzuGnn3ChKg" logicalName="진단 정보" physicalName="DGNSS_TABLES">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_RrVsgIcnEemYNed-lNJQYA">
+          <partition UUID="Partition_RrVsgYcnEemYNed-lNJQYA">
+            <partitionAlgorithm UUID="PAlgorithm_RrVsgocnEemYNed-lNJQYA"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_RrVsg4cnEemYNed-lNJQYA"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_OLF2b4EoEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLGdcIEoEemYzuGnn3ChKg" key="PKCGroup_idq4ZYEgEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLGdcYEoEemYzuGnn3ChKg" group="PKCGroup_idq4ZYEgEemYzuGnn3ChKg" entryIndex="1"/>
+          </memberships>
+          <memberships UUID="MEntry_OLGdcoEoEemYzuGnn3ChKg" key="FKCGroup_OLHEhIEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLGdc4EoEemYzuGnn3ChKg" group="FKCGroup_OLHEhIEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLFPWIEoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLGddIEoEemYzuGnn3ChKg" logicalName="진단 정보 아이디" physicalName="DGNSS_INFO_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLGddYEoEemYzuGnn3ChKg" key="PKCGroup_idq4ZYEgEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLGddoEoEemYzuGnn3ChKg" group="PKCGroup_idq4ZYEgEemYzuGnn3ChKg" entryIndex="2"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLGdd4EoEemYzuGnn3ChKg" logicalName="진단 명" physicalName="DGNSS_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLGdeIEoEemYzuGnn3ChKg" logicalName="진단 DBMS 아이디" physicalName="DGNSS_DBMS_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg" notNull="TRUE">
+          <memberships UUID="MEntry_OLGdeYEoEemYzuGnn3ChKg" key="FKCGroup_OLHEhIEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLGdeoEoEemYzuGnn3ChKg" group="FKCGroup_OLHEhIEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLFPW4EoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLGde4EoEemYzuGnn3ChKg" logicalName="스키마 명" physicalName="SCHEMA_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLGdfIEoEemYzuGnn3ChKg" logicalName="테이블 명" physicalName="TABLE_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLGdfYEoEemYzuGnn3ChKg" logicalName="전체 건수" physicalName="ALL_CO" domain="Domain_41vehIDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLGdfoEoEemYzuGnn3ChKg" logicalName="수행 시작 시간" physicalName="EXC_BEGIN_TIME" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLGdf4EoEemYzuGnn3ChKg" logicalName="수행 종료 시간" physicalName="EXC_END_TIME" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLHEgIEoEemYzuGnn3ChKg" logicalName="수행 상태" physicalName="EXC_STTUS" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLHEgYEoEemYzuGnn3ChKg" logicalName="등록자 아이디" physicalName="REGISTER_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLHEgoEoEemYzuGnn3ChKg" logicalName="등록 일시" physicalName="REGIST_DT" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_idq4ZYEgEemYzuGnn3ChKg" logicalName="진단 정보 기본키" physicalName="PK_DGNSS_TABLES" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_OLHEg4EoEemYzuGnn3ChKg" logicalName="진단 정보 기본키" physicalName="PK_DGNSS_TABLES" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_OLHEhIEoEemYzuGnn3ChKg" logicalName="진단 DBMS 정보 -> 진단 정보" physicalName="FK_DGNSS_DBMS_TO_DGNSS_TABLES" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_NL3HpIEgEemYzuGnn3ChKg">
+          <foreignKeyConstraint UUID="FKConstraint_OLHEhYEoEemYzuGnn3ChKg" logicalName="진단 DBMS 정보 -> 진단 정보" physicalName="FK_DGNSS_DBMS_TO_DGNSS_TABLES" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_NL3HpoEgEemYzuGnn3ChKg" logicalName="컬럼별 진단 정보" physicalName="DGNSS_COLUMNS">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_RrWTkIcnEemYNed-lNJQYA">
+          <partition UUID="Partition_RrWTkYcnEemYNed-lNJQYA">
+            <partitionAlgorithm UUID="PAlgorithm_RrWTkocnEemYNed-lNJQYA"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_RrWTk4cnEemYNed-lNJQYA"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_OLHEhoEoEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLHEh4EoEemYzuGnn3ChKg" key="PKCGroup_x7WuaYEgEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLHEiIEoEemYzuGnn3ChKg" group="PKCGroup_x7WuaYEgEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLHEiYEoEemYzuGnn3ChKg" key="FKCGroup_OLHrmoEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLHEioEoEemYzuGnn3ChKg" group="FKCGroup_OLHrmoEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLF2b4EoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLHEi4EoEemYzuGnn3ChKg" logicalName="진단 정보 아이디" physicalName="DGNSS_INFO_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLHEjIEoEemYzuGnn3ChKg" key="PKCGroup_x7WuaYEgEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLHEjYEoEemYzuGnn3ChKg" group="PKCGroup_x7WuaYEgEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLHrkIEoEemYzuGnn3ChKg" key="FKCGroup_OLHrmoEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLHrkYEoEemYzuGnn3ChKg" group="FKCGroup_OLHrmoEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLGddIEoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLHrkoEoEemYzuGnn3ChKg" logicalName="컬럼 명" physicalName="COLUMN_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLHrk4EoEemYzuGnn3ChKg" key="PKCGroup_x7WuaYEgEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLHrlIEoEemYzuGnn3ChKg" group="PKCGroup_x7WuaYEgEemYzuGnn3ChKg" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLHrlYEoEemYzuGnn3ChKg" logicalName="컬럼 타입" physicalName="COLUMN_TY" domain="Domain_YoF_YIDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLHrloEoEemYzuGnn3ChKg" logicalName="컬럼 길이" physicalName="COLUMN_LT" domain="Domain_41vehIDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLHrl4EoEemYzuGnn3ChKg" logicalName="대상 건수" physicalName="TRGCNT" domain="Domain_41vehIDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLHrmIEoEemYzuGnn3ChKg" logicalName="등록 일시" physicalName="REGIST_DT" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_x7WuaYEgEemYzuGnn3ChKg" logicalName="컬럼별 진단 정보 기본키" physicalName="PK_DGNSS_COLUMNS" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_OLHrmYEoEemYzuGnn3ChKg" logicalName="컬럼별 진단 정보 기본키" physicalName="PK_DGNSS_COLUMNS" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_OLHrmoEoEemYzuGnn3ChKg" logicalName="진단 정보 -> 컬럼별 진단 정보" physicalName="FK_DGNSS_TABLES_TO_DGNSS_COLUMNS" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_idq4ZYEgEemYzuGnn3ChKg">
+          <foreignKeyConstraint UUID="FKConstraint_OLHrm4EoEemYzuGnn3ChKg" logicalName="진단 정보 -> 컬럼별 진단 정보" physicalName="FK_DGNSS_TABLES_TO_DGNSS_COLUMNS" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_idq4Z4EgEemYzuGnn3ChKg" logicalName="컬럼별 진단 항목별 진단 정보" physicalName="DGNSS_COLUMNS_RES">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_RrWTlIcnEemYNed-lNJQYA">
+          <partition UUID="Partition_RrWTlYcnEemYNed-lNJQYA">
+            <partitionAlgorithm UUID="PAlgorithm_RrWTlocnEemYNed-lNJQYA"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_RrWTl4cnEemYNed-lNJQYA"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_OLHrnIEoEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLHrnYEoEemYzuGnn3ChKg" key="PKCGroup_OLISo4EoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLHrnoEoEemYzuGnn3ChKg" group="PKCGroup_OLISo4EoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLHrn4EoEemYzuGnn3ChKg" key="FKCGroup_OLISpYEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLHroIEoEemYzuGnn3ChKg" group="FKCGroup_OLISpYEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLHEhoEoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLHroYEoEemYzuGnn3ChKg" logicalName="진단 정보 아이디" physicalName="DGNSS_INFO_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLHrooEoEemYzuGnn3ChKg" key="PKCGroup_OLISo4EoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLHro4EoEemYzuGnn3ChKg" group="PKCGroup_OLISo4EoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLHrpIEoEemYzuGnn3ChKg" key="FKCGroup_OLISpYEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLHrpYEoEemYzuGnn3ChKg" group="FKCGroup_OLISpYEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLHEi4EoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLHrpoEoEemYzuGnn3ChKg" logicalName="컬럼 명" physicalName="COLUMN_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLHrp4EoEemYzuGnn3ChKg" key="PKCGroup_OLISo4EoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLHrqIEoEemYzuGnn3ChKg" group="PKCGroup_OLISo4EoEemYzuGnn3ChKg" entryIndex="1"/>
+          </memberships>
+          <memberships UUID="MEntry_OLHrqYEoEemYzuGnn3ChKg" key="FKCGroup_OLISpYEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLHrqoEoEemYzuGnn3ChKg" group="FKCGroup_OLISpYEoEemYzuGnn3ChKg" entryIndex="1" parentColumn="Column_OLHrkoEoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLHrq4EoEemYzuGnn3ChKg" logicalName="분석 아이디" physicalName="ANALS_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLHrrIEoEemYzuGnn3ChKg" key="PKCGroup_OLISo4EoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLISoIEoEemYzuGnn3ChKg" group="PKCGroup_OLISo4EoEemYzuGnn3ChKg" entryIndex="2"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLISoYEoEemYzuGnn3ChKg" logicalName="매칭 건수" physicalName="MTCHG_CO" domain="Domain_41vehIDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLISooEoEemYzuGnn3ChKg" logicalName="등록 일시" physicalName="REGIST_DT" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_OLISo4EoEemYzuGnn3ChKg" logicalName="컬럼별 진단 항목별 진단 정보 기본키" physicalName="PK_DGNSS_COLUMNS_RES" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_OLISpIEoEemYzuGnn3ChKg" logicalName="컬럼별 진단 항목별 진단 정보 기본키" physicalName="PK_DGNSS_COLUMNS_RES" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_OLISpYEoEemYzuGnn3ChKg" logicalName="컬럼별 진단 정보 -> 컬럼별 진단 항목별 진단 정보" physicalName="FK_DGNSS_COLUMNS_TO_DGNSS_COLUMNS_RES" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_x7WuaYEgEemYzuGnn3ChKg">
+          <foreignKeyConstraint UUID="FKConstraint_OLISpoEoEemYzuGnn3ChKg" logicalName="컬럼별 진단 정보 -> 컬럼별 진단 항목별 진단 정보" physicalName="FK_DGNSS_COLUMNS_TO_DGNSS_COLUMNS_RES" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_x7Wua4EgEemYzuGnn3ChKg" logicalName="빈도 분석 결과" physicalName="FRQ_ANALS">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_RrWTmIcnEemYNed-lNJQYA">
+          <partition UUID="Partition_RrWTmYcnEemYNed-lNJQYA">
+            <partitionAlgorithm UUID="PAlgorithm_RrWTmocnEemYNed-lNJQYA"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_RrWTm4cnEemYNed-lNJQYA"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_OLISp4EoEemYzuGnn3ChKg" logicalName="기관 코드" physicalName="INSTT_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLISqIEoEemYzuGnn3ChKg" key="PKCGroup_OLI5toEoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLISqYEoEemYzuGnn3ChKg" group="PKCGroup_OLI5toEoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLISqoEoEemYzuGnn3ChKg" key="FKCGroup_OLI5uIEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLISq4EoEemYzuGnn3ChKg" group="FKCGroup_OLI5uIEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLF2b4EoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLISrIEoEemYzuGnn3ChKg" logicalName="진단 정보 아이디" physicalName="DGNSS_INFO_ID" domain="Domain_xx2SEIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLISrYEoEemYzuGnn3ChKg" key="PKCGroup_OLI5toEoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLISroEoEemYzuGnn3ChKg" group="PKCGroup_OLI5toEoEemYzuGnn3ChKg" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_OLISr4EoEemYzuGnn3ChKg" key="FKCGroup_OLI5uIEoEemYzuGnn3ChKg">
+            <value xsi:type="e:ColumnReference" UUID="CReference_OLISsIEoEemYzuGnn3ChKg" group="FKCGroup_OLI5uIEoEemYzuGnn3ChKg" entryIndex="0" parentColumn="Column_OLGddIEoEemYzuGnn3ChKg"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLISsYEoEemYzuGnn3ChKg" logicalName="컬럼 명" physicalName="COLUMN_NM" domain="Domain_YoF_YYDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLISsoEoEemYzuGnn3ChKg" key="PKCGroup_OLI5toEoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLISs4EoEemYzuGnn3ChKg" group="PKCGroup_OLI5toEoEemYzuGnn3ChKg" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLI5sIEoEemYzuGnn3ChKg" logicalName="순번" physicalName="SN" domain="Domain_41vehIDcEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_OLI5sYEoEemYzuGnn3ChKg" key="PKCGroup_OLI5toEoEemYzuGnn3ChKg">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_OLI5soEoEemYzuGnn3ChKg" group="PKCGroup_OLI5toEoEemYzuGnn3ChKg" entryIndex="2"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_OLI5s4EoEemYzuGnn3ChKg" logicalName="데이터 값" physicalName="DATA_VALUE" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLI5tIEoEemYzuGnn3ChKg" logicalName="데이터 건수" physicalName="DATA_CO" domain="Domain_41vehIDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_OLI5tYEoEemYzuGnn3ChKg" logicalName="등록 일시" physicalName="REGIST_DT" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_OLI5toEoEemYzuGnn3ChKg" logicalName="빈도 분석 결과 기본키" physicalName="PK_FRQ_ANALS" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_OLI5t4EoEemYzuGnn3ChKg" logicalName="빈도 분석 결과 기본키" physicalName="PK_FRQ_ANALS" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_OLI5uIEoEemYzuGnn3ChKg" logicalName="진단 정보 -> 빈도 분석 결과" physicalName="FK_DGNSS_TABLES_TO_FRQ_ANALS" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_idq4ZYEgEemYzuGnn3ChKg">
+          <foreignKeyConstraint UUID="FKConstraint_OLI5uYEoEemYzuGnn3ChKg" logicalName="진단 정보 -> 빈도 분석 결과" physicalName="FK_DGNSS_TABLES_TO_FRQ_ANALS" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_Ur4HNY17EemjW7bCulGSOw" logicalName="이용자권한" physicalName="AUTHORITY">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_aALOOI2CEemjW7bCulGSOw">
+          <partition UUID="Partition_aALOOY2CEemjW7bCulGSOw">
+            <partitionAlgorithm UUID="PAlgorithm_aALOOo2CEemjW7bCulGSOw"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_aALOO42CEemjW7bCulGSOw"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_Ur4HNo17EemjW7bCulGSOw" logicalName="이용자 ID" physicalName="USER_ID" domain="Domain_41veg4DcEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_hIQ58I18EemjW7bCulGSOw" key="PKCGroup_hIQ58o18EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_hIQ58Y18EemjW7bCulGSOw" group="PKCGroup_hIQ58o18EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur4HN417EemjW7bCulGSOw" logicalName="권한자 ID" physicalName="AUTHORY_ID" domain="Domain_41veg4DcEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_hIQ58o18EemjW7bCulGSOw" logicalName="이용자권한 기본키" physicalName="PK_AUTHORITY" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_hIQ58418EemjW7bCulGSOw" logicalName="이용자권한 기본키" physicalName="PK_AUTHORITY" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_Ur4HOI17EemjW7bCulGSOw" logicalName="이용자" physicalName="USER">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_aALOPI2CEemjW7bCulGSOw">
+          <partition UUID="Partition_aALOPY2CEemjW7bCulGSOw">
+            <partitionAlgorithm UUID="PAlgorithm_aALOPo2CEemjW7bCulGSOw"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_aALOP42CEemjW7bCulGSOw"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_aALOQI2CEemjW7bCulGSOw" logicalName="기관코드" physicalName="ENGN_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_aALOQY2CEemjW7bCulGSOw" key="PKCGroup_Ur4HPo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_aALOQo2CEemjW7bCulGSOw" group="PKCGroup_Ur4HPo17EemjW7bCulGSOw" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur4HOY17EemjW7bCulGSOw" logicalName="이용자 ID" physicalName="USER_ID" domain="Domain_41veg4DcEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_Ur4HOo17EemjW7bCulGSOw" key="PKCGroup_Ur4HPo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur4HO417EemjW7bCulGSOw" group="PKCGroup_Ur4HPo17EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+          <memberships UUID="MEntry_aALOQ42CEemjW7bCulGSOw" key="FKCGroup_aALOU42CEemjW7bCulGSOw">
+            <value xsi:type="e:ColumnReference" UUID="CReference_aALORI2CEemjW7bCulGSOw" group="FKCGroup_aALOU42CEemjW7bCulGSOw" entryIndex="1" parentColumn="Column_Ur4HNo17EemjW7bCulGSOw"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_aALORY2CEemjW7bCulGSOw" logicalName="권한 코드" physicalName="AUTHOR_CODE" derivedPhysicalName="true" derivedLogicalName="true" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_aALORo2CEemjW7bCulGSOw" key="PKCGroup_Ur4HPo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_aALOR42CEemjW7bCulGSOw" group="PKCGroup_Ur4HPo17EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_aALOSI2CEemjW7bCulGSOw" logicalName="메뉴 일련번호" physicalName="MENU_SN" derivedPhysicalName="true" derivedLogicalName="true" domain="Domain_Ur0c0Y17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_aALOSY2CEemjW7bCulGSOw" key="PKCGroup_Ur4HPo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_aALOSo2CEemjW7bCulGSOw" group="PKCGroup_Ur4HPo17EemjW7bCulGSOw" entryIndex="2"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_aALOS42CEemjW7bCulGSOw" logicalName="메뉴 그룹 일련번호" physicalName="MENU_GROUP_SN" derivedPhysicalName="true" derivedLogicalName="true" domain="Domain_Ur0c0Y17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_aALOTI2CEemjW7bCulGSOw" key="PKCGroup_Ur4HPo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_aALOTY2CEemjW7bCulGSOw" group="PKCGroup_Ur4HPo17EemjW7bCulGSOw" entryIndex="3"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur4HPI17EemjW7bCulGSOw" logicalName="이용자 비밀번호" physicalName="USER_PASSWORD" domain="Domain_hPP-UIKdEeme8sX35mSPXw" notNull="TRUE"/>
+        <columns UUID="Column_Ur4HPY17EemjW7bCulGSOw" logicalName="이용자 이름" physicalName="USER_NM" domain="Domain_41veg4DcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_aALOTo2CEemjW7bCulGSOw" logicalName="담당부서" physicalName="CHRG_DEPT" domain="Domain_YoF_YYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_aALOT42CEemjW7bCulGSOw" logicalName="최근접속일시" physicalName="RECENT_CONECT_DT" domain="Domain_41vehoDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_aALOUI2CEemjW7bCulGSOw" logicalName="최근접속아이피" physicalName="RECENT_CONECT_IP" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_aALOUY2CEemjW7bCulGSOw" logicalName="비고" physicalName="RM" domain="Domain_41u3coDcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_aALOUo2CEemjW7bCulGSOw" logicalName="사용여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_Ur4HPo17EemjW7bCulGSOw" logicalName="이용자 기본키" physicalName="PK_USER" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_Ur4HP417EemjW7bCulGSOw" logicalName="이용자 기본키" physicalName="PK_USER" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_aALOU42CEemjW7bCulGSOw" logicalName="이용자권한 -> 이용자" physicalName="FK_AUTHORITY_TO_USER" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_hIQ58o18EemjW7bCulGSOw">
+          <foreignKeyConstraint UUID="FKConstraint_aALOVI2CEemjW7bCulGSOw" logicalName="이용자권한 -> 이용자" physicalName="FK_AUTHORITY_TO_USER" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_Ur4HQI17EemjW7bCulGSOw" logicalName="공통코드" physicalName="DQ_CMMN_CODE">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_aAL1QI2CEemjW7bCulGSOw">
+          <partition UUID="Partition_aAL1QY2CEemjW7bCulGSOw">
+            <partitionAlgorithm UUID="PAlgorithm_aAL1Qo2CEemjW7bCulGSOw"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_aAL1Q42CEemjW7bCulGSOw"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_Ur4HQY17EemjW7bCulGSOw" logicalName="그룹 코드" physicalName="GROUP_CODE" domain="Domain_Ur0c0I17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_Ur4uQI17EemjW7bCulGSOw" key="PKCGroup_Ur4uRY17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur4uQY17EemjW7bCulGSOw" group="PKCGroup_Ur4uRY17EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur4uQo17EemjW7bCulGSOw" logicalName="그룹 코드 명" physicalName="GROUP_CODE_NM" domain="Domain_Ur0c0I17EemjW7bCulGSOw"/>
+        <columns UUID="Column_Ur4uQ417EemjW7bCulGSOw" logicalName="그룹 코드 설명" physicalName="GROUP_CODE_DC" domain="Domain_OLCMAYEoEemYzuGnn3ChKg"/>
+        <columns UUID="Column_Ur4uRI17EemjW7bCulGSOw" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_Ur4uRY17EemjW7bCulGSOw" logicalName="공통코드 기본키" physicalName="PK_DQ_CMMN_CODE" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_Ur4uRo17EemjW7bCulGSOw" logicalName="공통코드 기본키" physicalName="PK_DQ_CMMN_CODE" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_Ur4uR417EemjW7bCulGSOw" logicalName="메뉴관리" physicalName="MENU_MANAGE">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_aAL1RI2CEemjW7bCulGSOw">
+          <partition UUID="Partition_aAL1RY2CEemjW7bCulGSOw">
+            <partitionAlgorithm UUID="PAlgorithm_aAL1Ro2CEemjW7bCulGSOw"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_aAL1R42CEemjW7bCulGSOw"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_Ur4uSI17EemjW7bCulGSOw" logicalName="메뉴 일련번호" physicalName="MENU_SN" domain="Domain_Ur0c0Y17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_Ur4uSY17EemjW7bCulGSOw" key="PKCGroup_Ur4uU417EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur4uSo17EemjW7bCulGSOw" group="PKCGroup_Ur4uU417EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur4uUY17EemjW7bCulGSOw" logicalName="메뉴 그룹 일련번호" physicalName="MENU_GROUP_SN" domain="Domain_Ur0c0Y17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_hIQ59I18EemjW7bCulGSOw" key="PKCGroup_Ur4uU417EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_hIQ59Y18EemjW7bCulGSOw" group="PKCGroup_Ur4uU417EemjW7bCulGSOw" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_aAL1SI2CEemjW7bCulGSOw" key="FKCGroup_aAL1So2CEemjW7bCulGSOw">
+            <value xsi:type="e:ColumnReference" UUID="CReference_aAL1SY2CEemjW7bCulGSOw" group="FKCGroup_aAL1So2CEemjW7bCulGSOw" entryIndex="0" parentColumn="Column_Ur5VZI17EemjW7bCulGSOw"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur4uS417EemjW7bCulGSOw" logicalName="메뉴 깊이 넘버" physicalName="MENU_DP_NO" domain="Domain_Ur0c0o17EemjW7bCulGSOw"/>
+        <columns UUID="Column_Ur4uTI17EemjW7bCulGSOw" logicalName="조회 순서" physicalName="INQIRE_ORDR" domain="Domain_Ur0c0417EemjW7bCulGSOw"/>
+        <columns UUID="Column_Ur4uTY17EemjW7bCulGSOw" logicalName="메뉴 이름" physicalName="MENU_NM" domain="Domain_Ur0c1I17EemjW7bCulGSOw"/>
+        <columns UUID="Column_Ur4uTo17EemjW7bCulGSOw" logicalName="메뉴 URL" physicalName="MENU__URL" domain="Domain_Ur0c1Y17EemjW7bCulGSOw"/>
+        <columns UUID="Column_Ur4uT417EemjW7bCulGSOw" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_Ur4uUI17EemjW7bCulGSOw" logicalName="상위 메뉴 순번" physicalName="UPPER_MENU_SN" domain="Domain_Ur0c0Y17EemjW7bCulGSOw"/>
+        <columns UUID="Column_Ur4uUo17EemjW7bCulGSOw" logicalName="메뉴 아이콘" physicalName="MENU_ICON" domain="Domain_Ur0c1o17EemjW7bCulGSOw"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_Ur4uU417EemjW7bCulGSOw" logicalName="메뉴관리 기본키" physicalName="PK_MENU_MANAGE" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_Ur4uVI17EemjW7bCulGSOw" logicalName="메뉴관리 기본키" physicalName="PK_MENU_MANAGE" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_aAL1So2CEemjW7bCulGSOw" logicalName="메뉴그룹관리 -> 메뉴관리" physicalName="FK_MENU_GROUP_TO_MENU_MANAGE" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_Ur5VaY17EemjW7bCulGSOw">
+          <foreignKeyConstraint UUID="FKConstraint_aAL1S42CEemjW7bCulGSOw" logicalName="메뉴그룹관리 -> 메뉴관리" physicalName="FK_MENU_GROUP_TO_MENU_MANAGE" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_Ur4uVY17EemjW7bCulGSOw" logicalName="메뉴권한코드" physicalName="MENU_AUTHOR">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_aAL1TI2CEemjW7bCulGSOw">
+          <partition UUID="Partition_aAL1TY2CEemjW7bCulGSOw">
+            <partitionAlgorithm UUID="PAlgorithm_aAL1To2CEemjW7bCulGSOw"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_aAL1T42CEemjW7bCulGSOw"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_Ur4uVo17EemjW7bCulGSOw" logicalName="메뉴 일련번호" physicalName="MENU_SN" derivedLogicalName="true" domain="Domain_Ur0c0Y17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_Ur4uV417EemjW7bCulGSOw" key="PKCGroup_Ur4uXo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur4uWI17EemjW7bCulGSOw" group="PKCGroup_Ur4uXo17EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+          <memberships UUID="MEntry_Ur4uWY17EemjW7bCulGSOw" key="FKCGroup_Ur4uYI17EemjW7bCulGSOw">
+            <value xsi:type="e:ColumnReference" UUID="CReference_Ur4uWo17EemjW7bCulGSOw" group="FKCGroup_Ur4uYI17EemjW7bCulGSOw" entryIndex="0" parentColumn="Column_Ur4uSI17EemjW7bCulGSOw"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur4uW417EemjW7bCulGSOw" logicalName="권한 코드" physicalName="AUTHOR_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_Ur4uXI17EemjW7bCulGSOw" key="PKCGroup_Ur4uXo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur4uXY17EemjW7bCulGSOw" group="PKCGroup_Ur4uXo17EemjW7bCulGSOw" entryIndex="3"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_hIRhAI18EemjW7bCulGSOw" logicalName="메뉴 그룹 일련번호" physicalName="MENU_GROUP_SN" derivedPhysicalName="true" derivedLogicalName="true" domain="Domain_Ur0c0Y17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_hIRhAY18EemjW7bCulGSOw" key="FKCGroup_Ur4uYI17EemjW7bCulGSOw">
+            <value xsi:type="e:ColumnReference" UUID="CReference_hIRhAo18EemjW7bCulGSOw" group="FKCGroup_Ur4uYI17EemjW7bCulGSOw" parentColumn="Column_Ur4uUY17EemjW7bCulGSOw"/>
+          </memberships>
+          <memberships UUID="MEntry_hIRhA418EemjW7bCulGSOw" key="PKCGroup_Ur4uXo17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_hIRhBI18EemjW7bCulGSOw" group="PKCGroup_Ur4uXo17EemjW7bCulGSOw" entryIndex="2"/>
+          </memberships>
+        </columns>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_Ur4uXo17EemjW7bCulGSOw" logicalName="메뉴권한코드 기본키" physicalName="PK_MENU_AUTHOR" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_Ur4uX417EemjW7bCulGSOw" logicalName="메뉴권한코드 기본키" physicalName="PK_MENU_AUTHOR" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_Ur4uYI17EemjW7bCulGSOw" logicalName="메뉴관리 -> 메뉴권한코드" physicalName="FK_MENU_MANAGE_TO_MENU_AUTHOR" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_Ur4uU417EemjW7bCulGSOw">
+          <foreignKeyConstraint UUID="FKConstraint_Ur4uYY17EemjW7bCulGSOw" logicalName="메뉴관리 -> 메뉴권한코드" physicalName="FK_MENU_MANAGE_TO_MENU_AUTHOR" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_Ur4uYo17EemjW7bCulGSOw" logicalName="공통코드상세" physicalName="DQ_CMMN_CODE_DETAIL">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_aAL1UI2CEemjW7bCulGSOw">
+          <partition UUID="Partition_aAL1UY2CEemjW7bCulGSOw">
+            <partitionAlgorithm UUID="PAlgorithm_aAL1Uo2CEemjW7bCulGSOw"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_aAL1U42CEemjW7bCulGSOw"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_Ur5VUI17EemjW7bCulGSOw" logicalName="그룹 코드" physicalName="GROUP_CODE" domain="Domain_Ur0c0I17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_Ur5VUY17EemjW7bCulGSOw" key="PKCGroup_Ur5VX417EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur5VUo17EemjW7bCulGSOw" group="PKCGroup_Ur5VX417EemjW7bCulGSOw" entryIndex="0"/>
+          </memberships>
+          <memberships UUID="MEntry_Ur5VU417EemjW7bCulGSOw" key="FKCGroup_Ur5VYY17EemjW7bCulGSOw">
+            <value xsi:type="e:ColumnReference" UUID="CReference_Ur5VVI17EemjW7bCulGSOw" group="FKCGroup_Ur5VYY17EemjW7bCulGSOw" entryIndex="0" parentColumn="Column_Ur4HQY17EemjW7bCulGSOw"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur5VVY17EemjW7bCulGSOw" logicalName="공통 코드" physicalName="CMMN_CODE" domain="Domain_Ur0c1417EemjW7bCulGSOw">
+          <memberships UUID="MEntry_Ur5VVo17EemjW7bCulGSOw" key="PKCGroup_Ur5VX417EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur5VV417EemjW7bCulGSOw" group="PKCGroup_Ur5VX417EemjW7bCulGSOw" entryIndex="0"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur5VWI17EemjW7bCulGSOw" logicalName="공통상위코드" physicalName="CMMN_UPPER_CODE" domain="Domain_YoF_YIDpEemYzuGnn3ChKg">
+          <memberships UUID="MEntry_Ur5VWY17EemjW7bCulGSOw" key="PKCGroup_Ur5VX417EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur5VWo17EemjW7bCulGSOw" group="PKCGroup_Ur5VX417EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur5VW417EemjW7bCulGSOw" logicalName="공통 코드 이름" physicalName="CMMN_CODE_NM" domain="Domain_41veg4DcEemYzuGnn3ChKg"/>
+        <columns UUID="Column_Ur5VXI17EemjW7bCulGSOw" logicalName="공통 코드 설명" physicalName="CMMN_CODE_DC" domain="Domain_OLCMAYEoEemYzuGnn3ChKg" notNull="FALSE"/>
+        <columns UUID="Column_Ur5VXY17EemjW7bCulGSOw" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columns UUID="Column_Ur5VXo17EemjW7bCulGSOw" logicalName="조회 순서" physicalName="INQIRE_ORDR" domain="Domain_Ur0c0417EemjW7bCulGSOw"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_Ur5VX417EemjW7bCulGSOw" logicalName="공통코드상세 기본키" physicalName="PK_DQ_CMMN_CODE_DETAIL" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_Ur5VYI17EemjW7bCulGSOw" logicalName="공통코드상세 기본키" physicalName="PK_DQ_CMMN_CODE_DETAIL" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+        <columnGroups xsi:type="e:ForeignKeyColumnGroup" UUID="FKCGroup_Ur5VYY17EemjW7bCulGSOw" logicalName="공통코드 -> 공통코드상세" physicalName="FK_DQ_CMMN_CODE_TO_DQ_CMMN_CODE_DETAIL" derivedPhysicalName="true" derivedLogicalName="true" parentColumnGroup="PKCGroup_Ur4uRY17EemjW7bCulGSOw">
+          <foreignKeyConstraint UUID="FKConstraint_Ur5VYo17EemjW7bCulGSOw" logicalName="공통코드 -> 공통코드상세" physicalName="FK_DQ_CMMN_CODE_TO_DQ_CMMN_CODE_DETAIL" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+      <tables UUID="Table_Ur5VY417EemjW7bCulGSOw" logicalName="메뉴그룹관리" physicalName="MENU_GROUP">
+        <physicalProperties xsi:type="mysql:TableProperties" UUID="TProperties_aAMcUI2CEemjW7bCulGSOw">
+          <partition UUID="Partition_aAMcUY2CEemjW7bCulGSOw">
+            <partitionAlgorithm UUID="PAlgorithm_aAMcUo2CEemjW7bCulGSOw"/>
+            <subpartitionAlgorithm UUID="PAlgorithm_aAMcU42CEemjW7bCulGSOw"/>
+          </partition>
+        </physicalProperties>
+        <columns UUID="Column_Ur5VZI17EemjW7bCulGSOw" logicalName="메뉴 그룹 일련번호" physicalName="MENU_GROUP_SN" domain="Domain_Ur0c0Y17EemjW7bCulGSOw">
+          <memberships UUID="MEntry_Ur5VZY17EemjW7bCulGSOw" key="PKCGroup_Ur5VaY17EemjW7bCulGSOw">
+            <value xsi:type="e:PrimaryKeyMembership" UUID="PKMembership_Ur5VZo17EemjW7bCulGSOw" group="PKCGroup_Ur5VaY17EemjW7bCulGSOw" entryIndex="1"/>
+          </memberships>
+        </columns>
+        <columns UUID="Column_Ur5VZ417EemjW7bCulGSOw" logicalName="메뉴 그룹 명" physicalName="MENU_GROUP_NM" domain="Domain_Ur0c0I17EemjW7bCulGSOw"/>
+        <columns UUID="Column_Ur5VaI17EemjW7bCulGSOw" logicalName="사용 여부" physicalName="USE_AT" domain="Domain_xx2SEYDpEemYzuGnn3ChKg"/>
+        <columnGroups xsi:type="e:PrimaryKeyColumnGroup" UUID="PKCGroup_Ur5VaY17EemjW7bCulGSOw" logicalName="메뉴그룹관리 기본키" physicalName="PK_MENU_GROUP" derivedPhysicalName="true" derivedLogicalName="true">
+          <primaryKeyConstraint UUID="PKConstraint_Ur5Vao17EemjW7bCulGSOw" logicalName="메뉴그룹관리 기본키" physicalName="PK_MENU_GROUP" derivedPhysicalName="true" derivedLogicalName="true"/>
+        </columnGroups>
+      </tables>
+    </schema>
+  </databaseModel>
+  <sharedIcons UUID="SIcons_41wsooDcEemYzuGnn3ChKg"/>
+</e:Document>

@@ -1,0 +1,532 @@
+<%@ page contentType="text/html; charset=utf-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+	</head>
+	<body id="page-top">
+
+		<div id="wrapper">
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+				<!-- 상단영역 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />
+					<!-- 본문 -->
+					<div class="container-fluid l_position_parent">
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+							<span class="col_gray01 font_14 mgn_b0"><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROFILING &gt; 프로파일링 분석</span>
+						</div>
+						<div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim" style="color: gray; font-weight: 100;"> 프로파일링 분석</h1>
+						</div>
+
+						<div class="row">
+							<div class="col-lg mb-4">
+								<!-- 조회 영역 -->
+								<div class="card shadow mb-4">
+									<div class="input_table">
+										<table>
+											<caption></caption>
+											<colgroup>
+												<col style="width:20%">
+												<col style="width:25%">
+												<col style="width:10%">
+												<col style="width:25%">
+												<col style="width:20%">
+											</colgroup>
+											<tbody>
+												<tr>
+													<th><label for="data"><span class="str">*</span> 스키마명</label></th>
+													<td>
+														<select id="schemaName" name="schemaName" onchange="fn_changeSchema()">
+															<c:forEach var="item" items="${dbList}">
+																<option <c:if test="${paramMap.schemaName eq item.OWNER}">selected="selected"</c:if> >${item.OWNER}</option>
+															</c:forEach>
+														</select>
+													</td>
+													<th><label for="name"><span class="str">*</span> 테이블명</label></th>
+													<td>
+														<select id="tableName" name="tableName">
+															<option value="">테이블 선택</option>
+															<c:forEach var="item" items="${tableList}">
+																<option <c:if test="${paramMap.tableName eq item}">selected="selected"</c:if> >${item}</option>
+															</c:forEach>
+														</select>
+													</td>
+													<td></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div style="text-align: center; padding: 10px;">
+										<button class='btn btn-primary wd_50' type='button' onclick="showPop()" style="width:150px;">컬럼선택</button>
+									</div>
+								</div>
+
+								<form id="frm" name="frm" action="insert.do" method="post">
+									<input type="hidden" name="schemaName" value="${param.schemaName}" />
+									<input type="hidden" name="tableName" value="${param.tableName}" />
+									<c:forEach var="item" items="${columnList}">
+									<input type="hidden" name="columnList" value="${item.COLUMN_NAME}" />
+									</c:forEach>
+									<input type="hidden" name="dgnssSaveNm" value="" />
+									<div class="card shadow mb-4">
+										<div class="card-body">
+											<button type="button" onclick="setTimeout(function() {$('#dgnssSaveNm').focus();}, 1000);" data-toggle="modal" data-target="#diagnosisModal" data-backdrop="static" data-keyboard="false" class="btn btn-primary mgn_b20 mgn_r5" style="width:120px; float: right;">분석 시작</button>
+											<div id ="grid" class="tb_type99" style="min-height:150px; margin-left: 220px; clear: both;"></div>
+										</div>
+										
+										<div class="card-body" style="display: inline-flex;">
+											<div id ="grid_2" class="tb_type99" style="min-height:150px; clear: both; overflow-x: hidden; min-width: 220px !important;"></div>
+											<div id ="grid_1" class="tb_type99" style="min-height:150px; clear: both; overflow-y: hidden;"></div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+			</div>
+		</div>
+
+		<!-- 분석설정 저장 모달창-->
+		<div class="modal fade" id="diagnosisModal" tabindex="-1" role="dialog" aria-labelledby="diagnosisModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">분석설정등록</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="menuListDiv" style="display: block;">
+							<section class="l_box_type02">
+								 <div class="tb_type03">
+									 <table>
+										<tbody>
+											<tr>
+												<th>분석명</th>
+												<td><input type="text" id="dgnssSaveNm" name="dgnssSaveNm" value="" /></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary" type="button" data-dismiss="modal" onclick="fn_saveDiagnosis()">저장</button>
+						<a class="btn btn-secondary" data-dismiss="modal" href="#none">닫기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<iframe name="hiddenFrame" hidden="" width="0" height="0"></iframe>
+
+	</body>
+
+<script type="text/javascript" class="code-js">
+var grid1 = null;
+var grid2 = null;
+var colWidth = 120;
+
+var analsId = JSON.parse('{${param.analsId}}');
+
+$(function() {
+
+	var tableName = '${param.tableName}';
+	$('#tableName').val(tableName);
+
+	/* chosen Select Box 관련 추가  */
+	/* 2019-07-29 최보람 */
+	$("#schemaName, #tableName").chosen({
+		search_contains : true,
+		no_results_text : "검색결과가 없습니다. : "
+	});
+	
+	girdView();
+	girdView1();
+	girdView2();
+
+	var today = new Date();
+	$('#dgnssSaveNm').val('분석_' + today.getFullYear() + today.getMonth() + today.getDate() + '_' + today.getMilliseconds());
+});
+
+function fn_changeSchema(){
+
+	$('#tableName').empty();
+	$('#tableName').append($('<option />').val('').text('테이블 선택'));
+
+	$.post('selectTableListAjax.do', {
+		schemaName: $('#schemaName').val()
+	}, function(list) {
+		for (var i in list) {
+			$('#tableName').append($('<option />').val(list[i]).text(list[i]));
+			
+			/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+			$("#tableName").trigger("chosen:updated");
+		}
+	});
+}
+
+function showPop() {
+
+	var schemaName = $("#schemaName").val();
+	var tableName = $('#tableName').val();
+
+	if (tableName == '') {
+		alert('테이블을 선택해 주세요.');
+		return;
+	}
+
+	window.open('popup/selectColumn.do?schemaName=' + schemaName + '&tableName=' + tableName, 'selectColumn', 'width=1265,height=500, left=300,top=210');
+}
+
+function girdView(){
+
+	var columnName = [
+<c:forEach var="item" items="${columnList}" varStatus="i">
+		{
+<c:choose>
+	<c:when test="${csvAt}">
+			header: '${item.COLUMN_COMMENT}',
+	</c:when>
+	<c:otherwise>
+			header: '${item.COLUMN_NAME}',
+	</c:otherwise>
+</c:choose>
+			name: 'merge${item.COLUMN_NAME}',
+			childNames: ['${item.COLUMN_NAME}']
+		}<c:if test="${not i.last}">,</c:if>
+</c:forEach>
+	];
+
+	var columnType = [
+<c:forEach var="item" items="${columnList}" varStatus="i">
+		{
+			header: '${item.DATA_TYPE}(${item.DATA_LENGTH})',
+			name: '${item.COLUMN_NAME}',
+			//width: colWidth,
+			minWidth: colWidth,
+			align: 'center',
+		}<c:if test="${not i.last}">,</c:if>
+</c:forEach>
+	];
+
+	var data = [
+<c:forEach var="row" items="${dataList}" varStatus="r">
+		{
+	<c:forEach var="col" items="${columnList}" varStatus="c">
+			${col.COLUMN_NAME}: '${fn:trim(row[col.COLUMN_NAME])}'<c:if test="${not c.last}">,</c:if>
+	</c:forEach>
+		}<c:if test="${not r.last}">,</c:if>
+</c:forEach>
+	];
+
+	var grid = new tui.Grid({
+
+		el : document.getElementById("grid"),
+		data : data,
+		scrollX : false,
+		scrollY : false,
+		rowHeight : 40,
+		minBodyHeight: 'auto',
+		bodyHeight: 'auto',
+		header: {
+			height: 80,
+			complexColumns: columnName
+		},
+		columns : columnType
+	});
+
+	const extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+}
+
+function girdView1(){
+
+	var columnName = [
+<c:forEach var="item" items="${columnList}" varStatus="i">
+		{
+<c:choose>
+	<c:when test="${csvAt}">
+			header: '${item.COLUMN_COMMENT}',
+	</c:when>
+	<c:otherwise>
+			header: '${item.COLUMN_NAME}',
+	</c:otherwise>
+</c:choose>
+			name: 'merge${item.COLUMN_NAME}',
+			childNames: ['${item.COLUMN_NAME}']
+		}<c:if test="${not i.last}">,</c:if>
+</c:forEach>
+	];
+
+	var columnType = [
+		/* 
+		{header: ' ', name: 'name', width: 120},
+		{header: ' ', name: 'name1', width: 100}, 
+		*/
+<c:forEach var="item" items="${columnList}" varStatus="i">
+		{
+			header: '${item.DATA_TYPE}(${item.DATA_LENGTH})',
+			name: '${item.COLUMN_NAME}',
+			//width: colWidth,
+			minWidth: colWidth,
+			align:'center'
+		}<c:if test="${not i.last}">,</c:if>
+</c:forEach>
+	];
+
+	if (analsId != '') {
+		console.log(analsId);
+	}
+	
+	var data = [
+<c:forEach var="anals" items="${analsList}" varStatus="a">
+		{
+			name: '${anals.groupNm}',
+			name1: '${anals.analsNm}', 
+	<c:forEach var="col" items="${columnList}" varStatus="c">
+			${col.COLUMN_NAME}: '<label class="switch"><input type="checkbox" name="${col.COLUMN_NAME}" value="${anals.analsId}" ' + checkAnals(analsId['${col.COLUMN_NAME}'], '${anals.analsId}') + '/><span class="slider round"></span></label>',
+	</c:forEach>
+			_attributes: {
+				<c:if test="${analsGroup[anals.groupCode].cnt gt 1}">
+					rowSpan: {name: ${analsGroup[anals.groupCode].cnt}},
+				</c:if>
+				className: {column: {name: ['headB'], name1: ['headB']}}
+			}
+		}<c:if test="${not a.last}">,</c:if>
+</c:forEach>
+	];
+
+	grid1 = new tui.Grid({
+		el: document.getElementById("grid_1"),
+		data: data,
+		scrollX: false,
+		scrollY: false,
+		minBodyHeight: 'auto',
+		rowHeight: 50, //각 row 높이
+		header: {
+			height: 80,
+			complexColumns: columnName
+		},
+		columns: columnType
+	});
+
+	const extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+	
+	grid1.on('click', function(ev) {
+
+		var data = grid1.getData();
+		var rowKey = ev.rowKey;
+		var colName = ev.columnName;
+		var target = $(grid1.getElement((rowKey != null ? rowKey : 0), colName), colName);
+		var el = ev.el;
+
+		if (colName == 'name') {
+			if (rowKey == null) {
+				var chkbox = target.closest('tbody').find('input:checkbox');
+				chkbox.prop('checked', !chkbox.eq(0).prop('checked'));
+			} 
+		} else if (colName == 'name1') {
+			if (rowKey == null) {
+				var chkbox = target.closest('tbody').find('input:checkbox');
+				chkbox.prop('checked', !chkbox.eq(0).prop('checked'));
+			} 
+		} else {
+			if (rowKey == null) {
+				var chkbox = $('input:checkbox[name=' + colName + ']');
+				chkbox.prop('checked', !chkbox.eq(0).prop('checked'));
+			} 
+		}
+
+		return false;
+	});
+
+}
+
+function checkAnals(list, analsId) {
+
+	for (var i in list) {
+		if (list[i] == analsId) {
+			return 'checked="checked" ';
+		}
+	}
+
+	return "";
+}
+
+function fn_saveDiagnosis() {
+
+	if ($('input:checkbox:checked').length == 0) {
+		alert('분석할 항목을 선택해 주세요.');
+		return false;
+	}
+
+	var frm = $('#frm');
+
+	frm.find('input:hidden[name=dgnssSaveNm]').val($('#dgnssSaveNm').val());
+	frm.attr('action', 'saveForm/insert.do');
+	frm.attr('target', 'hiddenFrame');
+	frm.submit();
+
+	frm.attr('action', 'insert.do');
+	frm.attr('target', '');
+	frm.submit();
+}
+
+var $divs = $('#grid, #grid_1');
+var sync = function(e) {
+
+	var $other = $divs.not(this).off('scroll'), other = $other.get(0);
+	var percentage = this.scrollLeft / (this.scrollWidth - this.offsetWidth);
+
+	other.scrollLeft = percentage * (other.scrollWidth - other.offsetWidth);
+
+	setTimeout(function(){
+		$other.on('scroll', sync ); 
+	}, 10);
+}
+
+$divs.on('scroll', sync);
+
+
+
+
+
+
+/* 좌측 틀고정을 위한 추가 */
+function girdView2(){
+
+	var columnName = [];
+
+	var columnType = [
+		{header: '구분', name: 'name'},
+		{header: '패턴/지표 명', name: 'name1'}
+	];
+
+	if (analsId != '') {
+		console.log(analsId);
+	}
+	
+	var data = [
+<c:forEach var="anals" items="${analsList}" varStatus="a">
+		{
+			name: '${anals.groupNm}',
+			name1: '${anals.analsNm}', 
+			_attributes: {
+				<c:if test="${analsGroup[anals.groupCode].cnt gt 1}">
+					rowSpan: {name: ${analsGroup[anals.groupCode].cnt}},
+				</c:if>
+				className: {column: {name: ['headB'], name1: ['headB']}}
+			}
+		}<c:if test="${not a.last}">,</c:if>
+</c:forEach>
+	];
+
+	grid2 = new tui.Grid({
+		el: document.getElementById("grid_2"),
+		data: data,
+		width:220,
+		scrollX: false,
+		scrollY: false,
+		minBodyHeight: 'auto',
+		rowHeight: 50, //각 row 높이
+		header: {
+			height: 80,
+			complexColumns: columnName
+		},
+		columns: columnType,columnOptions: {
+			frozenCount: 2,
+			frozenBorderWidth: 2,
+			minWidth: 110
+	    }
+		
+	});
+
+	const extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+
+	grid2.on('click', function(ev) {
+
+		var data = grid1.getData();
+		var rowKey = ev.rowKey;
+		var colName = ev.columnName;
+		var target = $(grid2.getElement((rowKey != null ? rowKey : 0), colName), colName);
+		var rowSpan = target.closest('td').attr('rowSpan');
+		var grid1_obj = $(".tb_type99").find('.tui-grid-rside-area')[1];
+		var grid1_target = $(grid1_obj).find(".tui-grid-body-area");
+		
+		if (colName == 'name') {
+			
+			if(rowSpan == null){
+				rowSpan = 1;
+			}
+			
+			for (var i = 0; i < rowSpan; i++) {
+				
+				var tr = $(grid1.el).find('.tui-grid-rside-area').find("tr").eq(rowKey + (i + 2));
+				var chk = $(tr).find('input:checkbox');
+				
+				if(!$(chk).is(":checked")){
+					$(chk).prop("checked", true);
+				}else{
+					$(chk).prop("checked", false);
+				}
+			}
+		}
+		
+		if (colName == 'name1') {
+			$.each(data, function(index, value) {
+				var tr = $(grid1.el).find('.tui-grid-rside-area').find("tr").eq(rowKey + 2);
+				if(value.rowKey == ev.rowKey){
+					
+					var chk = $(tr).find('input:checkbox');
+					
+					if(!$(chk).is(":checked")){
+						$(chk).prop("checked", true);
+					}else{
+						$(chk).prop("checked", false);
+					}
+				}
+			})
+		}
+	});
+}
+</script>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title th:text="#{UIT0057}">:: 상상스토리 ::</title>
+
+	<!-- 폰트 -->
+	<link th:href="@{/vendor_v1/fontawesome-free/css/all.css}" rel="stylesheet"/>
+	<!-- Admin Bootstrap 스타일시트 -->
+	<link th:href="@{/css_v1/sb-admin-3.css}" rel="stylesheet"/>
+	<!-- TUI 스타일시트 -->
+	<link th:href="@{/css_v1/tui/tui-grid.css}" rel="stylesheet"/>
+	<!-- jquery ui -->
+	<link th:href="@{/css_v1/jquery-ui.css}" rel="stylesheet"/>
+	<!-- Sub -->
+	<link th:href="@{/css_v1/sub.css}" rel="stylesheet"/>
+
+	<!-- TUI 스크립트 -->
+	<script th:src="@{/js_v1/jquery-1.11.2.min.js}"></script>
+	<script th:src="@{/js_v1/jquery-ui.js}"></script>
+	<script th:src="@{/js_v1/tui/underscore.js}"></script>
+	<script th:src="@{/js_v1/tui/backbone.js}"></script>
+	<script th:src="@{/js_v1/tui/tui-code-snippet.js}"></script>
+	<script th:src="@{/js_v1/tui/tui-grid.js}"></script>
+	<script th:src="@{/js_v1/common.js}"></script>
+	<script th:src="@{/js_v1/tui/tui-pagination.js}"></script>
+	<!-- Bootstrap 스크립트 -->
+	<script th:src="@{/vendor_v1/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/vendor_v1/jquery-easing/jquery.easing.min.js}"></script>
+	<!-- Admin Bootstrap 스크립트 -->
+	<script th:src="@{/js_v1/sb-admin-2.js}"></script>
+	</head>
+	
+	<div layout:fragment="content">
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<form id="frm" name="frm" action="list.do" method="get">
+					<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" th:value="${param.dgnssDbmsId}" />
+					<input type="hidden" id="dgnssInfoId" name="dgnssInfoId" th:value="${param.dgnssInfoId}" />
+				</form>
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<div class="modal-header">
+							<h5 class="modal-title" id="example" th:text="#{UIT0365}">진단 오류 내역</h5>
+							<button type="button" class="btn btn-primary btn_wd100" th:text="#{UIT0341}" onclick="self.close();">닫기</button>
+						</div>
+						<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10" />
+						<div id="grid" class="tb_type99"></div>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript"  class="code-js" th:inline="javascript">
+			/*<![CDATA[*/
+			var sessionCon = /*[[ ${sessionCon} ]]*/;
+		 	var fileName = /*[[ ${conFileName} ]]*/;
+		 	var conType = /*[[ ${conType} ]]*/;
+		 	var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		 	var UIT0240 = /*[[ #{UIT0240} ]]*/; //: 컬럼명
+		 	var UIT0264 = /*[[ #{UIT0264} ]]*/; //: 스키마명
+		 	var UIT0266 = /*[[ #{UIT0266} ]]*/; //: 테이블명
+		 	var UIT0362 = /*[[ #{UIT0362} ]]*/; //: 등록일시
+		 	var UIT0392 = /*[[ #{UIT0392} ]]*/; //: 분석 아이디
+		 	var UIT0393 = /*[[ #{UIT0393} ]]*/; //: 오류명
+		 	var UIT0394 = /*[[ #{UIT0394} ]]*/; //: 오류내용
+			/*]]*/
+		
+		
+		
+			var grid = null;
+			
+			$(function() {
+				girdView();
+				fn_search();
+			});
+			
+			function girdView(){
+			
+				var columns = [
+					{header: UIT0264, name: 'schemaNm', whiteSpace: 'normal', width: 140, align: 'center'},
+					{header: UIT0266, name: 'tableNm', whiteSpace: 'normal', width: 140, align: 'center'},
+					{header: UIT0240, name: 'columnNm', whiteSpace: 'normal'},
+					{header: UIT0392, name: 'analsId', whiteSpace: 'normal',},
+					{header: UIT0393, name: 'errorNm', whiteSpace: 'normal', editor: 'text'},
+					{header: UIT0394, name: 'errorContent', whiteSpace: 'normal', editor: 'text'},
+					{header: UIT0362, name: 'registDt', whiteSpace: 'normal', width: 150, align: 'center'}
+				];
+			
+				grid = new tui.Grid({
+					el: $('#grid')[0],
+					data: [],
+					scrollX: false,
+					scrollY: false,
+					bodyHeight : 'auto',
+					header: {
+						height: 50
+					},
+					columns: columns
+				});
+			/*
+				const extOptions = {
+					cell: {
+						focused: {
+							border: 0 // 선택 셀 강조 표시 x
+						}
+					}
+				};
+			
+				tui.Grid.applyTheme('default', extOptions);
+			*/
+			}
+			
+			function fn_search() {
+			
+				$.post('listAjax.do', {
+					dgnssInfoId: $('#dgnssInfoId').val(),
+					pageIndex: $('#pageIndex').val(),
+					itemsPerPage: $('#itemsPerPage').val()
+				}, function(data) {
+					var list = data.list;
+					var totalCnt = data.totalCnt;
+			
+					for (var i in list) {
+						var item = list[i];
+					}
+					grid.resetData(list);
+			
+					/* 페이징 function 호출 */
+			//		fn_pagination(totalCnt); // 스타일이 안먹어서 주석처리 함.
+				});
+			}
+		</script>
+	</div>
+</html>

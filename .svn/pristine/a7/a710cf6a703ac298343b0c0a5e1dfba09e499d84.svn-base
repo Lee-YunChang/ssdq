@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MySQL.DiagnosisMapper">
+
+	<select id="selectTableList" resultType="string">
+		SELECT
+			TABLE_NAME
+		FROM
+			information_schema.tables
+		WHERE
+			TABLE_SCHEMA = #{schemaName}
+	</select>
+
+	<select id="selectColumnList" resultType="map">
+		SELECT
+			COLUMN_NAME,
+			COLUMN_COMMENT,
+			DATA_TYPE,
+			CHARACTER_MAXIMUM_LENGTH AS DATA_LENGTH
+		FROM
+			information_schema.columns
+		WHERE
+			TABLE_NAME = #{tableName}
+			AND TABLE_SCHEMA = #{schemaName}
+			AND NOT DATA_TYPE IN ('TEXT','BLOB')
+		ORDER BY
+			ORDINAL_POSITION
+	</select>
+
+	<select id="selectSelColumnList" resultType="map">
+		SELECT
+			COLUMN_NAME,
+			COLUMN_COMMENT,
+			DATA_TYPE,
+			CHARACTER_MAXIMUM_LENGTH AS DATA_LENGTH
+		FROM
+			information_schema.columns
+		WHERE
+			TABLE_NAME = #{tableName}
+			AND TABLE_SCHEMA = #{schemaName}
+			AND NOT DATA_TYPE IN ('TEXT','BLOB')
+			AND COLUMN_NAME IN
+			(
+				<foreach item="columnName" separator="," collection="columnList">#{columnName}</foreach>
+			)
+		ORDER BY
+			ORDINAL_POSITION
+	</select>
+
+	<select id="selectColumnComment" resultType="string">
+		SELECT
+			COLUMN_COMMENT
+		FROM
+			information_schema.columns
+		WHERE
+			TABLE_NAME = #{tableName}
+			AND TABLE_SCHEMA = #{schemaName}
+			AND COLUMN_NAME = #{columnName}
+	</select>
+
+	<select id="selectDataList" resultType="map">
+		SELECT
+			*
+		FROM
+			${schemaName}.${tableName}
+		LIMIT
+			${rowCount}
+	</select>
+
+	<select id="selectSelDataList" resultType="map">
+		SELECT
+			<foreach item="columnName" separator="," collection="columnList">${columnName}</foreach>
+		FROM
+			${schemaName}.${tableName}
+		LIMIT
+			${rowCount}
+	</select>
+
+	<select id="selectRowCount" resultType="int">
+		SELECT COUNT(*) FROM ${database}.${tableNm}
+	</select>
+
+	<select id="selectSQLCount" resultType="int">
+		${value}
+	</select>
+
+	<select id="selectNumberCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${database}.${tableNm}
+		WHERE ${columnNm} IS NOT NULL
+		AND	${columnNm} REGEXP BINARY  '^[0-9]+$'
+	</select>
+	
+	<select id="selectPatternCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${database}.${tableNm}
+		WHERE ${columnNm} IS NOT NULL
+		AND	${columnNm} REGEXP BINARY #{analsFrmla}
+	</select>
+	
+	<select id="selectPatternList" resultType="map">
+		SELECT
+			${columnNm}
+			, @rownum:=@rownum + 1 AS DWINDEX
+		FROM
+			${database}.${tableNm}, (SELECT @rownum:=0) RN
+		WHERE
+			${columnNm} IS NOT NULL
+			<if test="startInt != null and scope != null ">
+		LIMIT #{startInt}, #{scope}
+			</if>
+	</select>
+	
+	<select id="selectDownLoadList" resultType="map">
+		SELECT
+			${columnNm}
+			, @rownum:=@rownum + 1 AS DWINDEX
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${database}.${tableNm}, (SELECT @rownum:=0) RN
+	</select>
+
+	<select id="selectRangeCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${database}.${tableNm}
+		WHERE
+		<choose>
+			<when test="analsSe.equals('AG000603')">
+			DATE_FORMAT(${columnNm},'%Y-%m-%d') BETWEEN DATE_FORMAT(#{beginValue},'%Y-%m-%d') AND DATE_FORMAT(#{endValue},'%Y-%m-%d')
+			</when>
+			<otherwise>
+			${columnNm} BETWEEN #{beginValue} AND #{endValue}
+			</otherwise>
+		</choose>
+		AND ${columnNm} IS NOT NULL
+	</select>
+
+	<select id="selectFrqAnalCountList" resultType="sangsmap">
+		SELECT
+			@rownum:=@rownum + 1 AS SN,
+			R.*
+		FROM
+		(
+			SELECT
+				${columnNm} AS DATA_VALUE,
+				COUNT(*) AS DATA_CO
+			FROM
+				${database}.${tableNm},
+				(SELECT @rownum:=0) RN
+			GROUP BY
+				${columnNm}
+			ORDER BY
+				DATA_CO DESC
+		) R
+		LIMIT
+			10
+	</select>
+
+	<select id="selectPKList" resultType="string">
+		SELECT
+			COLUMN_NAME
+		FROM
+			information_schema.columns
+		WHERE
+			COLUMN_KEY = 'PRI'
+			AND TABLE_NAME = #{tableNm}
+			AND TABLE_SCHEMA = #{schemaName}
+		ORDER BY
+			ORDINAL_POSITION;
+	</select>
+
+	<select id="selectPatternNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			, @rownum:=@rownum + 1 AS DWINDEX
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${database}.${tableNm}, (SELECT @rownum:=0) RN
+		WHERE
+		<choose>
+			<when test="matchMm.equals('mis')">
+			(
+					${columnNm} NOT REGEXP BINARY #{analsFrmla}	
+					OR ${columnNm} IS NULL	
+			)
+			</when>
+			<otherwise>
+			(
+					${columnNm} REGEXP BINARY #{analsFrmla}
+			)
+			AND ${columnNm} IS NOT NULL		
+			</otherwise>
+		</choose>
+			LIMIT #{limit}
+					
+	</select>
+	
+	<select id="selectSqlNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			, @rownum:=@rownum + 1 AS DWINDEX
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${database}.${tableNm}, (SELECT @rownum:=0) RN
+		WHERE
+			<choose>
+				<when test="matchMm.equals('mis')">
+					(
+						${columnNm} NOT IN(${analsFrmla})
+						OR ${columnNm} IS NULL
+					)
+				</when>
+				<otherwise>
+						${columnNm} IN(${analsFrmla})
+						AND ${columnNm} IS NOT NULL
+				</otherwise>
+			</choose>
+			LIMIT #{limit}
+
+	</select>
+
+	<select id="selectRangeNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			, @rownum:=@rownum + 1 AS DWINDEX
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${database}.${tableNm}, (SELECT @rownum:=0) RN
+		WHERE
+		<choose>
+			<when test="matchMm.equals('mis')">
+			(
+					${columnNm} NOT BETWEEN #{beginValue} AND #{endValue}
+					OR ${columnNm} IS NULL
+			)
+			</when>
+			<otherwise>
+			(
+					${columnNm}  BETWEEN #{beginValue} AND #{endValue}
+			)
+			AND ${columnNm} IS NOT NULL
+			</otherwise>
+		</choose>
+		LIMIT #{limit}
+		
+	</select>
+
+</mapper>

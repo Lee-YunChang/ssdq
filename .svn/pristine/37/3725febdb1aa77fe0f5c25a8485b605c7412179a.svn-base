@@ -1,0 +1,137 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+	</head>
+	<body id="page-top">
+
+		<div id="wrapper">
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+				<!-- 상단영역 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />
+					<!-- 본문 -->
+					<div class="container-fluid l_position_parent">
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between ">
+							<span class="col_gray01 font_14 "><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset">분석설정 저장 목록 </span>
+						</div>
+						<div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim"></i>분석설정 저장 목록</h1>
+						</div>
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<form id="frm" name="frm" action="../form2.do" method="post">
+									<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" value="" />
+									<input type="hidden" id="schemaName" name="schemaName" value="" />
+									<input type="hidden" id="tableName" name="tableName" value="" />
+									<input type="hidden" id="columnName" name="columnName" value="" />
+									<input type="hidden" id="analsId" name="analsId" value="" />
+								</form>
+								<div class="card shadow mb-4">
+									<div class="card-body">
+										<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10" />
+										<div id="grid" class="tb_type99"></div>
+										<div id="pagination" class="tui-pagination"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+			</div>
+		</div>
+	</body>
+
+<script>
+var grid = null;
+
+$(function() {
+	girdView();
+	fn_search();
+});
+
+function girdView(){
+
+	var columns = [
+		{header: '분석명', name: 'dgnssSaveNm', width: 150, align: 'center'},
+		{header: '스키마명', name: 'schemaNm', width: 140, align: 'center'},
+		{header: '테이블명', name: 'tableNm', width: 140, align: 'center'},
+		{header: '컬럼명', name: 'columnNmDc', whiteSpace: 'nowrap'},
+		{header: '등록일시', name: 'registDt', width: 150, align: 'center'},
+		{header: '설정보기', name: 'goForm2', width: 100, align: 'center'}
+	];
+
+	grid = new tui.Grid({
+		el: $('#grid')[0],
+		data: [],
+		scrollX: false,
+		scrollY: false,
+		minBodyHeight: "auto",
+		bodyHeight : 800,
+		header: {
+			height: 50
+		},
+		columns: columns
+	});
+
+	const extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+
+	//grid.refreshLayout();
+}
+
+function fn_search() {
+
+	$.post('listAjax.do', {
+		pageIndex: $('#pageIndex').val(),
+		itemsPerPage: $('#itemsPerPage').val()
+	}, function(data) {
+//		console.log(data);
+		var list = data.list;
+		var totalCnt = data.totalCnt;
+
+		for (var i in list) {
+
+			var item = list[i];
+
+			item.goForm2 = '<input type="button" class="btn_select" value="확인" onclick="goForm2(' + i + ')" />';
+		}
+		grid.resetData(list);
+
+		/* 페이징 function 호출 */
+		fn_pagination(totalCnt);
+	});
+}
+
+function goForm2(rowIdx) {
+
+	var row = grid.getRowAt(rowIdx);
+
+	$('#dgnssDbmsId').val(row.dgnssDbmsId);
+	$('#schemaName').val(row.schemaNm);
+	$('#tableName').val(row.tableNm);
+	$('#columnName').val(row.columnNmDc);
+	$('#analsId').val(row.analsIdDc);
+
+	$('#frm').submit();
+}
+</script>
+
+</html>

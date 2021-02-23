@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<!-- Main Footer -->
+	<div th:fragment="leftAsideFragment">
+
+		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" style="height:105%;">
+			<a class="sidebar-brand d-flex align-items-center justify-content-center normal-logo" href="/">
+				<div class="sidebar-brand-text mx-3">
+					<!-- <img src="/resources/img/logo.png" alt="상상스토리" style="width:190px;"> -->
+				</div>
+			</a>
+		
+			<!-- 밑줄 -->
+			<hr class="sidebar-divider my-0">
+		
+			<!-- 대시보드 -->
+			<li class="nav-item active">
+			<a class="nav-link" id="test" href="/mngr/main">
+				<i class="fas fa-fw fa-home"></i>
+				<span th:text="#{UIT0396}">MAIN PAGE</span></a>
+			</li>
+		
+			<!-- 밑줄 -->
+			<hr class="sidebar-divider">
+		
+			<div id = "menuDiv"></div>
+			
+			<!-- 토글 버튼 -->
+			<div class="text-center d-none d-md-inline">
+				<button class="rounded-circle border-0" id="sidebarToggle"></button>
+			</div>
+		</ul>
+		
+		<script type="text/javascript" th:inline="javascript">
+	
+		$(document).ready(function() {
+			
+			var getUrlParameter = function getUrlParameter(sParam) {
+			    var sPageURL = window.location.search.substring(1),
+			        sURLVariables = sPageURL.split('&'),
+			        sParameterName,
+			        i;
+		
+			    for (i = 0; i < sURLVariables.length; i++) {
+			        sParameterName = sURLVariables[i].split('=');
+		
+			        if (sParameterName[0] === sParam) {
+			            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+			        }
+			    }
+			};
+			
+			var up = getUrlParameter('up');
+			var sn = getUrlParameter('sn');
+			
+			$("#"+up).show();
+			
+			if(up == 'collapse0'){
+				$("[data-menuSn="+sn+"]").css("color", "#fff");
+				$("[data-menuSn="+sn+"]").css("background-color", "rgba( 255, 255, 255, 0.1 )");
+			}else{
+				$("[data-menuSn="+sn+"]").css("color", "#254dc0");
+			}
+			
+			$("[data-menuSn="+sn+"]").css("font-weight", "900");
+			
+			
+		});
+	
+		var data = /*[[ ${session.menuList} ]]*/ "";
+		
+		var html = "";
+		var groupBy = data.slice(0).sort()[0].menuGroupSn;
+		
+		$.each(data, function(index, value) {
+			
+			if(groupBy < value.menuGroupSn){
+				groupBy++;
+			}
+			
+			if(groupBy == value.menuGroupSn){
+				html += '<div class="sidebar-heading">'+value.menuGroupNm+'</div>';
+				html += fn_liList(data, value.menuGroupSn);
+				html += '<hr class="sidebar-divider">';
+				groupBy++;
+			}	
+			
+		});
+		
+		$("#menuDiv").append(html);
+		
+		function fn_liList(data, menuGroupSn){
+			var cHtml = "";
+	
+			$.each(data, function(index, value) {
+			
+				if(menuGroupSn == value.menuGroupSn && value.upperMenuSn == 0){
+					
+					cHtml += '<li class="nav-item">';
+					if(value.isLast != 'N'){
+						cHtml += '	<a href="#" class="nav-link" data-menuSn='+value.menuSn+' onclick="menuLink(\''+value.menuUrl+'\', \''+value.menuSn+'\', \'collapse'+value.upperMenuSn+'\'); return false;">';
+					}else{
+						cHtml += '	<a href="#" class="nav-link" collapsed" href="#" onclick="return false;" data-toggle="collapse" data-target="#collapse'+value.menuSn+'" aria-expanded="true" aria-controls="collapseOne" >';
+					}
+					cHtml += '		<i class="fas fa-fw '+value.menuIcon+'"></i>';
+					cHtml += '		<span>'+value.menuNm+'</span>';
+					cHtml += '	</a>';
+					
+					if(value.isLast == 'N'){
+						cHtml += fn_children(data, value.menuSn);
+					}
+					
+					cHtml += '</li>';
+				}
+			
+			});
+			
+			return cHtml;
+		}
+		
+		function fn_children(data, menuSn){
+			
+			var cHtml = "";
+			
+			cHtml += '<div id="collapse'+menuSn+'" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">';
+			cHtml += '	<div class="bg-white py-2 collapse-inner rounded">';
+			
+			$.each(data, function(index, value) {
+				if(menuSn == value.upperMenuSn){
+					cHtml += '<a href="#" class="collapse-item" data-menuSn='+value.menuSn+' onclick="menuLink(\''+value.menuUrl+'\', \''+value.menuSn+'\', \'collapse'+value.upperMenuSn+'\'); return false;">'+value.menuNm+'</a>';
+				}
+			});
+			
+			cHtml += '	</div>';
+			cHtml += '</div>';
+			
+			return cHtml;
+	
+		}
+		
+		function menuLink(menuUrl, menuSn, upMenuSn){
+			
+			window.location.href = menuUrl + "?up="+upMenuSn+"&sn="+menuSn;
+			
+		}
+		
+		</script>			
+	</div>
+
+
+</html>

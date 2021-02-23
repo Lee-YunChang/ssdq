@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.DataStandardMapper">
+
+	<insert id="insertDomainInfo" parameterType="map">
+		<selectKey resultType="Integer" keyProperty="domainId" order="BEFORE">
+			SELECT IFNULL(MAX(cast(DOMAIN_ID as unsigned)),0)+1 AS domainId FROM DOMAIN 
+		</selectKey>
+		
+		INSERT INTO DOMAIN
+		(
+			DOMAIN_ID 
+			, DOMAIN_CL 
+			, DOMAIN_NM 
+			, DOMAIN_TY
+			, DOMAIN_LT
+			, RM
+			, USE_AT
+			, REGIST_DT
+		)
+		VALUES
+		(
+			#{domainId}
+			, #{domainCl}
+			, #{domainNm} 
+			, #{domainTy}
+			, #{domainLt}
+		 	, #{domainRm}
+			, 1
+			, now()
+		)
+	</insert>
+	
+	<select id="selectDomainListTotalCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM DOMAIN
+		WHERE 1=1
+		<if test="searchDomainCl != '' and searchDomainCl != NULL">
+			AND DOMAIN_CL LIKE CONCAT('%', #{searchDomainCl}, '%')
+		</if>
+		<if test="searchDomainNm != '' and searchDomainNm != NULL">
+			AND DOMAIN_NM LIKE CONCAT('%', #{searchDomainNm}, '%')
+		</if>
+	</select>
+	
+	<select id="selectDomainList" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				T1.*, (@rownum2 := @rownum2+1) AS RNUM
+			FROM(
+				SELECT 
+					D.DOMAIN_ID AS domainId
+					, D.DOMAIN_CL AS domainCl 
+					, D.DOMAIN_NM AS domainNm
+					, D.DOMAIN_TY AS domainTy
+					, D.DOMAIN_LT AS domainLt
+					, D.RM AS rm
+					, D.USE_AT AS useAt
+					, D.REGIST_DT AS registDt
+					, (@rownum := @rownum+1) AS RN
+				FROM DOMAIN D, (SELECT @rownum :=0) AS R
+				WHERE 1=1
+				<if test="searchDomainCl != '' and searchDomainCl != NULL">
+					AND D.DOMAIN_CL LIKE CONCAT('%', #{searchDomainCl}, '%')
+				</if>
+				<if test="searchDomainNm != '' and searchDomainNm != NULL">
+					AND D.DOMAIN_NM LIKE CONCAT('%', #{searchDomainNm}, '%')
+				</if>
+				ORDER BY D.DOMAIN_NM
+				) T1, (SELECT @rownum2 :=0) AS T2
+			) T3
+		WHERE 1=1		
+		AND RNUM BETWEEN #{start_row} AND #{end_row}
+		
+	</select>
+	
+	<insert id="insertWordInfo" parameterType="map">
+		<selectKey resultType="Integer" keyProperty="wordId" order="BEFORE">
+			SELECT IFNULL(MAX(cast(WORD_ID as unsigned)),0)+1 AS wordId FROM WORD 
+		</selectKey>
+		
+		INSERT INTO WORD
+		(
+			WORD_ID 
+			, WORD_NM 
+			, WORD_ENG_NM
+			, WORD_ENG_AB
+			, WORD_CL 
+			, RM
+			, USE_AT
+			, REGIST_DT
+		)
+		VALUES
+		(
+			#{wordId}
+			, #{wordNm}
+			, #{wordEngNm} 
+			, #{wordEngAb}
+			, #{wordCl}
+		 	, #{wordRm}
+			, 1
+			, now()
+		)
+	</insert>
+	
+	<select id="selectWordListTotalCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM WORD
+		WHERE 1=1
+		<if test="searchWordNm != '' and searchWordNm != NULL">
+			AND WORD_NM LIKE CONCAT('%', #{searchWordNm}, '%')
+		</if>
+		<if test="searchWordEngNm != '' and searchWordEngNm != NULL">
+			AND WORD_ENG_NM LIKE CONCAT('%', #{searchWordEngNm}, '%')
+		</if>
+	</select>
+	
+	<select id="selectWordList" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				T1.*, (@rownum2 := @rownum2+1) AS RNUM
+			FROM(
+				SELECT 
+					W.WORD_ID AS wordId
+					, W.WORD_NM AS wordNm
+					, W.WORD_ENG_NM AS wordEngNm
+					, W.WORD_ENG_AB AS wordEngAb
+					, IF(W.WORD_CL = '1', '동의어', '표준어') AS wordCl
+					, W.RM AS rm
+					, W.USE_AT AS useAt
+					, W.REGIST_DT AS registDt
+					, (@rownum := @rownum+1) AS RN
+				FROM WORD W, (SELECT @rownum :=0) AS R
+				WHERE 1=1
+				<if test="searchWordNm != '' and searchWordNm != NULL">
+					AND W.WORD_NM LIKE CONCAT('%', #{searchWordNm}, '%')
+				</if>
+				<if test="searchWordEngNm != '' and searchWordEngNm != NULL">
+					AND W.WORD_ENG_NM LIKE CONCAT('%', #{searchWordEngNm}, '%')
+				</if>
+				ORDER BY W.WORD_NM
+				) T1, (SELECT @rownum2 :=0) AS T2
+			) T3
+		WHERE 1=1		
+		AND RNUM BETWEEN #{start_row} AND #{end_row}
+		
+	</select>
+	
+</mapper>

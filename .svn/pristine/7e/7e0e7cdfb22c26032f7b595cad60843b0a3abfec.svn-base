@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><img src="/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROFILING &gt; 프로파일링 분석</span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23 font_slim" style="color: gray; font-weight: 100;">프로파일링 분석</h1>
+		</div>
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<div class="card shadow mb-4">
+					<div class="input_table">
+						<table>
+							<caption></caption>
+							<colgroup>
+								<col style="width:20%">
+								<col style="width:25%">
+								<col style="width:10%">
+								<col style="width:25%">
+								<col style="width:20%">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th><label for="data"><span class="str">*</span> 스키마명</label></th>
+									<td>
+										<select id="schemaName" name="schemaName" onchange="fn_changeSchema()">
+											<option value="">스키마 선택</option>
+										</select>
+									</td>
+									<th><label for="name"><span class="str">*</span> 테이블명</label></th>
+									<td>
+										<select id="tableName" name="tableName">
+											<option value="">테이블 선택</option>
+										</select>
+									</td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="searchDiv" style="text-align: center; padding: 10px;">
+						<button class='btn btn-primary wd_50' type="button" onclick="fn_getTableList();" style="width:150px;">조회</button>
+					</div>
+				</div>
+				
+				<div id="div_1" class="card shadow mb-4">
+					<div class="card-body table_type100">
+						<button class='btn btn-primary mgn_b20' type='button' onclick="fn_submit();" style="float: right;">컬럼 선택</button>
+						<!-- <div id="grid" class="tb_type99" style="min-height:490px; clear: both;"></div> -->
+						<table id="dataTable_1" class="table table-striped table-bordered"></table>
+					</div>
+				</div>
+				
+				
+				<form id="frm" name="frm">
+					<input type="hidden" id="schemaNm" name="schemaName" value="" />
+					<input type="hidden" id="tableNm" name="tableName" value="" />
+					<input type="hidden" id="dgnssSaveName" name="dgnssSaveNm" value="" />
+					
+					<div id="hiddenInput"></div>
+					
+					
+					<div id="div_2" class="card shadow mb-4" style="display:none;">
+						<div class="card-body table_type100">
+							<button type="button" data-toggle="modal" data-target="#diagnosisModal" data-backdrop="static" data-keyboard="false" class="btn btn-primary mgn_b20 mgn_r5" style="float: right;" onclick="fn_startLayer()">분석 시작</button>
+							<button class='btn btn-secondary mgn_b20' type="button" onclick="fn_prev();" style="float: right; margin-right: 10px;">이전</button>
+							<button class='btn btn-secondary mgn_b20' type="button" onclick="fn_sampleDataHide();" style="float: left;">샘플데이터 보기</button>
+							<table id="dataTable_2" class="table table-striped table-bordered"></table>
+						</div>
+					</div>
+				</form>	
+			</div>
+		</div>
+		
+		
+		<!-- 분석설정 저장 모달창-->
+		<div class="modal fade" id="diagnosisModal" tabindex="-1" role="dialog" aria-labelledby="diagnosisModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">분석설정등록</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="menuListDiv" style="display: block;">
+							<section class="l_box_type02">
+								 <div class="tb_type03">
+									 <table>
+										<tbody>
+											<tr>
+												<th>분석명</th>
+												<td><input type="text" id="dgnssSaveNm" name="dgnssSaveNm" value="" /></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary" type="button" data-dismiss="modal" onclick="fn_saveDiagnosis()">저장</button>
+						<a class="btn btn-secondary" data-dismiss="modal" href="#none">닫기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<iframe name="hiddenFrame" hidden="" width="0" height="0"></iframe>
+		
+					
+		<script th:inline="javascript" class="code-js">
+		 	var sessionCon = /*[[ ${sessionCon} ]]*/;
+		 	var grid = null;
+		 	var rowCount = 10;
+		 	var analsId = "";
+		 	
+		 	var table_1 = null;
+		 	var table_2 = null;
+		 	var dataLength = null;
+		 	
+			$(function() {
+				// sessionCon 체크
+				isSessionConChk(sessionCon);
+				
+				$("#schemaName, #tableName").chosen({
+					search_contains : true,
+					no_results_text : "검색결과가 없습니다. : "
+				});
+				
+				/*추가*/
+				fn_selectSchema();
+			});
+			
+			/*추가*/
+			function fn_selectSchema(){
+			
+				$.post('selectSchemaListAjax.do', {
+				}, function(list) {
+					for (var i in list) {
+						$('#schemaName').append($('<option />').val(list[i].OWNER).text(list[i].OWNER));
+						$("#schemaName").trigger("chosen:updated");
+					}
+					fn_changeSchema();
+				});
+			}
+			
+			function fn_changeSchema(){
+			
+				$('#tableName').empty();
+				$('#tableName').append($('<option />').val('').text('테이블 선택'));
+			
+				$.post('selectTableListAjax.do', {
+					schemaName: $('#schemaName').val()
+				}, function(list) {
+					for (var i in list) {
+						$('#tableName').append($('<option />').val(list[i]).text(list[i]));
+						$("#tableName").trigger("chosen:updated");
+					}
+				});
+			}
+
+			function fn_getTableList(){
+				$("#grid").empty();
+				
+				var schemaName = $("#schemaName").val();
+				var tableName = $('#tableName').val();
+				
+				if(schemaName == null || schemaName == ""){
+					alert("스키마를 선택해 주세요.");
+					return false;
+				}
+				
+				if(tableName == null || tableName == ""){
+					alert("테이블을 선택해 주세요.");
+					return false;
+				}
+				
+				var params = {
+					"schemaName" : schemaName,
+					"tableName" : tableName,
+					"rowCount" : rowCount
+				};
+				
+				$.ajax({
+					url: "/mngr/diagnosis/selectColumnAjax",
+					data : params,
+					method : 'post',
+					success: function(data){
+						var obj = JSON.parse(data);
+						girdView(obj);
+						
+					}, error:function() {
+						alert("처리중 에러가 발생하였습니다");
+						return;
+					}
+				});
+			}
+			
+			function girdView(obj){
+
+				var columnList = obj.columnList;
+				var dataList = obj.dataList;
+				var csvAt = obj.csvAt;
+		
+				// COLUMNS 리스트
+				var columnsArr = [
+					{ name: 'first', title: '구분'}
+				];
+				
+				$.each(columnList, function(index, value) {
+					var columnsObj = {};
+					columnsObj.title = value.COLUMN_NAME + '<br/>' + value.DATA_TYPE +'('+ value.DATA_LENGTH +')';
+					columnsArr.push(columnsObj);				
+				})
+				
+				// DATA 리스트 
+				var dataListArr = [];
+ 
+				// 샘플데이터
+				$.each(dataList, function(index, value2) {
+					var dataArr = [];
+
+					if(index == 0){
+						dataArr.push('<input type="button" class="btn_select" value="전체선택"/>');
+						$.each(columnList, function(index, value) {
+							dataArr.push('<label class="switch"><input type="checkbox" value="'+value.COLUMN_NAME+'"/><span class="slider round"></span></label>');
+						})
+						dataListArr.push(dataArr);
+					}
+				})
+				
+				// 샘플데이터
+				$.each(dataList, function(index, value2) {
+					var dataArr = [];
+					
+					dataArr.push('');
+					$.each(columnList, function(index, value) {
+						dataArr.push($.trim(value2[value.COLUMN_NAME]));
+					})
+					dataListArr.push(dataArr);
+				})
+				
+				var data = dataListArr;
+				var columnDefsArr = [];
+				
+				table_1 = $('#dataTable_1').DataTable({
+					destroy : true,
+					retrieve : false,
+					columns: columnsArr,
+					data: data,
+					//rowsGroup: ['first:name'],
+		    		//pageLength: '20',
+					scrollY : true,
+					scrollX : true,
+					scrollCollapse : false,
+					searching : false,			// 검색 영역
+					paging: false,	// 페이징 표시
+					info : false,				// 페이지 건수 표시 
+					ordering : false,			// 정렬 제거
+					orderCellsTop : false,
+					//autoWidth: false,
+					fixedColumns: {
+						leftColumns: 1
+					},
+					columnDefs : columnDefsArr
+				});
+			
+				// LEFT TD 선택 해당 row 전체선택
+				var leftTable = $('.DTFC_LeftBodyLiner').children('table').find('tbody > tr');
+				
+				$(leftTable).on('click', 'input', function () {
+					
+					var targetTr = $('#dataTable_1').children('tbody').find('tr');
+					
+					$.each(targetTr, function(index, value) {
+				
+						var trChk = $(value).find('input:checkbox');
+						if(!$(trChk).is(":checked")){
+							$(trChk).prop("checked", true);
+						}else{
+							$(trChk).prop("checked", false);
+						}
+						
+					});
+				});
+			}
+			
+			function fn_submit(){
+				
+				$("#hiddenInput").empty();
+				
+				var targetTr = $('#dataTable_1').children('tbody').find('tr');
+				var columnName = [];
+				$.each(targetTr, function(index, value) {
+					if(index == 0){
+						
+						var td = $(value).children('td');
+						var chkList = $(td).find('input:checkbox');
+						
+						$.each(chkList, function(index, value) {
+							var check = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+							if($(value).is(":checked")){
+								if(!check.test($(value).val())){
+									$('#hiddenInput').append($('<input type="hidden" name="columnName" value="" />').val($(value).val()));
+									columnName.push($(value).val());
+								}
+							}
+						})
+					}
+				});
+				
+				if ($('#hiddenInput').html() == '') {
+					alert('분석할 컬럼을 선택해 주세요.');
+					return false;
+				}
+				
+				$("#div_1").hide();
+				$("#searchDiv").hide();
+				$("#div_2").show();
+				
+				var schemaName = $("#schemaName").val();
+				var tableName = $('#tableName').val();
+				
+				var params = {
+					"schemaName" : schemaName,
+					"tableName" : tableName,
+					"columnName" : columnName,
+					"rowCount" : rowCount
+				};
+				
+				$.ajaxSettings.traditional = true;
+				
+				$.ajax({
+					url: "/mngr/diagnosis/selectAnalysisAjax",
+					data : params,
+					method : 'post',
+					success: function(data){
+						var obj = JSON.parse(data);
+						//console.log("분석 : ", obj);
+						
+						dataTalbe_2(obj);
+						
+					}, error:function() {
+						alert("처리중 에러가 발생하였습니다");
+						return;
+					}
+				});
+			}
+			
+			
+			function dataTalbe_2(obj){
+				//console.log("obj =", obj);
+				
+				var selectColList = obj.selectColList;
+				var selectDataList = obj.selectDataList;
+				var analsList = obj.analsList;
+				var analsGroup = obj.analsGroup;
+				dataLength = selectDataList.length;
+				
+				//onsole.log("selectColList = ", selectColList);
+				//console.log("selectDataList = ", selectDataList);
+		
+				// COLUMNS 리스트
+				var columnsArr = [
+					{ name: 'first', title: '구분'},
+			        { name: 'second', title: '패턴/지표명'}
+				];
+
+				$.each(selectColList, function(index, value) {
+					var columnsObj = {};
+					columnsObj.title = value.COLUMN_NAME + '<br/>' + value.DATA_TYPE +'('+ value.DATA_LENGTH +')';
+					columnsArr.push(columnsObj);				
+				})
+				
+				//console.log("columnsArr = ", columnsArr);
+				
+				// DATA 리스트 
+				var dataListArr = [];
+ 
+				// 샘플데이터
+				$.each(selectDataList, function(index, value2) {
+					var dataArr = [];
+					
+					dataArr.push('SAMPLE DATA');
+					dataArr.push(index + 1);
+					
+					$.each(selectColList, function(index, value) {
+						dataArr.push($.trim(value2[value.COLUMN_NAME]));
+					})
+					
+					dataListArr.push(dataArr);
+				})
+				
+				// 체크박스 데이터
+				$.each(analsList, function(index, value2) {
+					var analsArr = [];
+					
+					analsArr.push(value2.groupNm);
+					analsArr.push(value2.analsNm);
+					
+					$.each(selectColList, function(index, value) {
+						analsArr.push('<label class="switch"><input type="checkbox" name="'+value.COLUMN_NAME+'" value="'+value2.analsId+'"'+ checkAnals(analsId[value.COLUMN_NAME], value2.analsId)+'/><span class="slider round"></span></label>');
+					})
+
+					dataListArr.push(analsArr);
+				})
+				
+				//console.log("dataListArr = ", dataListArr);
+				
+				var data = dataListArr;
+				var columnDefsArr = [
+					{"targets": [0, 1], "class" : "fixColums"}
+				];
+				
+				// 샘플 데이터에 length가 40 이상일 경우 width 고정 옵션 적용
+				$.each(data, function(index, value) {
+					var colLength = selectColList.length;
+					
+					if(index < 9){
+						$.each(value, function(index, value) {
+							var columnDefsObj = {}; // visible: false = 숨기기
+							if( value.length >= 40) {
+								columnDefsObj.targets = [index];
+								columnDefsObj.class = "fixWidth";
+								columnDefsArr.push(columnDefsObj);
+							}else{
+								columnDefsObj.targets = [index];
+								columnDefsObj.class = "fullWidth_"+colLength;
+								columnDefsArr.push(columnDefsObj);
+							}
+						})
+					}
+				})
+				
+				table_2 = $('#dataTable_2').DataTable({
+					destroy : true,
+					retrieve : false,
+					columns: columnsArr,
+					data: data,
+					rowsGroup: [
+					  'first:name',
+					  'second:name'
+					],
+		    		//pageLength: '20',
+					scrollY : 800,
+					scrollX : true,
+					scrollCollapse : false,
+					searching : false,			// 검색 영역
+					paging: false,	// 페이징 표시
+					info : false,				// 페이지 건수 표시 
+					ordering : false,			// 정렬 제거
+					orderCellsTop : false,
+					//autoWidth: false,
+					fixedColumns: {
+						leftColumns: 2
+					},
+					columnDefs : columnDefsArr
+				});
+				
+				fn_sampleDataHide();
+				
+				// 헤더 선택 하위 전체 선택
+				$('#head1 thead').on('click', 'th', function () {
+					var sn = table_2.column(this).index();
+					var tableTr = $('#dataTable_2').children('tbody').find('tr');
+					
+					$.each(tableTr, function(index, value) {
+						var td = $(value).children('td')[sn];
+						var chk = $(td).find('input:checkbox');
+						
+						if(!$(chk).is(":checked")){
+							$(chk).prop("checked", true);
+						}else{
+							$(chk).prop("checked", false);
+						}
+					})
+				});
+				
+				// LEFT TD 선택 해당 row 전체선택
+				var leftTable = $('#div_2').find('.DTFC_LeftBodyLiner').children('table').find('tbody > tr');
+				
+				$(leftTable).on('click', 'td', function () {
+					var selectTr = $(this).parents().data('tr');
+					var targetTr = $('#dataTable_2').children('tbody').find('tr');
+					var thisTdSpan = Number($(this).attr('rowspan'));
+					
+					$.each(targetTr, function(index, value) {
+					
+						var trRowSn = $(value).data('tr');
+						var endTrSn = selectTr + thisTdSpan
+						
+						if(thisTdSpan == 1){
+							if($(value).data('tr') == selectTr){
+								var trChk = $(value).find('input:checkbox');
+								if(!$(trChk).is(":checked")){
+									$(trChk).prop("checked", true);
+								}else{
+									$(trChk).prop("checked", false);
+								}
+							}
+						} else {
+							if(trRowSn >= selectTr && trRowSn < endTrSn){
+								var trChk = $(value).find('input:checkbox');
+								
+								if(!$(trChk).is(":checked")){
+									$(trChk).prop("checked", true);
+								}else{
+									$(trChk).prop("checked", false);
+								}
+							}
+						}
+					});
+				});
+			};
+			
+			function fn_startLayer(){
+				var today = new Date();
+				$('#dgnssSaveNm').val('분석_' + today.getFullYear() + today.getMonth() + today.getDate() + '_' + today.getMilliseconds());
+			}
+			
+			function fn_prev(){
+				/* 
+				$("#div_2").hide();
+				$("#grid2_1").empty();
+				$("#grid2_2").empty();
+				$("#grid2_3").empty();
+			
+				$("#div_1").show();
+				$("#searchDiv").show();
+				
+				fn_getTableList();
+				*/
+				location.href = "/mngr/diagnosis/form1.do";
+			}
+			
+			function checkAnals(list, analsId) {
+				for (var i in list) {
+					if (list[i] == analsId) {
+						return 'checked="checked" ';
+					}
+				}
+				return "";
+			}
+			
+			function fn_saveDiagnosis() {
+	
+				if ($('input:checkbox:checked').length == 0) {
+					alert('분석할 항목을 선택해 주세요.');
+					return false;
+				}
+				
+				 $('#schemaNm').val($('#schemaName').val());      
+				 $('#tableNm').val($('#tableName').val());        
+				 $('#dgnssSaveName').val($('#dgnssSaveNm').val());
+				
+				var frm = $('#frm');
+				
+					
+				$.ajax({
+					url: "saveForm/insert.do",
+					data: $('#frm').serialize(), 
+					success: function(){
+						
+						frm.attr('action', 'insert.do');
+						frm.attr('target', '');
+						frm.submit(); 
+						
+					}
+				}); 				
+				
+			}
+			
+			// 샘플데이터 1~8번 숨김처리
+			function fn_sampleDataHide(){
+				
+				//console.log("dataLength =", dataLength);
+				/*
+				if(dataLength == 1){
+					alert('샘플데이터가 더는 존재하지 않습니다.');
+					return false;
+				}
+				*/
+				var tableTr = $('#dataTable_2').children('tbody').find('tr');
+				var leftTr = $('#div_2').find('.DTFC_LeftBodyLiner').children('table').find('tbody > tr');
+				
+				$.each(leftTr, function(index, value) {
+					var cn = $(value).data('tr');
+					
+					if(cn == 0){
+						var tdSpan = $(leftTr).children().first();
+						var rowspanCnt = $(leftTr).children().first().attr('rowspan');
+						
+						if(rowspanCnt > 1){
+							$(tdSpan).attr('rowspan','1');
+						}else{
+							$(tdSpan).attr('rowspan', dataLength);
+						}
+					}
+					
+					if(cn <= dataLength - 1){
+						$(value).css('background-color','#F8F9FC');
+					}
+					 
+					if(cn > 0 && cn <= dataLength - 1){
+						$(value).toggle();
+					}
+				});
+				
+				$.each(tableTr, function(index, value) {
+								
+					var cn = $(value).data('tr');
+					
+					if(cn == 0){
+						var tdSpan = $(tableTr).children().first();
+						var rowspanCnt = $(tableTr).children().first().attr('rowspan');
+						
+						if(rowspanCnt > 1){
+							$(tdSpan).attr('rowspan','1');
+						}else{
+							$(tdSpan).attr('rowspan', dataLength);
+						}
+					}
+					
+					if(cn <= dataLength - 1){
+						$(value).css('background-color','#F8F9FC');
+					}
+					
+					if(cn > 0 && cn <= dataLength - 1){
+						$(value).toggle();
+					}
+				});
+			}
+		</script>
+	</div>
+</html>

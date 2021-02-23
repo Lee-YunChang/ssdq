@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<!-- Main Footer -->
+	<footer class="sticky-footer bg-white" th:fragment="footerFragment">
+		<div id="footer">
+	        <h2 class="bottomLogo">
+	            <a href="#">
+	                <img alt="" src="/img/logo.png" style="width:220px;height:60px;">
+	            </a>
+	        </h2>
+	        <div class="companyInfoWrap">
+	            <div class="publishInfo">
+	                <span> Rm 2006, 288, Digital-ro, Guro-gu, Seoul, Republic of Korea</span>
+	            </div>
+	            <div class="publishInfo">
+	                <span>TEL : 82-2-6677-3082</span>
+	                <span>FAX : 82-2-6677-3085</span>
+	            </div>
+	            <strong class="copyright">COPYRIGHT &copy; 2019 SANGSANGSTORY ALL RIGHTS RESERVES.</strong>
+	        </div>
+	    </div>
+		
+	<!-- 상위이동 버튼-->
+	<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fas fa-angle-up"></i>
+	</a>
+	
+	<!-- 로그아웃 모달창-->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+					<button class="close" type="button" aria-label="Close" onclick="fn_modalClose();return false;">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+	        	<div class="modal-body">현재 세션을 종료하시겠습니까?</div>
+				<div class="modal-footer">
+					<a class="btn btn-primary" th:href="@{/logout}">로그아웃</a>
+	        	</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- patten UDT 모달창
+	<div class="modal fade" id="pattenUDTModal" tabindex="-1" role="dialog" aria-labelledby="pattenUDTModal" aria-hidden="true">
+		<div class="modal-dialog" role="document" style="max-width: 800px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" type="button"  aria-label="Close" onclick="fn_modalClose();return false;">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+	        	
+	        	<div class="modal-body">
+	        		<div id="pattenUDTDiv" style="display: block;">
+						<form id="pattenUDTFrm">
+						<input type="hidden" id="analsId" name="analsId" />
+							<section class="l_box_type02">                                    
+		                         <div class="tb_type03">
+		                             <table>
+		                                 <tbody>
+		                                     <tr>
+		                                     	 <th>FROM</th>
+		                                         <td><input type="text" id="beginValue" name="beginValue"></td>
+		                                         <th>TO</th>
+		                                         <td><input type="text" id="endValue" name="endValue"></td>
+		                                     </tr>
+		                                     <tr>
+		                                     	 <th>규칙</th>
+		                                         <td colspan="3">
+	                                                 <textarea id="analsFrmla" name="analsFrmla" ></textarea>
+	                                             </td>
+		                                     </tr>
+		                                     <tr>
+		                                         <th>비고</th>
+		                                         <td><input type="text" id="rm" name="rm"></td>
+		                                         <th>활성여부</th>
+		                                         <td style="text-align: left;">
+		                                             <select id="ptUseAt" name="ptUseAt" style="width: 100px;">
+			                                             <option value="1"<c:if test="${ptUseAt eq '1'}">selected="selected"</c:if>>Y</option>
+														 <option value="0"<c:if test="${ptUseAt eq '0'}">selected="selected"</c:if>>N</option>
+	                                             	</select>
+	                                            </td>
+	                                         </tr>
+	                                     </tbody>
+	                                 </table>
+	                             </div>
+	                         </section>
+						</form>
+					</div>
+				</div>
+	        	
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="button" onclick="fn_savePatten(this);">저장</button>
+	        	</div>
+			</div>
+		</div>
+	</div>
+	-->
+	</footer>
+</html>

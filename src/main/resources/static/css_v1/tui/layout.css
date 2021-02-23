@@ -1,0 +1,45 @@
+body {
+    display: block;
+    margin: 0 auto;
+}
+.header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+	width: 1024px;
+}
+.nav {
+    line-height:30px;
+    height:900px;
+    width:180px;
+    float:left;
+    padding:5px;    
+}
+.section {
+    width: 62.5%;
+    height:810px;
+	left: 185px;
+    float: left;
+    padding: 5px;
+    position: absolute;
+}
+
+.section .neviTitle{
+	height:50px;  
+	color:white;
+    text-align:left;
+	background-color:black;
+	margin-bottom : 5px;
+}
+.content{
+	margin:20px;
+
+}
+.textBox{
+	width:400px;
+}
+
+
+
+

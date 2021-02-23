@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content" style="text-align:center;">
+	<!-- 
+		에러코드 : <span th:text="${code }" ></span>
+		메세지 : <span th:text="${msg }" ></span>
+	 -->
+		<img src="/img/error.png" alt="에러메세지" class="vtc_unset">
+	</div>
+</html>

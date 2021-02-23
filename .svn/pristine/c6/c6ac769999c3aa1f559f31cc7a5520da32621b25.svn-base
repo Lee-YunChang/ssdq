@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.RuleMngMapper">
+	<insert id="insertAnals" parameterType="map" > 
+		INSERT INTO ANALS 
+		( 
+			INSTT_CODE
+			, ANALS_ID
+			, ANALS_SE
+			, ANALS_TY
+			, PTTRN_SE
+			, ANALS_NM
+			, ANALS_FRMLA
+			, VIEW_FRMLA
+			, BEGIN_VALUE
+			, END_VALUE
+			, DBMS_KND
+			, DBMS_VER
+			, RM
+			, USE_AT
+			, REGIST_DT
+		)
+		VALUES
+		(
+		 	#{insttCode}
+			, #{analsId}
+			, #{analsSe}
+			, #{analsTy}
+			, #{pttrnSe}
+			, #{analsNm}
+			, #{analsFrmla}
+			, #{viewFrmla}
+			, #{beginValue}
+			, #{endValue}
+			, #{dbmsKnd}
+			, #{dbmsVer}
+			, #{rm}
+			, 1
+			, sysdate()
+		)
+		
+	</insert>
+	
+	<update id="updateAnalsLimit" parameterType="map" > 
+		UPDATE ANALS SET
+			ANALS_SE = #{analsSe}
+			, ANALS_NM = #{analsNm}
+			, ANALS_FRMLA = #{analsFrmla}
+			, BEGIN_VALUE = #{beginValue}
+			, END_VALUE = #{endValue}
+			, VIEW_FRMLA = #{viewFrmla}
+			, RM = #{rm}
+		WHERE 1=1
+		AND ANALS_ID = #{analsId}
+	</update>
+	
+	<update id="updateAnalsPatten" parameterType="map" > 
+		UPDATE ANALS SET
+			ANALS_SE = #{analsSe}
+			, ANALS_NM = #{analsNm}			
+			, ANALS_FRMLA = #{analsFrmla}
+			, VIEW_FRMLA = #{viewFrmla}
+			, RM = #{rm}
+		WHERE 1=1
+		AND ANALS_ID = #{analsId}
+	</update>
+	
+	<select id="selectAnalsList" parameterType="map" resultType="map">
+		SELECT  
+			INSTT_CODE AS insttCode
+			, ANALS_ID AS analsId
+			, ANALS_SE AS analsSe
+			, ANALS_TY AS analsTy
+			, PTTRN_SE AS pttrnSe
+			, ANALS_NM AS analsNm
+			, ANALS_FRMLA AS analsFrmla
+			, IFNULL(VIEW_FRMLA,ANALS_FRMLA) AS viewFrmla
+			, CASE WHEN ANALS_SE = 'AG000603' THEN DATE_FORMAT(BEGIN_VALUE, '%Y-%m-%d')
+				ELSE BEGIN_VALUE END AS beginValue
+			, CASE WHEN ANALS_SE = 'AG000603' THEN DATE_FORMAT(END_VALUE, '%Y-%m-%d')
+				ELSE END_VALUE END AS endValue
+			, DBMS_KND AS dbmsKnd
+			, DBMS_VER AS dbmsVer
+			, RM AS rm
+			, REGIST_DT AS registDt
+		FROM ANALS 
+		WHERE ANALS_ID = #{analsId}
+	</select>
+
+	<select id="selectAnalsIdNextVal" parameterType="map" resultType="int">
+		SELECT 
+			MAX(cast(ANALS_ID as unsigned) )+1 AS analsId
+		FROM ANALS
+		WHERE DBMS_KND = #{dbmsKnd}
+	</select>
+	
+	<select id="selectAnalsSeList" parameterType="map" resultType="map">
+		SELECT 
+			ANALS_SE AS analsSe 
+			, ANALS_NM AS analsSeNm
+		FROM ANALS
+		WHERE ANALS_TY = #{analsTy}
+		AND ANALS_SE LIKE '${analsSe}%'
+	</select>
+	
+	<select id="selectCmmnList" parameterType="map" resultType="map">
+		SELECT 
+			CMMN_CODE AS analsSe 
+			, CMMN_CODE_NM AS analsSeNm
+		FROM CMMN_CODE_DETAIL
+		WHERE GROUP_CODE = #{groupCode}
+		AND CMMN_CODE LIKE CONCAT('%', #{cmmnCode}, '%')
+		
+	</select>
+	
+	<select id="selectDbmsList" parameterType="map" resultType="map">
+		SELECT  
+			A.DGNSS_DBMS_ID AS dgnssDbmsId
+			, A.DBMS_ID AS dbmsId
+			, B.DBMS_KND AS dbmsKnd
+			, C.DBMS_VER_INFO AS dbmsVerInfo
+		FROM DGNSS_DBMS A, INSTT_DBMS B, INSTT_DBMS_VER C
+		WHERE A.DBMS_ID = B.DBMS_ID
+		AND B.DBMS_ID = C.DBMS_ID
+		AND A.DBMS_VER_ID = C.DBMS_VER_ID
+		AND A.DGNSS_DBMS_ID = #{dgnssDbmsId}
+	</select>
+	
+	<select id="selectSchemasList" parameterType="map" resultType="map">
+		SELECT  
+			D.DGNSS_DBMS_ID AS dgnssDbmsId
+			, D.DBMS_ID AS dbmsId
+			, D.DBMS_VER_ID AS dbmsVerId
+			, CASE WHEN D.`DBMS_ID` = '1' THEN D.`SCHEMA` ELSE D.`DATABASE` END AS `schema`
+			, D.`DATABASE` AS `database`
+			, I.DBMS_KND AS dbmsKnd
+		FROM DGNSS_DBMS D, INSTT_DBMS I
+		WHERE D.DBMS_ID = I.DBMS_ID
+		<if test="dgnssDbmsId != ''">
+		AND D.DGNSS_DBMS_ID = #{dgnssDbmsId}
+		</if>
+		ORDER BY D.`DATABASE`
+	</select>
+	
+	<select id="selectSchemaNmList" parameterType="map" resultType="map">
+		SELECT 
+			`SCHEMA_NAME` AS `schema`
+		FROM INFORMATION_SCHEMA.`SCHEMATA`
+		ORDER BY `SCHEMA_NAME`
+	</select>
+	
+	<select id="selectSchemaTablesList" parameterType="map" resultType="map">
+		SELECT 
+			TABLE_NAME AS tableName
+		FROM INFORMATION_SCHEMA.TABLES  
+		WHERE 1 = 1
+		<if test="dgnssDbmsId != ''">
+		AND TABLE_SCHEMA = #{schema}
+		</if>
+		ORDER BY `TABLE_NAME`
+	</select>
+	
+	<select id="selectCheckPatten" parameterType="map" resultType="int">
+		SELECT 
+		COUNT(CASE WHEN #{checkText} REGEXP BINARY #{analsFrmla} THEN 1 END) AS CNT
+		FROM DUAL
+	</select>
+	
+	<select id="selectCheckSql" parameterType="map" resultType="int">
+		SELECT 
+		COUNT(1) AS CNT
+		FROM ${tables}
+		WHERE ${analsFrmla}
+	</select>
+
+	
+	<select id="selectConnDbmsType" parameterType="string" resultType="map">
+		SELECT
+			`database` 
+			, UPPER(SUBSTRING_INDEX(SUBSTRING_INDEX(DGNSS_DBMS_NM,'(',1),'.',-1)) AS connType 
+			, SUBSTRING_INDEX(DGNSS_DBMS_NM,'(',1) AS connFileName
+			, LOWER(SUBSTRING_INDEX(SUBSTRING_INDEX(DGNSS_DBMS_NM,'(',-1),')',1)) AS connTableName
+		FROM DGNSS_DBMS 
+		WHERE DGNSS_DBMS_ID = #{dbmsId}
+	</select>
+
+
+	<select id="selectColumnAnalysis" parameterType="map"  resultType="map">
+		SELECT  
+			COLUMN_NAME AS columnName
+			, DATA_TYPE AS dataType
+			, CHARACTER_MAXIMUM_LENGTH AS dataLength
+			, NUMERIC_PRECISION AS dataPrecision 
+			, NUMERIC_SCALE AS dataScale 
+			, IS_NULLABLE AS nullable
+			, COLUMN_DEFAULT AS dataDefault
+			, COLUMN_COMMENT AS comments
+		FROM INFORMATION_SCHEMA.COLUMNS  
+		WHERE TABLE_NAME = #{tableName}
+		<if test="searchValue != null and searchValue != ''">
+			 AND COLUMN_COMMENT LIKE CONCAT('%', #{searchValue}, '%')
+		</if> 
+		ORDER BY ORDINAL_POSITION
+			
+	</select>
+</mapper>

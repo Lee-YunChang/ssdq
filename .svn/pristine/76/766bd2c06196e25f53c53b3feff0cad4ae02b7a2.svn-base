@@ -1,0 +1,84 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+
+		<title>Insert title here</title>
+	</head>
+	<body id="page-top" class="in_length_100pro">
+
+    <div class="login_wrap">
+        <div class="login_area">
+            <h3 class="title mgn_b20">로그인</h3>    
+            <form id="loginFrm" class="user" method="POST" action="/login">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <div class="login"> 
+                    <p><span class="sub_title">아이디</span><input type="text" class="in_box_type01 in_length290" id="username" name="username" value="${param.username}" aria-describedby="username" ></p>
+                    <p><span class="sub_title">비밀번호</span><input type="password" class="in_box_type01 in_length290" id="password" name="password" ></p>
+                    <p>
+                    <!-- <input type="checkbox" id="customCheck" class="mgn_r5 vtc_middle"><label for="customCheck" class="font_12 font_medium col_white mgn_r30 mgn_b0">아이디 저장하기</label> -->
+					<input type="button" class="btn_type02 col_black" onclick="login();" value="로그인" style="margin-left: 131px;">
+					</p>
+                </div>
+                <div align="center">
+					<c:if test="${param.error ne null }">
+						<p style="font-size: 20; color: #FF1C19;">${param.errormsg }</p>
+					</c:if>
+				</div>
+            </form>        
+        </div>
+    </div>
+    <!-- 풋터 -->
+    <!-- 
+    <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>Copyright &copy; KISCA All right reserved.</span>
+            </div>
+        </div>
+    </footer>
+     -->
+    <footer class="sticky-footer bg-white">
+		<div id="footer">
+	        <h2 class="bottomLogo">
+	            <a href="#">
+	                <img alt="" src="/resources/img/footerLogo.png">
+	            </a>
+	        </h2>
+	        <div class="companyInfoWrap">
+	            <div class="publishInfo">
+	                <span>(13814) 427-060 경기도 과천시 뒷골2로 66-1</span>&nbsp;&nbsp;&nbsp;( 과천동 388번지 )
+	            </div>
+	            <div class="publishInfo">
+	                <span>Tel. 02-3471-7771</span>
+	                <span>Fax. 02-3471-7773</span>
+					<span>E-mail. <a href="mailto:kisca@audit.co.kr">kisca@audit.co.kr</a></span>
+	            </div>
+	            <strong class="copyright">Copyright &copy; 2019KISCA company ALL RIGHTS RESERVE.</strong>
+	        </div>
+	    </div>
+    </footer>
+	
+	</body>
+<script type="text/javascript"  class="code-js">
+
+	$(document).ready(function() {
+	    $("#password").keydown(function(key) {
+	        if (key.keyCode == 13) {
+	            $("#loginFrm").submit();
+	        }
+	    });
+	});
+
+	function login(){
+		$("#loginFrm").submit();	
+	}
+	
+	
+
+</script>
+	
+</html>

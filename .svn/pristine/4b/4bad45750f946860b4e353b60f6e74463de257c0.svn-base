@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/loginLayout">
+	<div layout:fragment="content">
+		<div class="con_center">
+			<div class="write_db_bg">
+				<img src="/img/write_db_bg.png" alt="디비 생성 페이지 배경이미지">
+			</div>
+           
+			<div class="write_info">
+				<span class="col_gray01 font_14 mgn_b20 clear"><img src="/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset">환경정보 관리  >  공통정보 관리  >  초기화면 (관리자생성)</span>
+				<p id="guide_txt" class="guide_txt"></p>
+	
+				<div class="state_area">
+				    <span id="state_1" class="state_li on"></span>
+				    <span id="state_2" class="state_li"></span>
+				</div>
+
+			<h3 class="title">DB 생성</h3>
+			<p id="sub_txt" class="sub_txt"></p>
+
+				<div class="write_box">
+					<input type="hidden" id="lwprtInsttNm" name="lwprtInsttNm" vlaue=""/>
+					<input type="hidden" id="telno" name="telno" vlaue=""/>
+					<input type="hidden" id="authorCode" name="authorCode" value="ROLE_ADMIN"/>	<!--관리자 권한-->
+					<input type="hidden" id="submitChk" name="submitChk" value=""/>
+					<ul id="basic">
+						<li data-liNo="1">
+							<h4 class="title">DB 생성 정보</h4>
+	                        <section class="l_box_type01">
+	                            <p>
+	                            	<span class="sub_title2 col_white">기관 코드</span>
+	                            	<input type="text" id="insttCode" class="in_box_type01 in_length200" placeholder="예시) A000001" readonly="readonly"><a href="#none;" th:onclick="'javascript:fn_insttFindLayer();'" class="btn_find">찾기</a>
+	                            </p>
+	                            <p>
+	                            	<span class="sub_title2 col_white">기관 명</span>
+	                            	<input type="text" id="insttNm" class="in_box_type01 in_length290" placeholder="예시) A기관" readonly="readonly">
+	                            </p>
+	                            
+	                        </section>
+						</li>
+						<li data-liNo="2">
+							
+							<h4 class="title">DB 생성 정보</h4>
+							<section class="l_box_type01">
+	                            <p>
+	                            	<span class="sub_title2 col_white">기관 코드</span>
+	                            	<input type="text" id="selectInsttCode" class="in_box_type01 in_length200" value="" disabled="disabled">
+	                            </p>
+	                            <p>
+	                            	<span class="sub_title2 col_white">기관 명</span>
+	                            	<input type="text" id="selectInsttNm" class="in_box_type01 in_length290" value="" disabled="disabled">
+	                            </p>
+	                            <p id="msg_1" class="message mgn_t10" style="display: none;"></p>
+	                        </section>
+	                       
+	                       	<div class="line"></div>
+	                       
+							<h4 class="title">관리자 정보</h4>
+							<section class="l_box_type01">
+								<p>
+									<span class="sub_title2 col_white"><span class="str">*</span> 관리자 명</span>
+									<input type="text" id="userNm" class="in_box_type01 disabled2 in_length290" placeholder="관리자 명을 입력 해주세요">
+								</p>
+								<p>
+									<span id="idChk" class="sub_title2 col_white"><span class="str">*</span> 아이디</span>
+									<input type="text" id="userId" class="in_box_type01 disabled2 in_length290" placeholder="아이디를 입력 해주세요" oninput="inputCheck(this)">
+								</p>
+								<p>
+									<span class="sub_title2 col_white"><span class="str">*</span> 비밀번호</span>
+									<input type="password" id="userPw" class="in_box_type01 disabled2 in_length290" placeholder="비밀번호를 입력 해주세요">
+								</p>
+								<p>
+									<span class="sub_title2 col_white"><span class="str">*</span> 비밀번호확인</span>
+									<input type="password" id="userRePw" class="in_box_type01 disabled2 in_length290" placeholder="비밀번호를 재입력 해주세요">
+								</p>
+								
+								<p id="msg_2" class="message mgn_t10" style="display: none;"></p>
+							</section>
+						</li>
+					</ul>
+				
+					<div id="btn_basic">
+						<p class="l_box_type02_p">
+							<span><button class="btn_type02 col_black btn_basic_prev" style="display: none;">이전</button></span>
+							<span><button class="btn_type02 col_black btn_basic_next">다음</button></span>
+							<span><button class="btn_type02 col_black btn_basic_end" style="display: none;">완료</button></span>
+							<span><button class="btn_type02 col_black btn_basic_login" style="display: none;">로그인</button></span>
+						</p>
+					</div>
+				</div>
+			</div>
+           
+			<!-- 기관 코드 찾기 팝업 open -->
+			<div class="layer_pop_wrap">
+				<div class="txt_right mgn_b10">
+				    <a href="javascript:fn_insttCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" alt="닫기 버튼"></a>
+				</div>
+				<div class="layer_pop">
+					<div class="layer_header">
+					    <p>기관 검색</p>
+					</div>
+					<section class="l_box_type02">
+						<p class="search">
+							<span class="sub_title2">기관명</span>
+							<input type="text" id="searchValue" class="in_box_type01 in_length400">
+							<a href="javascript:fn_insttNmSearch();" class="btn_find">찾기</a>
+						</p>
+						<div style="width: 860px;">
+							<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="5"/>
+							<div id="grid" class="tb_type99"></div>
+						</div>
+						<div id="pagination" class="tui-pagination"></div>
+					</section>
+                  </div>
+			</div>
+			<!-- 기관 코드 찾기 팝업 close -->
+		</div>
+    
+    <div class="cover"></div>
+    
+	<script type="text/javascript">
+	
+	var guide_txt_1 = "초기 설정 화면 - 초기 DB 생성 작업을 수행하세요";
+	var guide_txt_2 = "초기 설정 화면 - 최초 관리자 생성 작업을 수행하세요";
+	var sub_txt_1 = "기관 코드를 검색하여 선택  > 선택된 기관 코드를 기준으로 DB가 생성";
+	var sub_txt_2 = "최초 관리자 로그인 정보를 생성 > 최고 관리자 계정이며 모든 메뉴에 대한 권한을 갖는다.";
+	
+	$(document).ready(function() {
+		
+		$("#guide_txt").text(guide_txt_1);
+		$("#sub_txt").text(sub_txt_1);
+		
+	});
+	
+	$(".btn_basic_next").click(function() {
+		
+		if(!$("#basic li").last().is(":visible")){
+			var nextNo = $("#basic li:visible").next("li").attr("data-liNo");
+			var insttCode = $("#insttCode").val();
+			var insttNm = $("#insttNm").val();
+			
+			if(insttCode == "" && insttNm == ""){
+				alert("기관을 선택 해주세요.");
+				return false;
+			}
+			
+			$("#selectInsttCode").val(insttCode);
+			$("#selectInsttNm").val(insttNm);
+			
+			// 문구
+			fn_text(nextNo);
+			
+			// 가이드 바 
+			$(".state_li").attr("class", "");
+			$("#state_"+nextNo).attr("class", "state_li on");
+			
+			// 버튼
+			$("#basic li:visible").hide().next("li").fadeIn("80");
+			//$(".btn_basic_prev").removeClass("off");
+			$(".btn_basic_prev").show();
+			
+		}
+		
+		if($("#basic li").last().is(":visible")){
+			//$(this).addClass("off");
+			$(this).hide();
+			$(".btn_basic_end").show();
+		}
+		return false;
+	});
+	
+	
+	$(".btn_basic_prev" ).click(function() {
+		var prevNo = $("#basic li:visible").prev("li").attr("data-liNo");
+		
+		// 문구
+		fn_text(prevNo);
+		
+		// 가이드 바 
+		$(".state_li").attr("class", "");
+		$("#state_"+prevNo).attr("class", "state_li on");
+		
+		// 버튼 
+		if(!$("#basic li").first().is(":visible")){
+			$("#basic li:visible").hide().prev("li").fadeIn("80");
+			//$(".btn_basic_next").removeClass("off");
+			$(".btn_basic_next").show();
+		}
+		
+		if($("#basic li").first().is(":visible")){
+			//$(this).addClass("off");
+			$(this).hide();
+			$(".btn_basic_end").hide();
+		}
+		return false;
+	});
+	
+	
+	$(".btn_basic_end").click(function() {
+		
+		var thisNo = $("#basic li:visible").attr("data-liNo");
+		var frmChk = true;
+		if(thisNo == 2){
+			
+			var chk = $("#submitChk").val();
+			
+			if(chk != "Y"){
+				alert("관리자 아이디 중복 여부를 확인해 주세요.");
+				return false;
+			} else {
+				// 여기!
+				var userNm = $("#userNm").val();
+				var userId = $("#userId").val();
+				var userPw = $("#userPw").val();
+				var userRePw = $("#userRePw").val();
+				
+				if (userNm.length == 0 || userId.length == 0 || userPw.length == 0 || userRePw.length == 0 ){
+					if(userNm.length == 0 ){alert("관리자 명을 입력해 주십시오");return false;}			
+					if(userId.length == 0 ){alert("아이디를 입력해 주십시오"); return false;}
+					if(userPw.length == 0 || userRePw.length == 0){
+						alert("비밀번호 또는 비밀번호확인을 입력해 주십시오");
+						return false;
+					}
+					frmChk = false;
+		        } else {
+		        	if(userPw != userRePw){
+						alert("비밀번호가 서로 다릅니다.");
+						frmChk = false;
+					}
+		        }
+			}
+		}
+		
+		if(frmChk){
+			var arr = [];
+			var obj = {};
+			
+			obj.lwprtInsttNm = $("#lwprtInsttNm").val();	// 하위 기관(대표자)
+			obj.authorCode = $("#authorCode").val();		// 권한
+			obj.insttCode = $("#insttCode").val();			// 기관코드
+			obj.insttNm = $("#insttNm").val();				// 기관 명
+			obj.telno = $("#telno").val();					// 기관 전화번호
+			obj.userNm = $("#userNm").val();				// 관리자 명
+			obj.userId = $("#userId").val();				// 관리자 ID
+			obj.userPw = $("#userPw").val();				// 관리자 PASSWORD
+			obj.useAt = 'Y';								// 사용유무 'Y'
+			
+			arr.push(obj);
+			
+			if(arr.length > 0){
+				$.ajax({
+					url: '/mngr/saveInsttInfo',
+					method : 'POST',
+					data: {insertList : JSON.stringify(arr)},
+					success: function(data){
+						var obj = JSON.parse(data);
+						var item = obj.result;
+						var html_1 = '<img src="/img/icon/icon_check.png" alt="체크 아이콘"> 초기 DB가 생성되었습니다.';
+						var html_2 = '<img src="/img/icon/icon_check.png" alt="체크 아이콘"> 초기 관리자가 생성되었습니다.';
+						
+						// 버튼 
+						$(".btn_basic_prev").hide();
+						$(".btn_basic_next").hide();
+						$(".btn_basic_end").hide();
+						$(".btn_basic_login").show();
+						
+						// 메세지
+						$("#msg_1").show();
+						$("#msg_2").show();
+						$("#msg_1").append(html_1);
+						$("#msg_2").append(html_2);
+						
+						// readonly
+						$("#userNm").prop("readonly", true);
+						$("#userId").prop("readonly", true);
+						$("#userPw").prop("readonly", true);
+						$("#userRePw").prop("readonly", true);
+											
+			        }, error:function() {
+						alert("처리중 에러가 발생하였습니다");
+						return;
+					}
+			    });
+			}
+		}
+	});
+	
+	
+	$(".btn_basic_login").click(function() {
+		  location.href = "/login";
+	});
+	
+	function fn_text(liNo){
+		
+		if(liNo == 1){
+			$("#guide_txt").text(guide_txt_1);
+			$("#sub_txt").text(sub_txt_1);	
+		}else{
+			$("#guide_txt").text(guide_txt_2);
+			$("#sub_txt").text(sub_txt_2);
+		}
+		
+	}
+	
+	function fn_insttFindLayer(){
+	
+		/*찾기 레이어 열기*/
+	    $('.layer_pop_wrap').addClass('on');
+	    $('.cover').show();
+	    
+	    fn_search();
+	}
+	
+	function fn_insttNmSearch(){
+		$('#pageIndex').val('1');
+		fn_search();
+	}
+	
+	function fn_search(){
+		
+		var insttData = null;
+		var searchValue = $('#searchValue').val();
+		var pageIndex = $('#pageIndex').val();
+		var itemsPerPage = $("#itemsPerPage").val();
+		
+		var params = {
+			"searchValue" : searchValue,
+			"pageIndex" : pageIndex,
+			"itemsPerPage" : itemsPerPage
+		}
+		
+		$.ajax({
+			type : 'post',
+			url : '/mngr/selectInsttList',
+			datatype :'json',
+			data : params,
+			success : function(data){
+				var obj = $.parseJSON(data);
+				var totalCnt = obj.totalCnt;
+				insttData = obj.list;
+				
+				fn_setGrid(insttData);
+				/* 페이징 function 호출 */
+				fn_pagination(totalCnt);
+				
+			}, error:function() {
+				alert("처리중 에러가 발생하였습니다");
+				return;
+			}
+		});
+		
+	}
+	
+	function fn_setGrid(insttData){
+		
+		$("#grid").empty();
+		
+		var columns = [
+			{header : '기관코드', name : 'insttCode', whiteSpace: 'normal', width: 140, align:'center'}, 
+			{header : '기관명', name : 'insttNm', whiteSpace: 'normal', align:'left'}, 
+			{header : '기관대표', name : 'lwprtInsttNm', whiteSpace: 'normal', align:'center', width: 200},
+			{header : '비고', name : 'useBtn', whiteSpace: 'normal', align:'center', width: 140, 
+			 	formatter: function(value, options){
+					var html  = "";
+					html += "<input type='button' class='btn_select' value='선택'/>";
+					return html;
+				}
+			}
+		];
+		
+		const insttGrid = new tui.Grid({
+			el: document.getElementById("grid"),
+			data: insttData,
+			scrollX: false,
+			scrollY: false,
+			rowHeight : 40,
+			minBodyHeight : 40,
+			//bodyHeight : 349,
+			header: {
+			  height: 50
+			},
+			columns: columns
+		});
+		
+		const extOptions = {
+			cell: {
+				focused: {
+		            border: 0 // 선택 셀 강조 표시 x
+		        }
+			}
+		};
+		
+		tui.Grid.applyTheme('default', extOptions);
+		
+		insttGrid.on('click', function(ev) {
+			var mode = ev.nativeEvent.target.value;
+			
+	  		if(mode != undefined){
+	  			var item = insttGrid.getRow(ev.rowKey);
+	  			
+	  			
+	  			fn_selected(item.insttCode, item.insttNm, item.lwprtInsttNm, item.telno);
+	  		}
+	  	});
+		
+		insttGrid.resetData(insttData);
+		
+	}
+	
+	function fn_selected(insttCode, insttNm, lwprtInsttNm, telno){
+		
+		$("#insttCode").val(insttCode);
+		$("#insttNm").val(insttNm);
+		$("#lwprtInsttNm").val(lwprtInsttNm);
+		$("#telno").val(telno);
+		
+		fn_insttCloseLayer();
+	}
+	
+	function fn_insttCloseLayer(){
+		/*찾기 레이어 닫기*/
+		$('#pageIndex').val("");
+		$('#totalCnt').val("");
+		$('#searchValue').val("");
+		
+		$('.layer_pop_wrap').removeClass('on');
+		$('.cover').hide();
+	}
+	
+	
+	$("#userId").change(function() {
+	
+		var userId = $(".userId").val(); 
+		
+		$.ajax({
+			type : 'post',
+			url : '/mngr/selectUserIdChk',
+			data : {'userId' : userId},
+			datatype:'json',
+			success : function(data){
+				var obj = $.parseJSON(data);
+				var result = obj.result;
+				
+				if(!result){
+					$("#idChk").text("아이디(중복)");
+					$("#idChk").css("color", "red");
+					$("#submitChk").val("N");
+					
+				}else{
+					$("#idChk").text("아이디(사용가능)");
+					$("#idChk").css("color", "#00ea34ee");
+					$("#submitChk").val("Y");
+				}	
+			
+			}, error:function() {
+				alert("처리중 에러가 발생하였습니다");
+				return;
+			}
+	    });
+	});
+	
+	</script>
+	
+	</div>
+	
+
+
+	
+</html>

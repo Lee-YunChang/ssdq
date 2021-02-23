@@ -1,0 +1,280 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+	<!-- TUI 스타일시트 -->
+	<link rel="stylesheet" type="text/css" href="/resources/css/tui/tui-chart.css" />
+	</head>
+	<body id="page-top">
+		<div id="wrapper">
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+				<!-- 상단영역 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />
+					<!-- 본문 -->
+					<div class="container-fluid l_position_parent">
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+							<span class="col_gray01 font_14 mgn_b0"><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROFILING &gt; 프로파일링 결과</span>
+						</div>
+						<div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim" style="color: gray; font-weight: 100;"> 프로파일링 결과</h1>
+						</div>
+	     
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<div class="card shadow mb-4">
+									<div class="card-body">
+										<span class="mb-0 text-gray-600">
+											<i class="fas fa-square" style="float:left; margin-top:9px; margin-right:5px;font-size:15px; color:#4e73df; "></i><h3>분석 개요</h3>
+										</span>
+										<div class="input_table" style="border: none; padding: 0 50px;">
+											<table>
+												<tbody>
+													<tr style="border-bottom: 1px solid #e3e6f0;">
+														<td><label>접속 DBMS</label></td>
+														<td><input type="text"  value="${dbms.ip}:${dbms.sid}" style="border:none; background-color: #fff" disabled></td>
+														<td><label>작업명</label></td>
+														<td><input type="text" class="" value="${table.dgnssNm}" style="border:none; background-color: #fff" disabled></td>
+													</tr>
+													<tr style="border-bottom: 1px solid #e3e6f0;">
+														<td><label>스키마</label></td>
+														<td><input type="text" class="" value="${table.schemaNm}" style="border:none; background-color: #fff" disabled></td>
+														<td><label>작업 시작 시간</label></td>
+														<td><input type="text" class="" value="${table.excBeginTime}" style="border:none; background-color: #fff" disabled></td>
+													</tr>
+													<tr style="border-bottom: 1px solid #e3e6f0;">
+														<td><label>테이블</label></td>
+														<td><input type="text" class="" value="${table.tableNm}" style="border:none; background-color: #fff" disabled></td>
+														<td><label>작업 수행 시간</label></td>
+														<td><input type="text" class="" value="${table.workTime}" style="border:none; background-color: #fff" disabled></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>	
+								</div>
+
+								<form id="frm2" name="frm2" action="download/notMatch.do" target="hiddenFrame" method="get">
+									<input type="hidden" name="dgnssDbmsId" value="${table.dgnssDbmsId}" />
+									<input type="hidden" name="dgnssInfoId" value="${table.dgnssInfoId}" />
+									<input type="hidden" name="tableNm" value="${table.tableNm}" />
+									<input type="hidden" name="columnNm" value="${column.columnNm}" />
+									<input type="hidden" id="fileType" name="fileType" value="csv" />
+								</form>
+
+								<c:set var="columnNm" value="${csvAt ? column.columnCmt : column.columnNm}" />
+
+								<!-- 내용 -->
+								<div class="card shadow mb-4">
+									<div class="card-body">
+										<i class="fas fa-square" style="float:left; margin-top:9px; margin-right:5px; font-size:15px; color:#4e73df;"></i><h3>분석 결과</h3>
+										<i class="fas fa-circle" style="float:left; margin-top:9px; margin-left:10px; margin-right:5px; font-size:1px; color:#4e73df;"></i><h5><label>${columnNm}</label></h5>
+
+										<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#noMatchModal" style="float: right;">불일치 정보 다운로드</button>
+										<div style="clear: both"></div>
+
+										<div style="margin-left:50px;">
+											<form id="frm" name="frm" action="view.do" method="get">
+												<input type="hidden" name="dgnssDbmsId" value="${table.dgnssDbmsId}" />
+												<input type="hidden" name="dgnssInfoId" value="${table.dgnssInfoId}" />
+												<input type="hidden" name="pageIndex" value="${param.pageIndex}" />
+												<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="1" />
+											</form>
+
+											<c:forEach var="grp" items="${groupList}" varStatus="g">
+												<strong style="display:none;">* ${grp.groupNm}</strong>
+												<div id="grid_${column.columnNm}_${grp.groupCode}" class="tb_type99" style="margin-bottom:30px; display:none;"></div>
+												<c:if test="${g.count eq 1}">
+													<strong style="display:none;">* Value Frequency</strong>
+													<div id="chart-area_${column.columnNm}" style="margin-bottom:30px; display:none;"></div>
+												</c:if>
+											</c:forEach>
+										</div>
+										<div id="pagination" class="tui-pagination"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+			</div>
+		</div>
+
+<div id="noMatchModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">불일치 정보 다운로드</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>다운로드 형식을 선택하세요.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="downloadNotMatch('csv')" class="btn btn-primary">CSV</button>
+        <button type="button" onclick="downloadNotMatch('xlsx')" class="btn btn-success">Excel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+		<iframe name="hiddenFrame" hidden="" width="0" height="0"></iframe>
+
+	</body>
+
+<!-- TUI 차트 js -->
+<script type="text/javascript" src="/resources/js/tui/core.js"></script>
+<script type="text/javascript" src="/resources/js/tui/raphael.js"></script>
+<script type="text/javascript" src="/resources/js/tui/tui-chart.js"></script>
+
+<!-- Page level plugins -->
+<script src="/resources/vendor/chart.js/Chart.min.js"></script>
+
+<script type="text/javascript" class="code-js">
+
+$(function() {
+
+	girdView();
+	chartView();
+
+	/* 페이징 function 호출 */
+	$('#pageIndex').val($('#frm').find('input[name=pageIndex]').val()); // 페이지 초기에 pageIndex 파라메터 값을 전달
+	fn_pagination(${fn:length(columnList)});
+});
+
+function fn_search() {
+	$('#frm').find('input[name=pageIndex]').val($('#pageIndex').val()); // 페이지 전환 전 pageIndex 폼에 전달
+	$('#frm').submit();
+}
+
+function girdView(){
+	var data;
+
+	var columns = [
+		{header: '항목', name: 'name', width:300, align: 'center'},
+		{header: 'Match Count', name: 'mCount'},
+		{header: 'Match %', name: 'mPer'}
+	];
+
+<c:forEach var="grp" items="${groupList}">
+	<c:set var="cnt" value="0" />
+	data = [
+	<c:forEach var="res" items="${columnResList}">
+		<c:if test="${grp.groupCode eq res.groupCode}">
+			<c:if test="${cnt gt 0}">,</c:if>
+		{
+			name: '${res.analsNm}',
+			mCount: '<fmt:formatNumber value="${res.mtchgCo}" />',
+			mPer: '${res.perCo}%',
+			_attributes: {className: {column: {name: ['headB']}}}
+		}
+			<c:set var="cnt" value="${cnt + 1}" />
+		</c:if>
+	</c:forEach>
+	];
+
+	<c:if test="${cnt gt 0}">
+
+	var grid = new tui.Grid({
+		el : $('#grid_${column.columnNm}_${grp.groupCode}')[0],
+		data : data,
+		scrollX : false,
+		scrollY : false,
+		rowHeight : 40,
+		minBodyHeight: 'auto',
+		//bodyHeight : 349,
+		header: {
+		  height: 50
+		},
+		columns : columns
+	});
+
+	var extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+
+	$('#grid_${column.columnNm}_${grp.groupCode}').prev('strong').show();
+	$('#grid_${column.columnNm}_${grp.groupCode}').show();
+
+	</c:if>
+
+</c:forEach>
+}
+
+function chartView() {
+
+	var data;
+	var options;
+
+	<c:if test="${not empty frqAnalList}">
+	data = {
+		categories: [
+		<c:forEach var="frq" items="${frqAnalList}" varStatus="f">
+			'${frq.dataValue}'<c:if test="${not f.last}">,</c:if>
+		</c:forEach>
+		],
+		series: [
+			{
+				name: 'Value',
+				data: [
+		<c:set var="max" value="0" />
+		<c:forEach var="frq" items="${frqAnalList}" varStatus="f">
+					${frq.dataCo}<c:if test="${not f.last}">,</c:if>
+			<c:if test="${frq.dataCo gt max}"><c:set var="max" value="${frq.dataCo}" /></c:if>
+		</c:forEach>
+				]
+			}
+		]
+	};
+
+	options = {
+		chart: {
+			width: 650,
+			height: 500,
+			format: '1,000'
+		},
+		yAxis: {
+			title: 'Value',
+			min: 0,
+			max: ${max}
+		},
+		xAxis: {
+			title: ''
+		},
+		chartExportMenu: {
+			visible: false
+		}
+	};
+
+	$('#chart-area_${column.columnNm}').prev('strong').show();
+	$('#chart-area_${column.columnNm}').show();
+
+	tui.chart.columnChart($('#chart-area_${column.columnNm}')[0], data, options);
+	</c:if>
+}
+
+function downloadNotMatch(type) {
+	$('#frm2 > #fileType').val(type);
+	$('#frm2').submit();
+}
+</script>
+
+</html>

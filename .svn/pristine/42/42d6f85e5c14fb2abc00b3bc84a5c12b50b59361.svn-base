@@ -1,0 +1,58 @@
+
+#Server Port Number
+#server.port=8888
+
+server.mode=dev
+public.institutions.yn=N
+server.language.kind=KO
+
+#thymeleaf Setting
+spring.thymeleaf.check-template-location=true
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML5
+spring.thymeleaf.cache=true
+spring.thymeleaf.order=0
+spring.thymeleaf.prefix=classpath:templates_old/
+
+# dev
+app.mariaDB4j.databaseName=TT
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://192.168.20.91:3306/dqsys?serverTimezone=UTC
+#spring.datasource.url=jdbc:mysql://192.168.20.74:3306/dqsys?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+spring.datasource.username=dqsys
+spring.datasource.password=dqsys#1234
+
+# HikariCP settings
+# spring.datasource.hikari.*
+spring.datasource.hikari.idle-timeout=6000000
+spring.datasource.hikari.max-lifetime=18000000
+spring.datasource.hikari.maximum-pool-size=3
+spring.datasource.hikari.minimum-idle=3
+spring.datasource.hikari.connection-timeout=3000000
+
+#logging
+logging.level.jdbc.audit=WARN
+logging.level.jdbc.connection=WARN
+logging.level.jdbc.resultset=WARN
+logging.level.jdbc.sqlonly=WARN
+
+# JSP Reload
+server.jsp-servlet.init-parameters.development=true
+
+file.diagnosis.dataDir=/usr/local/apache-tomcat-7.0.94/webapps/DQSYS/diagnosis
+file.csv.dataDir=/usr/local/apache-tomcat-7.0.94/webapps/DQSYS/Temp
+file.report.dataDir=/usr/local/apache-tomcat-7.0.94/webapps/DQSYS/report/
+
+spring.servlet.multipart.max-file-size=500MB
+spring.servlet.multipart.max-request-size=500MB
+
+server.servlet.session.timeout=10H
+
+# analysis
+analysis.view.listCnt = 5
+analysis.report.listCnt = 2048
+
+log.level=debug 
+
+# log Level
+level=ERROR

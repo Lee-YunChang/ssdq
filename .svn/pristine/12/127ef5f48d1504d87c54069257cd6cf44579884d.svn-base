@@ -1,0 +1,67 @@
+@charset "utf-8";
+
+body {min-width: 1600px; background-color: #585858;}
+
+.dashboard_layer {overflow: hidden; padding: 25px 0px;}
+
+.dashboard_row {overflow: hidden; width: 100%; font-size: 0px; box-sizing: border-box;}
+.dashboard_row + .dashboard_row {margin-top: 20px;}
+.dashboard_row > div {display: inline-block; font-size: 0px; vertical-align: top;}
+.info_area {position: relative; overflow: hidden; margin: 0 10px 10px 17px; font-size: initial;}
+.info_area > div {float: left;}
+.info_area > div > strong {font-size: 20px; color: #f9f9f9; font-weight: 600;}
+.info_area > div > span {font-size: 16px; color: #f9f9f9;}
+.info_area > div > strong + span {margin-left: 20px;}
+.info_area > div + div {position: absolute; top: 5px; right: 0px;}
+
+.dashboard_row > div > .card {overflow: hidden; display: inline-block; min-height: 100px; padding-left: 0.4rem; padding-right: 0.4rem; font-size: initial;}
+.dashboard_row > div > .card.h180 {height: 180px;}
+.dashboard_row > div > .card.h210 {height: 210px;}
+.dashboard_row > div > .card.h255 {height: 255px;}
+.dashboard_row > div > .card .card_header {min-height: 60px; font-size: 18px;}
+.dashboard_row > div > .card .card_body {overflow: hidden; height: 100%; font-size: 16px;}
+
+/* 백그라운드 색상 */
+.dashboard_row > div > .card .bg_type01 {background-color: #414141;}
+.dashboard_row > div > .card .bg_type02 {background-color: #363636;}
+.dashboard_row > div > .card .bg_type03 {background-color: #272727;}
+.dashboard_row > div > .card .bg_type04 {background-color: #343434;}
+
+.card_header_title01 {display: block; padding: 70px 0 9px 0; font-size: 18px; text-align: center;}
+.card_header_title01.bg01 {color: #f8d88d; background: url('../img/dashboard/title_icon01.png') no-repeat center 15px;}
+.card_header_title01.bg02 {color: #54c8f6; background: url('../img/dashboard/title_icon02.png') no-repeat center 15px;}
+.card_header_title01.bg03 {color: #ff9672; background: url('../img/dashboard/title_icon03.png') no-repeat center 15px;}
+.card_header_title01.bg04 {color: #84c24c; background: url('../img/dashboard/title_icon04.png') no-repeat center 15px;}
+
+.card_header_title02 {display: block; height: 60px; margin: 0 25px; font-size: 18px; line-height: 60px; text-align: left; color: #c2c2c2;}
+
+div.card_content_type01 {text-align: center;}
+div.card_content_type01 strong {line-height: 80px; font-size: 50px; color: #f9f9f9; font-weight: 300;}
+
+ul.card_content_type02 {overflow: hidden; margin: 0 20px; height: 180px;}
+ul.card_content_type02 li {overflow: hidden; position: relative; height: 40px; line-height: 40px;}
+ul.card_content_type02 li + li {border-top: 1px solid #504f4f;}
+ul.card_content_type02 li span {color: #f9f9f9;}
+ul.card_content_type02 li span.txt {font-size: 14px;}
+ul.card_content_type02 li span.num {position: absolute; font-size: 16px; right: 0px;}
+ul.card_content_type02 li select {
+    position: absolute; min-width: 102px; max-width: 150px; height: 22px; padding: 0 20px 0 10px; font-size: 14px; top: 12px; right: 0px; color: #fff; border: 1px solid #707070;
+    background: url('../images/common/select_arrow.png') no-repeat right 5px center #343434;
+}
+ul.card_content_type02 li select::-ms-expand {display: none;}
+
+
+ul.card_content_type03 {overflow: hidden; margin: 40px 20px 0px; height: 195px; color: #f9f9f9;}
+ul.card_content_type03 li {overflow: hidden;}
+ul.card_content_type03 li + li {margin-top: 20px;}
+ul.card_content_type03 li > span.txt {display: inline-block; margin-top: 5px; padding-left: 30px;}
+ul.card_content_type03 li > span.num {float: right; font-size: 24px;}
+ul.card_content_type03 li.bg01 {background: url('../img/dashboard/txt_bg01.png') no-repeat center left;}
+ul.card_content_type03 li.bg02 {background: url('../img/dashboard/txt_bg02.png') no-repeat center left;}
+ul.card_content_type03 li.bg03 {background: url('../img/dashboard/txt_bg03.png') no-repeat center left;}
+
+
+@media only screen and (max-width: 1600px) {
+    #content nav.navbar > div.navbar_left a.btn_fold {display: none;}
+    #content nav.navbar > div.navbar_left a.btn_fold + span.link_txt {margin-left: 0px;}
+}

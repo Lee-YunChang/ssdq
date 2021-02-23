@@ -1,0 +1,186 @@
+
+<!--
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html lang="ko">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>:: 상상스토리 DQ ::</title>
+
+	<!-- 폰트 -->
+	<link href="/resources/vendor/fontawesome-free/css/all.css" rel="stylesheet" type="text/css">
+	<link href="/resources/css/custom_font.css" rel="stylesheet">
+
+	<!-- 스타일시트 -->
+	<link href="/resources/css/sb-admin-2.css" rel="stylesheet">
+
+	<!-- TUI 스타일시트 -->
+	<link rel="stylesheet" type="text/css" href="/resources/css/tui/tui-grid.css" />
+	<!-- TUI 스크립트 -->
+	<script type="text/javascript" src="/resources/js/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/underscore.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/backbone.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-code-snippet.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-grid.js"></script>
+	<script type="text/javascript" src="/resources/data/basic-dummy.js"></script>
+
+</head>
+
+<style>
+	.textStyle{
+		border:none;
+		width:130px;
+		background-color:white;
+	}
+	.textAStyle{
+		border:none; 
+		width:600px; 
+		background-color:white;"
+	}
+</style>
+
+<body id="page-top" style="width:360px;margin-top:100px;">
+ 
+	<div id="wrapper">
+	
+    
+		<!-- Content Wrapper -->
+		<div id="content-wrapper" class="d-flex flex-column" >
+			<!-- 메인 -->
+			<div id="content">
+			
+			
+				<!-- 본문 -->
+				<div class="container-fluid">
+
+					<!-- 상단 내비 / 타이틀 -->
+				<!--	<div class="d-sm-flex align-items-center justify-content-between">
+						<span class="mb-0 text-gray-600"><i class="fas fa-fw fa-home"></i> Dashboard > 프로파일링 > 스키마구조</span>
+					</div>
+					<div class="d-sm-flex align-items-center justify-content-between mb-4">
+						<h1 class="h3 mb-0 text-gray-800"></i>접속 DBMS : Oracle : 192.168.20.91 : 1521 : orcl</h1>
+					</div> -->
+
+					<!-- 영역 -->
+					<div class="row">
+						<div style="height:185px; ">
+							<!-- 조회 영역 -->
+							<!--<div class="card shadow mb-4">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-sm-12 col-md-6">
+											<div id="dataTable_filter" class="dataTables_filter">
+												Search : <label><input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable"></label>
+											</div>
+										</div>
+										<div class="col-sm-12 col-md-6">
+											<div id="dataTable_filter" class="dataTables_filter">
+												Search : <label><input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable"></label>
+											</div>
+										</div>
+									</div>
+									<hr>
+									<div style="text-align:center;">
+										<a href="#" class="btn btn-primary btn-icon-split">
+											<span class="text">조회</span>
+										</a>
+									</div>
+								</div>
+							</div>-->
+							
+
+							<!-- 내용 -->
+							<div class="card shadow mb-4" style="margin-top:8px;">
+								<div class="card-body" >
+									<input type="text" value="등록테이블" class="textStyle" style="margin-left:25px;" disabled />
+									<input type="text" value="CSV.TEST20190505 테이블에 등록" class="textStyle" style="width:250px; margin-left:25px;" disabled />
+									<div>
+										<a class="btn focus" style="margin-left:110px; margin-top:15px;" onclick="closepop();">확인</a>		
+									</div>	
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<!-- 풋터 -->
+			<!--<footer class="sticky-footer bg-white">
+				<div class="container my-auto">
+					<div class="copyright text-center my-auto">
+						<span>Copyright &copy; KISCA All right reserved.</span>
+					</div>
+				</div>
+			</footer>-->
+		</div>
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="text/javascript"  class="code-js">
+
+$(document).ready(function() {
+	
+});
+function closepop(){
+window.close();
+
+}
+
+</script>
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="/resources/vendor/jquery/jquery.min.js"></script>
+  <script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="/resources/js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="/resources/vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="/resources/js/demo/chart-area-demo.js"></script>
+  <script src="/resources/js/demo/chart-pie-demo.js"></script>
+
+
+	
+
+</body>
+
+</html>

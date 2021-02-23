@@ -1,0 +1,487 @@
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<!-- 상단 내비 / 타이틀 -->
+			<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+               			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; PROPERTIES  &gt; <label th:text="#{UIT0153}"></label> &gt; <label th:text="#{UIT0167}"></label></span>
+                  </div>
+                  
+                  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="col_grey font_23" th:text="#{UIT0167}"></h1>
+                  </div>
+
+			<!-- 영역 -->
+			<div class="row">
+				<div class="col-lg-3 mb-4" style="max-width:400px; min-width: 400px;">
+					<!-- 조회 영역 -->
+					<div class="card shadow mb-4 tb_type03">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-sm-12">
+									<section class="mgn_b20 txt_right">
+										<button class="btn btn-primary btn_wd100" onclick="fn_createMenu('group');" th:text="#{UIT0168}"></button>
+										<button class="btn btn-primary btn_wd100" onclick="fn_createMenu('list');" th:text="#{UIT0169}"></button>
+									</section>
+									<div id="treeview-selectable" class=""></div>
+								</div> 
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col mb-4">
+					<!-- 조회 영역 -->
+					<div class="card shadow mb-4">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-sm-12">
+								<input type="hidden" id="mode" name="mode" value=""/>
+								<input type="hidden" id="upperMenuSn" name="upperMenuSn" value=""/>
+								<input type="hidden" id="hiddenMenuSn" name="hiddenMenuSn" value=""/>
+								<input type="hidden" id="menuGroupSn" name="menuGroupSn" value=""/>
+								
+									<div id="menuGroupDiv" style="display: none;">
+										<section class="mgn_b20 txt_right tb_type03">
+											<button id="gSaveBtn" class="btn btn-primary btn_wd100" onclick="fn_submit('group');" th:text="#{UIT0088}"></button>
+											<button id="gDelBtn" class="btn btn-warning btn_wd100" onclick="fn_delete('group');" th:text="#{UIT0087}" style="display: none;"></button>
+										</section>
+										<form id="groupFrm">
+											<section class="l_box_type02">                                    
+												<div class="tb_type03">                                                               
+													<table>
+														<tbody>
+														    <tr>
+																<!--
+																<th>메뉴구룹 ID</th>
+																<td><input type="text" id="menuGroupSn" name="menuGroupSn" readonly="readonly"></td> 
+																-->
+														        <th><span class="str">*</span> <label th:text="#{UIT0170}"></label></th>
+														        <td colspan="3"><input type="text" id="menuGroupNm" name="menuGroupNm" maxlength="20" th:placeholder="#{UIT0171}"></td>
+														    </tr>
+														</tbody>
+													</table>
+												</div>
+											</section>
+										</form>
+									</div>
+								
+									<div id="menuListDiv" class="dataTables_filter" style="display: block;">
+										<section class="mgn_b20 txt_right tb_type03">
+											<button id="lSaveBtn" class="btn btn-primary btn_wd100" onclick="fn_submit('list');" th:text="#{UIT0088}"></button>
+											<button id="lDelBtn" class="btn btn-warning btn_wd100" onclick="fn_delete('list');"  th:text="#{UIT0087}" style="display: none;" ></button>
+										</section>
+                                              
+										<form id="menuFrm">
+											<input type="hidden" id="menuSn" name="menuSn" value=""/>
+											<section class="l_box_type02">                                    
+												<div class="tb_type03">
+													<table>
+														<tbody>
+															<tr>
+															    <th><span class="str">*</span> <label th:text="#{UIT0161}" ></label></th>
+															    <td colspan="3"><input type="text" id="menuNm" name="menuNm" maxlength="30" th:placeholder="#{UIT0172}"></td>
+															
+															</tr>
+															<tr>
+															    <th><span class="str">*</span> <label th:text="#{UIT0173}" ></label></th>
+															    <td colspan="3"><input type="text" id="menuUrl" name="menuUrl" maxlength="80" placeholder="ex) /mngr/index/"></td>
+															
+															</tr>
+															<tr>
+																<th th:utext="#{UIT0174}"></th>
+																<td colspan="3" style="text-align: left; width: 394px;">
+																	<input type="text" id="menuIcon" style="max-width: 200px;" maxlength="50" th:placeholder="#{UIT0175}">
+																	<button type="button" class="btn_type01" th:value="#{UIT0176}" th:text="#{UIT0176}" style="margin-left: 20px;" onclick="window.open('https://fontawesome.com/icons?d=listing&m=free')"></button>
+															    </td>
+															</tr>
+															<tr>
+																<th><span class="str">*</span> <label th:text="#{UIT0177}" ></label></th>
+																<td>
+																	<input type="text" id="inqireOrdr" name="inqireOrdr" maxlength="4" oninput="maxLengthCheck(this)">
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</section>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript"  class="code-js" th:inline="javascript">
+		/*<![CDATA[*/
+		var UIT0178 = /*[[ #{UIT0178} ]]*/; //: 메뉴그룹 혹은 상위메뉴를 선택해 하세요.
+		var UIT0179 = /*[[ #{UIT0179} ]]*/; //: 더 이상 하위메뉴를 생성할 수 없습니다.
+		var UIT0180 = /*[[ #{UIT0180} ]]*/; //: 그룹메뉴 명을 반드시 입력해 주세요.
+		var UIT0181 = /*[[ #{UIT0181} ]]*/; //: 상위메뉴가 선택되지 않았습니다.
+		var UIT0182 = /*[[ #{UIT0182} ]]*/; //: 메뉴명을 반드시 입력해 주세요.
+		var UIT0183 = /*[[ #{UIT0183} ]]*/; //: 메뉴 URL을 반드시 입력해 주세요.
+		var UIT0184 = /*[[ #{UIT0184} ]]*/; //: 메뉴 순서를 반드시 입력해 주세요.
+		var UIT0185 = /*[[ #{UIT0185} ]]*/; //: 삭제할 그룹 또는 메뉴를 선택해 주세요.
+		var UIT0186 = /*[[ #{UIT0186} ]]*/; //: 상위메뉴 선택 시 하위 메뉴 까지 삭제 됩니다. 진행 하시겠습니까?
+		var UIT0187 = /*[[ #{UIT0187} ]]*/; //: 삭제 되었습니다.
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var UIT0088 = /*[[ #{UIT0088} ]]*/; //: 저장
+		var UIT0166 = /*[[ #{UIT0166} ]]*/; //: 저장 되었습니다.
+		/*]]*/
+		var tree = [];
+		var selectTreeNode = [];
+
+		$(document).ready(function() {
+			
+			var menuGroupSn = "";
+			var groupBy = 1;
+			
+			$.each(data, function(index, value) {
+				
+				var menuGroupObj = {};
+				
+				if(groupBy <= value.menuGroupSn){
+					
+					menuGroupObj.text = value.menuGroupNm;
+					menuGroupObj.type = "group";
+					menuGroupObj.menuGroupSn = value.menuGroupSn;
+					menuGroupObj.menuGroupNm = value.menuGroupNm;
+					menuGroupObj.nodes = fn_2depthList(data, value.menuGroupSn);
+					tree.push(menuGroupObj);
+					
+					groupBy++;
+				}
+				
+			});
+			
+			fn_showTree(tree);
+			
+		});
+
+
+		function fn_2depthList(data, menuGroupSn){
+			
+			var menu2depthArr = [];
+			
+			$.each(data, function(index, value) {
+				
+				var menu2depthObj = {};
+				
+				if(menuGroupSn == value.menuGroupSn && value.upperMenuSn == 0){
+					
+					menu2depthObj.menuSn = value.menuSn;
+					menu2depthObj.menuDp = value.menuDp;
+					menu2depthObj.menuNm = value.menuNm;
+					menu2depthObj.text = value.menuNm;
+					menu2depthObj.type = "list";
+					menu2depthObj.menuUrl = value.menuUrl;
+					menu2depthObj.menuGroupSn = value.menuGroupSn;
+					menu2depthObj.menuGroupNm = value.menuGroupNm;
+					menu2depthObj.upperMenuSn = value.upperMenuSn;
+					menu2depthObj.useAt = value.useAt;
+					menu2depthObj.inqireOrdr = value.inqireOrdr;
+					menu2depthObj.menuIcon = value.menuIcon;
+					
+					if(value.isLast == 'N'){
+						
+						menu2depthObj.nodes = fn_3depthList(data, value.menuSn);
+						
+					}
+					
+					menu2depthArr.push(menu2depthObj);
+					
+				}
+
+			});
+			
+			return menu2depthArr;
+			
+		}
+
+
+		function fn_3depthList(obj, menuSn) {
+			
+			var menu3depthArr = [];
+
+			$.each(obj, function(index, value) {
+
+				var menu3depthObj = {};
+
+				if (menuSn == Number(value.upperMenuSn)) {
+					
+					menu3depthObj.menuSn = value.menuSn;
+					menu3depthObj.menuDp = value.menuDp;
+					menu3depthObj.menuNm = value.menuNm;
+					menu3depthObj.text = value.menuNm;
+					menu3depthObj.type = "list";
+					menu3depthObj.menuUrl = value.menuUrl;
+					menu3depthObj.menuGroupSn = value.menuGroupSn;
+					menu3depthObj.menuGroupNm = value.menuGroupNm;
+					menu3depthObj.upperMenuSn = value.upperMenuSn;
+					menu3depthObj.useAt = value.useAt;
+					menu3depthObj.inqireOrdr = value.inqireOrdr;
+					menu3depthObj.menuIcon = value.menuIcon;
+					
+					menu3depthArr.push(menu3depthObj);
+				}
+
+			});
+			
+			return menu3depthArr;
+			
+		}
+
+
+		function fn_showTree(obj){
+			
+			$('#treeview-selectable').treeview({
+				data: obj,
+				onNodeSelected: function(event, node) {
+					selectTreeNode = [];
+					
+					if(node.menuSn != undefined){
+						selectTreeNode.push(node.menuSn);	
+					}
+					
+					if(node.nodes != null){
+						
+						$.each(node.nodes, function(index, value) {
+							selectTreeNode.push(value.menuSn);
+							
+							if(value.nodes != null){
+								
+								$.each(value.nodes, function(index, value) {
+									selectTreeNode.push(value.menuSn);
+								});
+								
+							}
+						});
+						
+					}
+					
+					$("#mode").val("UDT");
+					$("#menuGroupSn").val(node.menuGroupSn);
+					$("#upperMenuSn").val(node.upperMenuSn);
+					$("#hiddenMenuSn").val(node.menuSn);
+					
+					if(node.type == "group"){
+						
+						$("#menuGroup").empty();
+						$("#upGroupMenu").empty();
+						
+						// DIV 전환
+						$("#menuGroupDiv").show();
+						$("#menuListDiv").hide();
+						
+						$("#gSaveBtn").text(UIT0095);
+						$("#gDelBtn").show();
+						
+						// 내용 넣기
+						$("#menuGroupSn").val(node.menuGroupSn);
+						$("#menuGroupNm").val(node.menuGroupNm);
+						
+					} else {
+						
+						// DIV 전환
+						$("#menuGroupDiv").hide();
+						$("#menuListDiv").show();
+						$("#lSaveBtn").text(UIT0095);
+						$("#lDelBtn").show();
+						
+						// 내용 넣기
+						$("#menuSn").val(node.menuSn);
+						$("#inqireOrdr").val(node.inqireOrdr);
+						$("#menuNm").val(node.menuNm);
+						$("#menuUrl").val(node.menuUrl);
+						$('#useAt').val(node.useAt);
+						$("#menuIcon").val(node.menuIcon);
+						
+						//$("#menuGroup").empty();
+						//fn_menuGroupList("menuGroup", node.menuGroupSn);
+						
+						//$("#upGroupMenu").empty();
+						//fn_upMenuList("upGroupMenu", node.menuGroupSn, node.menuSn);
+						
+					}
+					
+				}
+			
+			});
+			
+		}
+
+		function fn_createMenu(type){
+			
+			$("#gSaveBtn").text(UIT0088);
+			$("#lSaveBtn").text(UIT0088);
+			
+			$("#gDelBtn").hide();
+			$("#lDelBtn").hide();
+			
+			$("#mode").val("INS");
+			
+			if(type == "group"){
+				
+				$("#menuGroup").empty();
+				$("#upGroupMenu").empty();
+				
+				// DIV 전환
+				$("#menuGroupDiv").show();
+				$("#menuListDiv").hide();
+				
+				$("#menuGroupSn").val("");
+				$("#menuGroupNm").val("");
+				
+			} else {
+				
+				var menuSn = $("#menuSn").val();
+				var upperMenuSn = $("#upperMenuSn").val();
+				var menuGroupSn = $("#menuGroupSn").val();
+				
+				if(menuSn == "" && upperMenuSn == "" && menuGroupSn == ""){
+					alert(UIT0178);
+					return false;
+		 		}
+				
+				if(upperMenuSn > 0){
+					alert(UIT0179);
+					return false;
+		 		}
+					
+				$("#menuSn").val(menuSn);
+				$("#upperMenuSn").val(upperMenuSn);
+				
+				// DIV 전환
+				$("#menuGroupDiv").hide();
+				$("#menuListDiv").show();
+				
+				$("#menuSn").val("");
+				$("#inqireOrdr").val("");
+				$("#menuNm").val("");
+				$("#menuUrl").val("");
+				$('#useAt').val("Y");
+				$("#menuIcon").val("");
+				
+			}
+		}
+
+
+		function fn_submit(type){
+			
+			var arr = [];
+			var obj = {};
+			var mode = $("#mode").val();
+			
+			if(type == "group"){
+				
+				var menuGroupNm = $("#menuGroupNm").val();
+				
+				if(menuGroupNm == "" || menuGroupNm == null){
+					alert(UIT0180);
+					return false;
+				}
+				
+				obj.menuGroupNm = menuGroupNm;
+				obj.menuGroupSn = $("#menuGroupSn").val();
+				
+				arr.push(obj);
+				
+			} else {
+				
+				
+				var menuSn = $("#menuSn").val();
+				var hiddenMenuSn = $("#hiddenMenuSn").val();
+				var inqireOrdr = $("#inqireOrdr").val();
+				var menuNm = $("#menuNm").val();
+				var menuUrl = $("#menuUrl").val();
+				var useAt = $("#useAt").val();
+				var upperMenuSn = $("#upperMenuSn").val();
+				var menuGroupSn = $("#menuGroupSn").val();
+				var menuIcon = $("#menuIcon").val();
+				
+				if(menuGroupSn == ""){
+					alert(UIT0181);
+					return false;
+				}
+				
+				if(menuNm == "" || menuNm == null){
+					alert(UIT0182);
+					return false;
+				}
+				
+				if(menuUrl == "" || menuUrl == null){
+					alert(UIT0183);
+					return false;
+				}
+				
+				if(inqireOrdr == "" || inqireOrdr == null){
+					alert(UIT0184);
+					return false;
+				}
+				
+				obj.menuSn = menuSn == "" ? hiddenMenuSn : menuSn;
+				obj.inqireOrdr = inqireOrdr;
+				obj.menuNm = menuNm;
+				obj.menuUrl = menuUrl;
+				obj.useAt = useAt;
+				obj.upperMenuSn = upperMenuSn;
+				obj.menuGroupSn = menuGroupSn;
+				obj.menuIcon = menuIcon;
+				obj.useAt = 'Y';
+				
+				arr.push(obj);
+			}
+			
+			
+			if(arr.length > 0){
+				$.ajax({
+					url: '/mngr/menuMng/saveMenu',
+					method : 'POST',
+					data: {mode : mode, type : type, dataList : JSON.stringify(arr)},
+					success: function(data){
+						alert(UIT0166);
+						location.reload(true);
+			        },
+			    });
+			}
+			
+		}
+
+		function fn_delete(type){
+			
+			var arr = [];
+			var obj = {}
+			var mode = "DEL";
+			
+			var menuGroupSn = $("#menuGroupSn").val();
+			var hiddenMenuSn = $("#hiddenMenuSn").val();
+			
+			if(menuGroupSn == "" && hiddenMenuSn ==""){
+				alert(UIT0185);
+				return false;
+			}
+			obj.menuGroupSn = menuGroupSn;
+			obj.selectTreeNode = selectTreeNode;
+			arr.push(obj);
+			
+			if(confirm(UIT0186)) {
+				$.ajax({
+					url: '/mngr/menuMng/deleteMenu',
+					method : 'POST',
+					data: {mode : mode, type : type, dataList : JSON.stringify(arr)},
+					success: function(data){
+						alert(UIT0187);
+						location.reload(true);
+			        },
+			    });
+			}
+		}
+
+
+		</script>
+	</div>
+</html>

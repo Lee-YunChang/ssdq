@@ -1,0 +1,71 @@
+
+#Server Port Number
+#server.port=8888
+
+server.mode=desktop
+public.institutions.yn=N
+server.language.kind=KO
+
+#thymeleaf Setting
+spring.thymeleaf.check-template-location=true
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML5
+spring.thymeleaf.cache=true
+spring.thymeleaf.order=0
+spring.thymeleaf.prefix=classpath:templates_old/
+
+#JSP Setting
+#spring.mvc.view.prefix=/WEB-INF/jsp/
+#spring.mvc.view.suffix=.jsp
+#spring.mvc.static-path-pattern=/resources/**
+
+#mariaDB Source
+
+mariaDB4j.dataDir=./mariaDB/local
+mariaDB4j.baseDir=./mariaDB/base
+mariaDB4j.port=3308
+
+#Default is 3306, so using 3307 just in case it is already running on this machine
+app.mariaDB4j.databaseName=dq_database
+
+spring.datasource.url=jdbc:log4jdbc:mariadb://localhost:3308/
+spring.datasource.username=root
+spring.datasource.password=
+
+#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.driver-class-name=net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+
+# HikariCP settings
+# spring.datasource.hikari.*
+spring.datasource.hikari.idle-timeout=6000000
+spring.datasource.hikari.max-lifetime=18000000
+spring.datasource.hikari.maximum-pool-size=3
+spring.datasource.hikari.minimum-idle=3
+spring.datasource.hikari.connection-timeout=3000000
+
+#logging
+logging.level.jdbc.audit=WARN
+logging.level.jdbc.connection=WARN
+logging.level.jdbc.resultset=WARN
+logging.level.jdbc.sqlonly=WARN
+logging.level.org.springframework.web=DEBUG
+
+# JSP Reload
+server.jsp-servlet.init-parameters.development=true
+file.diagnosis.dataDir=./mariaDB/SSDQ/diagnosis
+file.csv.dataDir=./mariaDB/SSDQ/Temp
+file.report.dataDir=./mariaDB/SSDQ/report/
+
+spring.servlet.multipart.max-file-size=500MB
+spring.servlet.multipart.max-request-size=500MB
+
+server.servlet.session.timeout=48H
+
+# analysis
+analysis.view.listCnt = 5
+analysis.report.listCnt = 2048
+
+# log Level
+level=info
+logging.config=classpath:logback.xml

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/loginLayout">
+<!-- <head>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.btn_basic_next').on('click',function(){
+        $('body').removeClass().addClass('bg03');
+    });
+    $('.btn_basic_prev').on('click',function(){
+        $('body').removeClass().addClass('bg04');
+    });
+});
+</script>
+</head> -->
+	<div layout:fragment="content">
+		<!-- content_location -->
+     	<div class="content_location">
+        	 <ul>
+             	<li>환경정보 관리</li>
+             	<li>공통정보 관리</li>
+             	<li>초기관리(관리자 생성)</li>
+         	</ul>
+         	<p>초기 설정 화면-최초 관리자 생성 작업을 수행하세요.</p>
+     	</div>
+     	<!--// content_location -->
+		<div class="content_area">
+			<!-- <div class="write_db_bg">
+				<img src="/img/write_db_bg.png" th:alt="#{UIT0001}">
+			</div> -->
+           
+			<div class="db_input_area">
+				<div class="db_location">
+                    <strong>DB 생성</strong>
+                    <ul>
+                        <li>기업 코드를 자동 생성</li>
+                        <li>기업 코드를 기준으로 DB가 생성</li>
+                    </ul>
+                </div>
+				<!-- <img src="/img/icon/icon_home.png" th:alt="#{UIT0002}" class="vtc_unset"> <span class="col_gray01 font_14 mgn_b20 clear" th:text="#{UIT0003}"></span>
+				<p id="guide_txt" class="guide_txt"></p> -->
+	
+				<!-- <div class="state_area">
+				    <span id="state_1" class="state_li on"></span>
+				    <span id="state_2" class="state_li"></span>
+				</div> -->
+
+			<!-- <h3 class="title" th:text="#{UIT0004}"></h3>
+			<p id="sub_txt" class="sub_txt"></p> -->
+
+				<div class="db_content">
+					<input type="hidden" id="lwprtInsttNm" name="lwprtInsttNm" vlaue=""/>
+					<input type="hidden" id="telno" name="telno" vlaue=""/>
+					<input type="hidden" id="authorCode" name="authorCode" value="ROLE_ADMIN"/>	<!--관리자 권한-->
+					<input type="hidden" id="submitChk" name="submitChk" value=""/>
+					<div class="db_left_area">
+                    	<div class="division">
+					<!-- <ul id="basic">
+						<li data-liNo="1"> -->
+							<strong th:text="#{UIT0005}">DB 생성 정보</strong>
+							<!-- <h4 class="title" th:text="#{UIT0005}"></h4> -->
+							
+	                        <!-- <section class="l_box_type01">
+	                            <p>
+	                            	<span id="insttCodelab" class="sub_title2 col_white" th:text="#{UIT0006}"></span>
+	                            	<input type="text" id="insttCode" class="in_box_type01 in_length200" th:placeholder="#{UIT0007}" readonly="readonly"><button th:onclick="'javascript:fn_insttFindLayer();'" class="btn_find btn_basic_find" th:text="#{UIT0008}"></button>
+	                            </p>
+	                            <p>
+	                            	<span id="insttNmlab" class="sub_title2 col_white" th:text="#{UIT0009}"></span>
+	                            	<input type="text" id="insttNm" class="in_box_type01 in_length290" th:placeholder="#{UIT0010}" readonly="readonly">
+	                            </p>
+	                            
+	                        </section> -->
+	                       <div class="db_table">
+	                             <table>
+	                                 <caption>기업코드, 기업명을 작성하는 DB생성정보 입력폼 입니다.</caption>
+	                                 <colgroup>
+	                                     <col style="width: 140px;">
+	                                     <col style="width: auto;">
+	                                 </colgroup>
+	                                 <tbody>
+	                                     <tr>
+	                                         <th scope="row">
+	                                             <label id="insttCodelab" th:text="#{UIT0006}">기업 코드</label>
+	                                         </th>
+	                                         <td>
+	                                             <input type="text" id="insttCode" class="in_box_type01 in_length200" th:placeholder="#{UIT0007}" readonly="readonly"><button  class="btn_find btn_basic_find" th:text="#{UIT0008}"></button>
+	                                         </td>
+	                                     </tr>
+	                                     <tr>
+	                                         <th scope="row">
+	                                             <label id="insttNmlab" th:text="#{UIT0009}">기업 명</label>
+	                                         </th>
+	                                         <td>
+	                                             <input type="text" id="insttNm" class="in_box_type01 in_length290" th:placeholder="#{UIT0010}" readonly="readonly">
+	                                         </td>
+	                                     </tr>
+	                                 </tbody>
+	                             </table>
+	                         </div>
+	                         <div class="db_button_area">
+                                  <p class="emphasis_txt" id="DB_text" style="display: none;">초기 DB가 생성되었습니다.</p>
+                                  <button class="btn_black btn_basic_next">
+                                      <span class="next">다음</span>
+                                  </button>
+                              </div>
+						<!-- </li> -->
+							</div>
+						</div>
+						<!-- <li data-liNo="2"> -->
+						<div class="db_right_area" style="display: none;">
+                            <div class="division">	
+							<!-- <h4 class="title" th:text="#{UIT0005}"></h4>
+							<section class="l_box_type01">
+	                            <p>
+	                            	<span id="selectInsttCodelab" class="sub_title2 col_white" th:text="#{UIT0006}"></span>
+	                            	<input type="text" id="selectInsttCode" class="in_box_type01 in_length200" value="" disabled="disabled">
+	                            </p>
+	                            <p>
+	                            	<span id="selectInsttNmlab" class="sub_title2 col_white" th:text="#{UIT0009}"></span>
+	                            	<input type="text" id="selectInsttNm" class="in_box_type01 in_length290" value="" disabled="disabled">
+	                            </p>
+	                            <p id="msg_1" class="message mgn_t10" style="display: none;"></p>
+	                        </section>
+	                        
+	                       	<div class="line"></div> -->
+	                       
+	                        <strong th:text="#{UIT0011}">관리자 정보</strong>
+							<!-- <h4 class="title" th:text="#{UIT0011}"></h4> -->
+							<!-- <section class="l_box_type01">
+								<p>
+									<span class="sub_title2 col_white"><span class="str">* </span><label th:text="#{UIT0012}"></label></span>
+									<input type="text" id="userNm" class="in_box_type01 disabled2 in_length290" th:placeholder="#{UIT0013}">
+								</p>
+								<p>
+									<span id="idChk" class="sub_title2 col_white"><span class="str">* </span><label th:text="#{UIT0014}"></label></span>
+									<input type="text" id="userId" class="in_box_type01 disabled2 in_length290" placeholder="아이디를 입력 해주세요" oninput="inputCheck(this)">
+									<input type="text" id="userId" class="in_box_type01 disabled2 in_length194" th:placeholder="#{UIT0015}" oninput="inputCheck(this)">
+									<a href="javascript:fn_idDupCheck();" class="btn_find" th:text="#{UIT0016}"></a>
+								</p>
+								<p>
+									<span class="sub_title2 col_white"><span class="str">* </span><label th:text="#{UIT0017}"></label></span>
+									<input type="password" id="userPw" class="in_box_type01 disabled2 in_length290" th:placeholder="#{UIT0018}">
+								</p>
+								<p>
+									<span class="sub_title2 col_white"><span class="str">* </span><label th:text="#{UIT0019}"></label></span>
+									<input type="password" id="userRePw" class="in_box_type01 disabled2 in_length290" th:placeholder="#{UIT0020}">
+								</p>
+								
+								<p id="msg_2" class="message mgn_t10" style="display: none;"></p>
+							</section> -->
+						<!-- </li> -->
+					<!-- </ul> -->
+					<div class="db_table">
+	                    <table>
+	                        <caption>관리자 명, 아이디, 비밀번호, 비밀번호 확인을 작성하는 관리자 정보 입력폼 입니다.</caption>
+	                        <colgroup>
+	                            <col style="width: 140px;">
+	                            <col style="width: auto;">
+	                        </colgroup>
+	                        <tbody>
+	                            <tr>
+	                                <th scope="row">
+	                                    <label class="impo" th:text="#{UIT0012}">관리자 명</label>
+	                                </th>
+	                                <td>
+	                                    <input type="text" id="userNm" maxlength="10" th:placeholder="#{UIT0013}">
+	                                </td>
+	                            </tr>
+	                            <tr>
+	                                <th scope="row" class="th_posi">
+	                                    <label class="impo" th:text="#{UIT0014}">아이디</label>
+	                                </th>
+	                                <td>
+	                                    <input type="text" id="userId" maxlength="10" th:placeholder="#{UIT0015}" oninput="inputCheck(this)">
+	                                    <!-- <a href="javascript:fn_idDupCheck();" class="btn_blue02 overlap_chk" th:text="#{UIT0016}"></a> -->
+	
+	                                    <div class="table_blank_box">
+	                                        <!-- <p id="msg_2" class="emphasis_txt" style="display: none;">admin 아이디 사용가능</p> -->
+	                                    </div>
+	                                </td>
+	                            </tr>
+	                            <tr>
+	                                <th scope="row">
+	                                    <label class="impo" th:text="#{UIT0017}">비밀번호</label>
+	                                </th>
+	                                <td>
+	                                    <input type="password" id="userPw" class="disabled2" maxlength="20" th:placeholder="#{UIT0018}">
+	                                </td>
+	                            </tr>
+	                            <tr>
+	                                <th scope="row">
+	                                    <label class="impo" th:text="#{UIT0019}">비밀번호 확인</label>
+	                                </th>
+	                                <td>
+	                                    <input type="password" id="userRePw" class="disabled2" maxlength="20" th:placeholder="#{UIT0020}">
+	                                </td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	                <div class="db_button_area">
+	                	<p id="adm_text" class="emphasis_txt" style="display: none;">초기 관리자가 생성되었습니다.</p>
+	                    <button class="btn_black btn_basic_prev">
+	                        <span class="prev" th:text="#{UIT0021}">이전</span>
+	                    </button>
+	                    <button class="btn_blue btn_basic_end">
+	                        <span th:text="#{UIT0023}">완료</span>
+	                    </button>
+	                </div>
+	            </div>
+						</div>
+					</div>
+				
+					<div id="btn_basic">
+						<p class="l_box_type02_p padt5">
+							<!-- <span><button class="btn_type02 col_black btn_basic_prev" style="display: none;" th:text="#{UIT0021}"></button></span>
+							<span><button class="btn_type02 col_black btn_basic_next" th:text="#{UIT0022}"></button></span>
+							<span><button class="btn_type02 col_black btn_basic_end" style="display: none;" th:text="#{UIT0023}"></button></span> -->
+							<span><button class="btn_type02 col_black btn_basic_login" style="display: none;" th:text="#{UIT0024}"></button></span>
+						</p>
+					</div>
+				</div>
+			</div>
+           
+			<!-- 기관 코드 찾기 팝업 open -->
+			<div class="layer_pop_wrap">
+				<!-- <div class="txt_right mgn_b10">
+				    <a href="javascript:fn_insttCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+				</div> -->
+				<div class="layer_pop" style="height: 510px;">
+					<div class="layer_header">
+					    <p th:text="#{UIT0026}"></p>
+					    <a class="btn_close" ><img src="/img/icon/cancel_btn.png" th:alt="#{UIT0025}" style="width: 20px;"></a>
+					</div>
+					<section class="l_box_type02">
+					<div class="layer_pop_backboder marginb10">
+						<p class="search">
+							<span class="sub_title2" th:text="#{UIT0027}"></span>
+							<input type="text" id="searchValue" class="in_box_type01 in_length400">
+							<a href="javascript:fn_insttNmSearch();" class="btn_find" th:text="#{UIT0008}">찾기</a>
+						</p>
+						</div>
+						<div style="width: 860px;">
+							<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="5"/>
+							<div class="layer_pop_backboder" id="wholegrid">
+							<div id="grid" class="tb_type99"></div>
+							</div>
+						</div>
+						<div id="pagination" class="tui-pagination"></div>
+					</section>
+                  </div>
+			</div>
+			<!-- 기관 코드 찾기 팝업 close -->
+		<!-- </div> -->
+    
+    <div class="cover"></div>
+	<script th:inline="javascript" class="code-js">
+	
+	/*<![CDATA[*/
+	var pubInstYn = /*[[ ${pubInstYn} ]]*/;
+	var guide_txt_1 = /*[[ #{UIT0028} ]]*/; //"초기 설정 화면 - 초기 DB 생성 작업을 수행하세요";
+	var guide_txt_2 = /*[[ #{UIT0029} ]]*/; //"초기 설정 화면 - 최초 관리자 생성 작업을 수행하세요";
+	var sub_txt_1 = /*[[ #{UIT0030} ]]*/; //"기관 코드를 검색하여 선택  > 선택된 기관 코드를 기준으로 DB가 생성";
+	var sub_txt_2 = /*[[ #{UIT0031} ]]*/; //"최초 관리자 로그인 정보를 생성 > 최고 관리자 계정이며 모든 메뉴에 대한 권한을 갖는다.";
+	var UIT0249 = /*[[ #{UIT0249} ]]*/;
+	var UIT0250 = /*[[ #{UIT0250} ]]*/;
+	var UIT0251 = /*[[ #{UIT0251} ]]*/;
+	var UIT0252 = /*[[ #{UIT0252} ]]*/;
+	var UIT0032 = /*[[ #{UIT0032} ]]*/;
+	var UIT0033 = /*[[ #{UIT0033} ]]*/;
+	var UIT0034 = /*[[ #{UIT0034} ]]*/;
+	var UIT0035 = /*[[ #{UIT0035} ]]*/;
+	var UIT0036 = /*[[ #{UIT0036} ]]*/;
+	var UIT0037 = /*[[ #{UIT0037} ]]*/;
+	var UIT0038 = /*[[ #{UIT0038} ]]*/;
+	var UIT0039 = /*[[ #{UIT0039} ]]*/;
+	var UIT0040 = /*[[ #{UIT0040} ]]*/;
+	var UIT0041 = /*[[ #{UIT0041} ]]*/;
+	var UIT0042 = /*[[ #{UIT0042} ]]*/;
+	var UIT0043 = /*[[ #{UIT0043} ]]*/;
+	var UIT0044 = /*[[ #{UIT0044} ]]*/;
+	var UIT0045 = /*[[ #{UIT0045} ]]*/;
+	var UIT0046 = /*[[ #{UIT0046} ]]*/;
+	var UIT0047 = /*[[ #{UIT0047} ]]*/;
+	var UIT0048 = /*[[ #{UIT0048} ]]*/;
+	var UIT0027 = /*[[ #{UIT0027} ]]*/;
+	/*]]*/ 
+	
+	var dnow = Date.now().toString();
+	var insttCodeN = dnow.substr(0,7);
+	//var MMddhh = dateMMddhh(Date.now());
+	
+	$(document).ready(function() {
+		// 설정이 기업인경우 표기 변경
+		if("N" == pubInstYn){
+			sub_txt_1 = UIT0249;
+			$('.btn_basic_find').css('display','none');
+			$("#insttCodelab").text(UIT0250);
+			$("#insttNmlab").text(UIT0251);
+			$("#selectInsttCodelab").text(UIT0250);
+			$("#selectInsttNmlab").text(UIT0251);
+			$("#insttNm").removeAttr("readonly"); 
+			$("#insttCode").val(insttCodeN);
+			
+		} else if("Y" == pubInstYn) {
+			$('#insttCode').css('width','70%');
+		}
+		
+		$("#guide_txt").text(guide_txt_1);
+		$("#sub_txt").text(sub_txt_1);
+		$("#insttNm, #insttCode").css({'cursor':'default'});
+	});
+	$(".btn_basic_find").click(function(){
+		$("#grid").empty();
+		$("div[id=pagination]").empty();
+		fn_insttFindLayer();;
+	});
+	$(".btn_close").click(function(){
+		$("#grid").empty();
+		$("div[id=pagination]").empty();
+		$("div[id=wholegrid]").removeAttr("style");
+		fn_modalCloseLayer();
+	});
+	$(".btn_basic_next").click(function() {
+		$('body').removeClass().addClass('bg03');
+		if(!$("#basic li").last().is(":visible")){
+			var nextNo = $("#basic li:visible").next("li").attr("data-liNo");
+			var insttCode = $("#insttCode").val();
+			var insttNm = $("#insttNm").val();
+			
+			if(insttCode == "" || insttNm == ""){
+				if("N" == pubInstYn){
+					alert(UIT0252);
+				}else{
+					alert(UIT0032);
+				}
+				return false;
+			}
+			
+			$("#selectInsttCode").val(insttCode);
+			$("#selectInsttNm").val(insttNm);
+			
+			// 문구
+			fn_text(nextNo);
+			$("#DB_text").css('display','block');
+			
+			//DB 생성 완료시 수정 불가
+			$("#insttNm").attr("readonly",true);
+			$('.btn_basic_next').hide();
+			
+			// 가이드 바 
+			//$(".state_li").attr("class", "");
+			//$("#state_"+nextNo).attr("class", "state_li on");
+			
+			// 버튼
+			//$("#basic li:visible").hide().next("li").fadeIn("80");
+			//$(".btn_basic_prev").removeClass("off");
+			$(".btn_basic_prev").show();
+			$(".btn_basic_end").show();
+			
+			//관리자 정보 show
+			$(".db_right_area").show();
+			
+		}
+		
+		//if($("#basic li").last().is(":visible")){
+			//$(this).addClass("off");
+			//$(this).hide();
+			//$(".btn_basic_end").show();
+		//}
+		return false;
+	});
+	
+	
+	$(".btn_basic_prev" ).click(function() {
+		$('body').removeClass().addClass('bg04');
+		
+		var prevNo = $("#basic li:visible").prev("li").attr("data-liNo");
+		
+		// 문구
+		fn_text(prevNo);
+		
+		// 가이드 바 
+		//$(".state_li").attr("class", "");
+		//$("#state_"+prevNo).attr("class", "state_li on");
+		
+		//관리자 정보 hide 초기화
+		$(".db_right_area").hide();
+		$("#userNm").val("");
+		$("#userId").val("");
+		$("#userPw").val("");
+		$("#userRePw").val("");
+		
+		// 버튼 
+		if(!$("#basic li").first().is(":visible")){
+			$("#basic li:visible").hide().prev("li").fadeIn("80");
+			//$(".btn_basic_next").removeClass("off");
+			$(".btn_basic_next").show();
+			$(".btn_basic_prev").hide();
+			$(".btn_basic_end").hide();
+			$("#DB_text").css('display','none');
+			$("#insttNm").attr("readonly",false);
+			
+		}
+		
+		if($("#basic li").first().is(":visible")){
+			//$(this).addClass("off");
+			$(this).hide();
+			$(".btn_basic_end").hide();
+		}
+		return false;
+	});
+	
+	
+	$(".btn_basic_end").click(function() {
+		
+		//var thisNo = $("#basic li:visible").attr("data-liNo");
+		var frmChk = false;
+		
+		//if(thisNo == 2){
+			
+			var chk = $("#submitChk").val();
+			//if(chk != "Y"){
+				// 아이디 중복 체크 필요 한지??
+			//	alert(UIT0033);
+			//	return false;
+			//} else {
+				// 여기!
+				var userNm = $("#userNm").val();
+				var userId = $("#userId").val();
+				var userPw = $("#userPw").val();
+				var userRePw = $("#userRePw").val();
+				//비밀번호 정규식
+				var	chkPass = chkPW(userPw,userNm,userId);
+		
+				
+				if (userNm.length == 0 || userId.length == 0 || userPw.length == 0 || userRePw.length == 0 ){
+					if(userNm.length == 0 ){alert(UIT0033);return false;}			
+					else if(userId.length == 0 ){alert(UIT0035); return false;}
+					else if(chkPass){
+						if(userRePw.length == 0){alert("비밀번호 확인을 입력해주세요.");	return false;}
+					}
+					frmChk = false;
+		        } else if(!chkPass){
+					return false;
+				} else if(userPw != userRePw) {
+					alert(UIT0037);
+					frmChk = false;
+		        } else {
+		        	frmChk = true;
+		        }
+			//}
+		//}
+		
+		if(frmChk){
+			var arr = [];
+			var obj = {};
+			
+			obj.lwprtInsttNm = $("#lwprtInsttNm").val();	// 하위 기관(대표자)
+			obj.authorCode = $("#authorCode").val();		// 권한
+			obj.insttCode = $("#insttCode").val();			// 기관코드
+			obj.insttNm = $("#insttNm").val();				// 기관 명
+			obj.telno = $("#telno").val();					// 기관 전화번호
+			obj.userNm = $("#userNm").val();				// 관리자 명
+			obj.userId = $("#userId").val();				// 관리자 ID
+			obj.userPw = $("#userPw").val();				// 관리자 PASSWORD
+			obj.useAt = 'Y';								// 사용유무 'Y'
+			
+			arr.push(obj);
+			
+			if(arr.length > 0){
+				$.ajax({
+					url: '/mngr/saveInsttInfo',
+					method : 'POST',
+					data: {insertList : JSON.stringify(arr)},
+					success: function(data){
+						var obj = JSON.parse(data);
+						var item = obj.result;
+						//var html_1 = '<img src="/img/icon/icon_check.png" alt="'+UIT0038+'"> '+UIT0039;
+						//var html_2 = '<img src="/img/icon/icon_check.png" alt="'+UIT0038+'"> '+UIT0048;
+						
+						// 버튼 
+						$(".btn_basic_prev").hide();
+						$(".btn_basic_next").hide();
+						$(".btn_basic_end").hide();
+						$(".btn_basic_login").show();
+						
+						// 메세지
+						$("#adm_text").show();
+						//$("#msg_1").show();
+						//$("#msg_2").show();
+						//$("#msg_1").append(html_1);
+						//$("#msg_2").append(html_2);
+						
+						// readonly
+						$("#userNm").prop("readonly", true);
+						$("#userId").prop("readonly", true);
+						$("#userPw").prop("readonly", true);
+						$("#userRePw").prop("readonly", true);
+											
+			        }, error:function() {
+						alert(UIT0041);
+						return;
+					}
+			    });
+			}
+		}
+	});
+	
+	
+	$(".btn_basic_login").click(function() {
+		  location.href = "/login";
+	});
+	
+	function fn_text(liNo){
+		
+		if(liNo == 1){
+			$("#guide_txt").text(guide_txt_1);
+			$("#sub_txt").text(sub_txt_1);	
+		}else{
+			$("#guide_txt").text(guide_txt_2);
+			$("#sub_txt").text(sub_txt_2);
+		}
+		
+	}
+	
+	function fn_insttFindLayer(){
+	
+		/*찾기 레이어 열기*/
+		$('#searchValue').val("");
+	    $('.layer_pop_wrap').addClass('on');
+	    $('.cover').show();
+	    
+	    fn_search();
+	}
+	
+	function fn_insttNmSearch(){
+		$('#pageIndex').val('1');
+		fn_search();
+	}
+	
+	function fn_search(){
+		
+		var insttData = null;
+		var searchValue = $('#searchValue').val();
+		var pageIndex = $('#pageIndex').val();
+		var itemsPerPage = $("#itemsPerPage").val();
+		
+		var params = {
+			"searchValue" : searchValue,
+			"pageIndex" : pageIndex,
+			"itemsPerPage" : itemsPerPage
+		}
+		
+		$.ajax({
+			type : 'post',
+			url : '/mngr/selectInsttList',
+			datatype :'json',
+			data : params,
+			success : function(data){
+				var obj = $.parseJSON(data);
+				var totalCnt = obj.totalCnt;
+				insttData = obj.list;
+				
+				fn_setGrid(insttData);
+				/* 페이징 function 호출 */
+				fn_pagination(totalCnt);
+				
+			}, error:function() {
+				alert(UIT0041);
+				return;
+			}
+		});
+		
+	}
+	
+	function fn_setGrid(insttData){
+		
+		$("#grid").empty();
+		var columns = [
+			{header : UIT0042 , name : 'insttCode', whiteSpace: 'normal', width: 140, align:'center'}, 
+			{header : UIT0027, name : 'insttNm', whiteSpace: 'normal', align:'left'}, 
+			{header : UIT0043, name : 'lwprtInsttNm', whiteSpace: 'normal', align:'center', width: 200},
+			{header : UIT0044, name : 'useBtn', whiteSpace: 'normal', align:'center', width: 140, 
+			 	formatter: function(value, options){
+					var html  = "";
+					html += "<input type='button' class='btn_select' value='"+UIT0045+"'/>";
+					return html;
+				}
+			}
+		];
+		
+		const insttGrid = new tui.Grid({
+			el: document.getElementById("grid"),
+			data: insttData,
+			scrollX: false,
+			scrollY: false,
+			rowHeight : 40,
+			minBodyHeight : 40,
+			//bodyHeight : 349,
+			header: {
+			  height: 50
+			},
+			columns: columns
+		});
+		
+		const extOptions = {
+			cell: {
+				focused: {
+		            border: 0 // 선택 셀 강조 표시 x
+		        }
+			}
+		};
+		if(insttData==""){
+		var wholeheight=$("div[id=wholegrid]").height()+$(".tui-grid-container").height()+6;
+		$("div[id=wholegrid]").css({"height":wholeheight});
+			
+		}else{
+			$("div[id=wholegrid]").removeAttr("style");
+		}
+		tui.Grid.applyTheme('default', extOptions);
+		
+		insttGrid.on('click', function(ev) {
+			var mode = ev.nativeEvent.target.value;
+			
+	  		if(mode != undefined){
+	  			var item = insttGrid.getRow(ev.rowKey);
+	  			
+	  			
+	  			fn_selected(item.insttCode, item.insttNm, item.lwprtInsttNm, item.telno);
+	  		}
+	  	});
+		
+		insttGrid.resetData(insttData);
+		
+	}
+	
+	function fn_selected(insttCode, insttNm, lwprtInsttNm, telno){
+		
+		$("#insttCode").val(insttCode);
+		$("#insttNm").val(insttNm);
+		$("#lwprtInsttNm").val(lwprtInsttNm);
+		$("#telno").val(telno);
+		
+		fn_insttCloseLayer();
+	}
+	
+	function fn_insttCloseLayer(){
+		/*찾기 레이어 닫기*/
+		$('#pageIndex').val("");
+		$('#totalCnt').val("");
+		$('#searchValue').val("");
+		
+		$('.layer_pop_wrap').removeClass('on');
+		$('.cover').hide();
+	}
+	
+	function dateMMddhh(date){
+	    var month = (1 + date.getMonth());          //MM
+	    month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+	    var day = date.getDate();                   //d
+	    day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
+	    var hh = date.getHours();					//hh
+	    hh = hh >= 10 ? hh : '0' + hh;          	//hh 두자리로 저장
+	    return  month + '' + day+ '' + hh;
+	    
+	}
+	
+	// 아이디 중복 체크. 초기 관리자 등록이어서 필요 없을듯...
+	/*
+	document.getElementById("userId").addEventListener("blur", fn_idDupCheck);
+	function fn_idDupCheck(){
+		var userId = $("#userId").val(); 
+		if(userId.length < 1){
+			alert('관리자 아이디를 입력해 주세요.');
+			return false;
+		}
+		$.ajax({
+			type : 'post',
+			url : '/mngr/selectUserIdChk',
+			data : {'userId' : userId},
+			datatype:'json',
+			success : function(data){
+				var obj = $.parseJSON(data);
+				var result = obj.result;
+				if(!result){
+					$("#idChk").text("아이디(중복)");
+					$("#idChk").css("color", "red");
+					$("#submitChk").val("N");
+					
+				}else{
+					$("#idChk").text("아이디(사용가능)");
+					$("#idChk").css("color", "#00ea34ee");
+					$("#submitChk").val("Y");
+				}	
+			
+			}, error:function() {
+				alert("처리중 에러가 발생하였습니다");
+				return;
+			}
+	    });
+	}
+	*/
+	document.getElementById("userId").addEventListener("blur", function(){
+	//$("#userId").addEventListener("blur", function(){
+			var userId = $("#userId").val(); 
+			if(userId.length < 1){
+				alert(UIT0046);
+				return false;
+			}
+			$.ajax({
+				type : 'post',
+				url : '/mngr/selectUserIdChk',
+				data : {'userId' : userId},
+				datatype:'json',
+				success : function(data){
+					var obj = $.parseJSON(data);
+					var result = obj.result;
+					if(!result){
+						$("#idChk").text(UIT0047);
+						$("#idChk").css("color", "red");
+						$("#submitChk").val("N");
+						
+					}else{
+						$("#idChk").text(UIT0048);
+						$("#idChk").css("color", "#00ea34ee");
+						$("#submitChk").val("Y");
+					}	
+				
+				}, error:function() {
+					alert(UIT0041);
+					return;
+				}
+		    });
+		});
+		
+	function chkPW(pw,userNm,userId){
+		var num = pw.search(/[0-9]/g);
+		var eng = pw.search(/[a-z]/ig);
+		var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+		if(userNm.length != 0 && userId.length != 0){
+		if(pw.length == 0){
+			alert("비밀번호를 입력해주세요.");
+			return false;
+		}else if(pw.length < 10 || pw.length > 20){
+			alert("비밀번호를 10자리 ~ 20자리 이내로 입력해주세요.");
+			return false;
+		}else if(pw.search(/\s/) != -1){
+			alert("비밀번호는 공백 없이 입력해주세요.");
+			return false;
+		}else if( (num < 0 && eng < 0) || (eng < 0 && spe < 0) || (spe < 0 && num < 0) ){
+			alert("영문,숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요.");
+			return false;
+		}else {
+			return true; 
+		}
+		}
+	}
+	
+	</script>
+	
+	</div>	
+
+
+	
+</html>

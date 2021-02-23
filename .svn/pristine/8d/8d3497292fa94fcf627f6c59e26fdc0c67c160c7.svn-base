@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+	<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" th:fragment="headerFragment">
+	
+		<div style="text-align:center;">
+	        <h6>
+	            <p class="textAStyle txt_left mgn_b0">
+	                <img src="/img/icon/icon_wifi.png" alt="와이파이 아이콘" class="vtc_unset">
+	                
+	                <span class="col_blue01" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? '연결 CSV파일 : ' + ${session.conFileName } : '접속 DBMS : ' + ${session.conDbUrl }"></span>
+	            </p>
+	        </h6>
+	    </div>
+
+		<!-- 상단 이동 버튼 -->
+		<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+			<i class="fa fa-bars"></i>
+		</button>
+		
+		<!-- 상단 네비 -->
+		<ul class="navbar-nav ml-auto">
+			<div class="topbar-divider d-none d-sm-block"></div>
+	
+			<!-- Nav Item - User Information -->
+			<li class="nav-item dropdown no-arrow">
+				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="mr-2 d-none d-lg-inline text-gray-600 small">
+						<div th:each="member : ${session.member}">
+					        <div th:text="${member.userNm}"></div>
+					    </div>
+					</span>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+					<!-- 
+					<a class="dropdown-item" href="/mngr/cmmnMng/cmmnManage">
+						<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-600"> 관리자 정보</i>
+					</a>
+					<div class="dropdown-divider"></div>
+					-->
+					<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+						<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-600"> 로그아웃</i>
+					</a>
+				</div>
+			</li>
+		</ul>
+	</nav>
+
+</html>

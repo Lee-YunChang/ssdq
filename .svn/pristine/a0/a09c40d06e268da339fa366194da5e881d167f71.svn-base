@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Tibero.AnalysisMapper">
+
+	<resultMap id="columnMap" type="Map">
+		<result property="owner" column="OWNER"/>
+		<result property="tableSchema" column="OWNER"/>
+		<result property="tableName" column="TABLE_NAME"/>
+        <result property="columnName" column="COLUMN_NAME"/>
+        <result property="dataType" column="DATA_TYPE"/>
+        <result property="dataLength" column="DATA_LENGTH"/>
+        <result property="dataPrecision" column="DATA_PRECISION"/>
+        <result property="dataScale" column="DATA_SCALE"/>
+        <result property="nullable" column="NULLABLE"/>
+        <result property="dataDefault" column="DATA_DEFAULT" jdbcType="CLOB" javaType="java.lang.String"/>
+        <result property="lowValue" column="LOW_VALUE"/>
+        <result property="highValue" column="HIGH_VALUE"/>
+        <result property="comments" column="COMMENTS"/>
+    </resultMap>
+    
+    <resultMap id="tableMap" type="Map">
+    	<result property="rnum" column="RNUM"/>
+    	<result property="tableName" column="TABLE_NAME"/>
+        <result property="numRows" column="NUM_ROWS"/>
+        <result property="avgRowLen" column="AVG_ROW_LEN"/>
+        <result property="comments" column="COMMENTS"/>
+        <result property="pkCnt" column="PK_CNT"/>
+        <result property="indexCnt" column="INDEX_CNT"/>
+    </resultMap>
+	
+	<select id="selectTableAnalysisTotalCnt" parameterType="Map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM
+		(
+		SELECT
+			A.TABLE_NAME
+			, A.NUM_ROWS
+			, A.AVG_ROW_LEN
+			, B.COMMENTS  
+			, (
+				SELECT 
+					COUNT(*)
+				FROM 
+					USER_CONSTRAINTS C, USER_CONS_COLUMNS D
+				WHERE 1=1
+					AND C.CONSTRAINT_NAME = D.CONSTRAINT_NAME
+					AND C.TABLE_NAME = A.TABLE_NAME
+					AND C.CONSTRAINT_TYPE = 'P'
+			  ) AS pk_cnt
+			, (
+				SELECT 
+					COUNT(DISTINCT(INDEX_NAME)) 
+				FROM ALL_IND_COLUMNS
+				WHERE 1=1
+					AND TABLE_NAME = A.TABLE_NAME
+			  ) AS index_cnt
+		FROM 
+			ALL_TABLES A, ALL_TAB_COMMENTS B
+		WHERE 1=1 
+			AND A.OWNER = B.OWNER
+			AND A.TABLE_NAME = B.TABLE_NAME 
+			AND A.OWNER = UPPER(#{tableSchema})
+		) C
+	</select>
+
+	<select id="selectTableAnalysis" parameterType="Map" resultMap="tableMap">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				ROWNUM AS RNUM
+				, A.TABLE_NAME
+				, A.NUM_ROWS
+				, A.AVG_ROW_LEN
+				, B.COMMENTS  
+				, (
+					SELECT 
+						COUNT(*)
+				    FROM 
+				    	USER_CONSTRAINTS C, USER_CONS_COLUMNS D
+				    WHERE 1=1
+				    	AND C.CONSTRAINT_NAME = D.CONSTRAINT_NAME
+				    	AND C.TABLE_NAME = A.TABLE_NAME
+				    	AND C.CONSTRAINT_TYPE = 'P'
+				  ) AS pk_cnt
+				, (
+					SELECT 
+						COUNT(DISTINCT(INDEX_NAME)) 
+					FROM ALL_IND_COLUMNS
+					WHERE 1=1
+						AND TABLE_NAME = A.TABLE_NAME
+				  ) AS index_cnt
+			FROM 
+				ALL_TABLES A, ALL_TAB_COMMENTS B
+			WHERE 1=1 
+		    	AND A.OWNER = B.OWNER
+		    	AND A.TABLE_NAME = B.TABLE_NAME 
+		    	AND A.OWNER = UPPER(#{tableSchema})
+		    ) T1
+		WHERE 1=1		
+	    AND RNUM BETWEEN #{start_row} AND #{end_row}  
+	</select>
+	
+	<select id="selectSchema" resultType="map">
+		SELECT 
+			OWNER AS owner 
+		FROM ALL_TABLES
+		GROUP BY OWNER
+	</select>
+	
+	<select id="selectTable" resultType="map">
+		SELECT
+			TABLE_NAME AS tableName
+		FROM ALL_TABLES
+		WHERE OWNER = UPPER(#{tableSchema})
+	</select>
+	
+	<select id="selectColumnAnalysis" parameterType="Map" resultMap="columnMap">
+		SELECT
+ 			A.OWNER
+		    , A.COLUMN_ID 
+		    , A.COLUMN_NAME
+		    , A.TABLE_NAME
+		    , A.DATA_TYPE
+		    , A.DATA_LENGTH
+		    , A.DATA_PRECISION
+		    , A.DATA_SCALE
+		    , A.NULLABLE
+		    , A.DATA_DEFAULT
+    		, B.COMMENTS   
+		FROM 
+			ALL_TAB_COLUMNS A , ALL_COL_COMMENTS B
+		WHERE 1=1
+			AND A.OWNER = B.OWNER
+			AND A.TABLE_NAME = B.TABLE_NAME
+			AND A.COLUMN_NAME = B.COLUMN_NAME
+			AND A.OWNER = #{tableSchema }
+			AND A.TABLE_NAME = UPPER(#{tableName })
+			<if test="searchValue != null and searchValue != ''">
+				AND UPPER(A.COLUMN_NAME) LIKE  '%' || UPPER(#{searchValue}) || '%'
+			</if> 
+		ORDER BY
+			A.COLUMN_ID
+	</select>
+	
+	<select id="selectDualCheck" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(1) AS CNT
+		FROM DUAL
+	</select>
+	
+	<select id="selectCheckPatten" parameterType="map" resultType="int">
+		SELECT 
+		REGEXP_COUNT( #{checkText} , #{analsFrmla} ) AS CNT
+		FROM DUAL
+	</select>
+	
+	<select id="selectCheckSql" parameterType="map" resultType="int">
+		SELECT 
+		COUNT(1) AS CNT
+		FROM ${tables}
+		WHERE ${analsFrmla}
+	</select>
+	
+	<select id="selectMaxVal" parameterType="map" resultType="String">
+		SELECT 
+			MAX(${columnName})
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+	<select id="selectMinVal" parameterType="map" resultType="String">
+		SELECT 
+			MIN(${columnName})
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+	<select id="selectMinMaxVal" parameterType="map" resultType="map">
+		SELECT 
+			${columnName}
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+</mapper>

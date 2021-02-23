@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.BasicInfoMapper">
+
+    <insert id="insertInsttDbms" parameterType="map"> 
+		INSERT INTO INSTT_DBMS 
+		( 
+			`INSTT_CODE`,
+			`DBMS_ID`,
+			`DBMS_KND`,
+			`RM`,
+			`USE_AT`
+		)
+		VALUES
+		(
+		 	#{insttCode},
+		 	#{dgnssDbmsId},
+		 	#{dbmsKnd},
+		 	#{rm},
+		 	#{useAt}
+		)
+		
+	</insert>
+	
+	<insert id="insertInsttDbmsVer" parameterType="map"> 
+		INSERT INTO INSTT_DBMS_VER 
+		( 
+			`DBMS_ID`,
+			`DBMS_VER_ID`,
+			`DBMS_VER_INFO`,
+			`RM`,
+			`USE_AT`
+		)
+		VALUES
+		(
+		 	#{dgnssDbmsId},
+		 	#{dbmsVerId},
+		 	#{dbmsVerInfo},
+		 	#{rm},
+		 	#{useAt}
+		)
+		
+	</insert>
+	
+	<insert id="insertDgnssDbms" parameterType="map"> 
+		<selectKey resultType="Integer" keyProperty="dgnssDbmsId" order="BEFORE">
+			SELECT IFNULL(MAX(cast(DGNSS_DBMS_ID as unsigned)),0)+1 AS dgnssDbmsId FROM DGNSS_DBMS 
+		</selectKey>
+		INSERT INTO DGNSS_DBMS 
+		( 
+			`INSTT_CODE`,
+			`DGNSS_DBMS_ID`,
+			`DGNSS_DBMS_NM`,
+			`DBMS_ID`,
+			`DBMS_VER_ID`,
+			`IP`,
+			`PORT`,
+			<!-- `SCHEMA`, -->
+			`SID`,
+			`DATABASE`,
+			`PARAMTR`,
+			`ID`,
+			`PASSWORD`,
+			`RM`,
+			`USE_AT`,
+			`REGIST_DT`
+		)
+		VALUES
+		(
+		 	#{insttCode},
+		 	#{dgnssDbmsId},
+		 	#{dgnssDbmsNm},
+		 	#{dbmsId},
+		 	#{dbmsVerId},
+		 	#{ip},
+		 	#{port},
+		 	<!-- #{schema}, -->
+		 	#{sid},
+		 	#{database},
+		 	#{paramtr},
+		 	#{id},
+		 	#{password},
+		 	#{rm},
+		 	1,
+		 	now()
+		)
+		
+	</insert>
+	
+	<update id="updateDgnssDbms" parameterType="map" > 
+		UPDATE DGNSS_DBMS SET
+			DGNSS_DBMS_NM = #{dgnssDbmsNm}
+			, DBMS_VER_ID = #{dbmsVerId}
+			, IP = #{ip}
+			, PORT = #{port}
+			<!-- , `SCHEMA` = #{schema} -->
+			, SID = #{sid}
+			, `DATABASE` = #{database}
+			, PARAMTR = #{paramtr}
+			, ID = #{id}
+			, PASSWORD = #{password}
+			, RM = #{rm}
+		WHERE 1=1
+		AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+	</update>
+	
+	<select id="selectDgnssDbmsListCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM DGNSS_DBMS
+		WHERE 1=1
+		AND INSTT_CODE = #{insttCode}
+		AND DGNSS_DBMS_ID =  #{dgnssDbmsId}
+	</select>
+	
+	<select id="selectDgnssDbmsNmCheck" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM DGNSS_DBMS
+		WHERE 1=1
+		AND INSTT_CODE = #{insttCode}
+		AND DGNSS_DBMS_NM =  #{dgnssDbmsNm}
+		<if test="dgnssDbmsId != ''">
+			AND DGNSS_DBMS_ID !=  #{dgnssDbmsId}
+		</if>
+	</select>
+	
+	<select id="selectInsttDbmsListCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM INSTT_DBMS
+		WHERE DBMS_KND = #{dbmsKnd}
+	</select>
+	
+	<select id="selectDgnssDbmsId" parameterType="map" resultType="String">
+		SELECT 
+			max(DGNSS_DBMS_ID)+1
+		FROM DGNSS_DBMS
+	</select>
+	
+	<select id="selectInsttDbmsId" parameterType="map" resultType="String">
+		SELECT 
+			DBMS_ID
+		FROM INSTT_DBMS
+		WHERE DBMS_KND = #{dbmsKnd}
+	</select>
+
+	<select id="selectDbList" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				T1.*, (@rownum2 := @rownum2+1) AS RNUM
+			FROM(
+				SELECT 
+					D.`INSTT_CODE` insttCode
+					, D.`DGNSS_DBMS_ID` as dgnssDbmsId
+					, D.`DGNSS_DBMS_NM` as dgnssDbmsNm
+					, D.`DBMS_ID` as dbmsId
+					, D.`DBMS_VER_ID` as dbmsVerId
+					, D.`IP` as ip
+					, D.`PORT` as port
+					, D.`DATABASE` as `database`
+					, D.`SID` as sid
+					, D.`PARAMTR` as paramtr
+					, D.`ID` as id
+					, D.`PASSWORD` as password
+					, D.`RM` as rm
+					, D.`USE_AT` as useAt
+					, D.`REGIST_DT` as registDt
+					, I.`DBMS_KND` as dbmsKnd
+					, (@rownum := @rownum+1) AS RN
+				FROM DGNSS_DBMS D, INSTT_DBMS I, (SELECT @rownum :=0) AS R
+				WHERE D.DBMS_ID = I.DBMS_ID
+				
+				<if test="dgnssDbmsId != ''">
+					AND DGNSS_DBMS_ID =  #{dgnssDbmsId}
+				</if>
+				<if test="tabType == 'csv'">
+				AND I.DBMS_KND LIKE CONCAT('%', #{tabType}, '%')
+				</if>
+				<if test="tabType != 'csv'">
+					AND I.DBMS_KND NOT LIKE CONCAT('%', 'csv', '%')
+				</if>
+				ORDER BY D.`REGIST_DT` DESC
+				) T1, (SELECT @rownum2 :=0) AS T2
+			) T3
+		WHERE 1=1		
+		AND RNUM BETWEEN #{start_row} AND #{end_row}
+		
+	</select>
+	
+	<select id="selectDbListTotalCnt" parameterType="map" resultType="int">
+		SELECT COUNT(1) AS CNT FROM (
+			SELECT 
+				D.`INSTT_CODE` insttCode
+			FROM DGNSS_DBMS D, INSTT_DBMS I
+			WHERE D.DBMS_ID = I.DBMS_ID
+			<if test="tabType == 'csv'">
+				AND I.DBMS_KND LIKE CONCAT('%', #{tabType}, '%')
+			</if>
+			<if test="tabType != 'csv'">
+				AND I.DBMS_KND NOT LIKE CONCAT('%', 'csv', '%')
+			</if>
+		)T1
+	</select>
+	
+	<select id="selectDbInfo" parameterType="map" resultType="map">
+		SELECT 
+			D.`INSTT_CODE` insttCode
+			, D.`DGNSS_DBMS_ID` as dgnssDbmsId
+			, D.`DGNSS_DBMS_NM` as dgnssDbmsNm
+			, D.`DBMS_ID` as dbmsId
+			, D.`DBMS_VER_ID` as dbmsVerId
+			, D.`IP` as ip
+			, D.`PORT` as port
+			, D.`DATABASE` as `database`
+			, D.`SID` as sid
+			, D.`PARAMTR` as paramtr
+			, D.`ID` as id
+			, D.`PASSWORD` as password
+			, D.`RM` as rm
+			, D.`USE_AT` as useAt
+			, D.`REGIST_DT` as registDt
+			, I.`DBMS_KND` as dbmsKnd
+			, (SELECT V.DBMS_VER_INFO FROM INSTT_DBMS_VER V WHERE V.DBMS_ID = D.DBMS_ID AND V.DBMS_VER_ID = D.DBMS_VER_ID) as dbmsVerInfo
+		FROM DGNSS_DBMS D, INSTT_DBMS I
+		WHERE D.DBMS_ID = I.DBMS_ID
+	<if test="dgnssDbmsId != ''">
+		AND D.DGNSS_DBMS_ID = #{dgnssDbmsId}
+	</if>
+		ORDER BY D.`REGIST_DT` DESC
+		
+	</select>
+	
+	<insert id="insertAnals" parameterType="map">
+		
+		INSERT INTO ANALS(
+			`INSTT_CODE`
+			,`ANALS_ID`
+			,`ANALS_SE`
+			,`ANALS_TY`
+			,`PTTRN_SE`
+			,`ANALS_NM`
+			,`ANALS_FRMLA`
+			,`BEGIN_VALUE`
+			,`END_VALUE`
+			,`DBMS_KND`
+			,`DBMS_VER`
+			,`RM`
+			,`USE_AT`
+			,`REGIST_DT`
+		)
+		VALUES
+		(
+			#{insttCode}
+			, #{analsId}
+			, #{analsSe}
+			, #{analsTy}
+			, #{pttrnSe}
+			, #{analsNm}
+			, #{analsFrmla}
+			, #{beginValue}
+			, #{endValue}
+			, #{dbmsKnd}
+			, #{dbmsVer}
+			, #{rm}
+			, #{useAt}
+			, sysdate()
+		)
+	</insert>
+	
+	<update id="createTableDb" parameterType="map"> 
+	
+		CREATE  TABLE ${tableName}
+		( 
+			${culumnInfo}
+		)
+		collate = `utf8_general_ci` ENGINE = InnoDB
+		COMMENT 'CSV 진단대상데이터베이스정보'
+		
+	</update>
+	
+	<update id="dropTableDb" parameterType="map">
+		DROP TABLE ${tableName}
+	</update>
+	
+	<insert id="insertCvsFileData" parameterType="map">
+		INSERT IGNORE INTO ${tableName}(
+			<foreach item="columnData" separator="," collection="columnList">${columnData.column}</foreach>
+		)
+		VALUES
+		(
+			<foreach item="valueData" separator="," collection="dataList">#{valueData.dataVal}</foreach>
+		)
+	</insert>
+	
+	<select id="selDbmsKindList" parameterType="map" resultType="map">
+		SELECT 
+			DBMS_ID AS dbmsId, DBMS_KND AS dbmsKnd
+		FROM INSTT_DBMS
+		WHERE 1=1
+		<if test="tabType == 'csv'">
+			AND DBMS_KND LIKE CONCAT('%', #{tabType}, '%')
+		</if>
+		<if test="tabType != 'csv' and tabType != 'all'">
+			AND DBMS_KND NOT LIKE CONCAT('%', 'csv', '%')
+		</if>
+	</select>
+	
+	<select id="selDbmsVerList" parameterType="map" resultType="map">
+		SELECT 
+			A.DBMS_ID AS dbmsId, A.DBMS_KND AS dbmsKnd, B.DBMS_VER_ID AS dbmsVerId, B.DBMS_VER_INFO AS dbmsVerInfo
+			, CASE WHEN A.DBMS_ID = '1' 
+			THEN convert(replace(substring(B.DBMS_VER_ID, 1,8),'.','' ),DECIMAL(30,0))
+			ELSE convert(replace(substring(B.DBMS_VER_ID, 1,length(B.DBMS_VER_ID)),'.','' ),DECIMAL(30,0))
+			END as sort
+		FROM INSTT_DBMS A, INSTT_DBMS_VER B
+		WHERE A.DBMS_ID = B.DBMS_ID
+		<if test="dbmsId != '' and dbmsId != NULL">
+		AND A.DBMS_ID = #{dbmsId}
+		</if>
+		<if test="dbmsKnd != '' and dbmsKnd != NULL">
+		AND A.DBMS_KND = #{dbmsKnd}
+		</if>
+		AND A.USE_AT = '1'
+		AND B.USE_AT = '1'
+		AND B.DBMS_VER_ID != '00'
+		ORDER BY sort DESC
+	</select>
+	
+	<select id="selectDgnssDbmsIdNextVal" parameterType="map" resultType="String">
+		SELECT 
+			MAX(cast(DGNSS_DBMS_ID as unsigned) )+1 AS dgnssDbmasId
+		FROM DGNSS_DBMS
+	</select>
+	
+	<select id="selectDualdata" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(1) AS CNT
+		FROM DUAL
+	</select>
+	
+	<insert id="mysqlimportFile" parameterType="map"> 
+		LOAD DATA LOCAL INFILE #{fullFilePath} 
+		INTO TABLE ${tableName} 
+		CHARACTER SET UTF8
+		FIELDS 
+		OPTIONALLY ENCLOSED BY '"' 
+		TERMINATED BY #{delimiter} 
+		<if test="osKnd != NULL">
+			<if test="osKnd == 'WINDOWS'">
+				LINES TERMINATED BY '\r\n' 
+			</if>
+			<if test="osKnd == 'UNIX'">
+				LINES TERMINATED BY '\n' 
+			</if>
+			<if test="osKnd == 'MAC'">
+				LINES TERMINATED BY '\r' 
+			</if>
+		</if>
+		<if test="osKnd == NULL">
+			LINES TERMINATED BY '\r\n' 
+		</if>
+		IGNORE #{titleCnt} LINES
+		(
+		<foreach item="columnData" separator="," collection="columnList">${columnData.column}</foreach>
+		)
+	</insert>
+	
+	
+	<select id="selectInsttCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM INSTT
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectInsttDbmsCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM INSTT_DBMS
+	</select>
+	
+	<select id="selectDgnssDbmsCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM DGNSS_DBMS
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectDgnssSaveCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM DGNSS_SAVE
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectDgnssTablesCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM DGNSS_TABLES
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectDgnssColumnsCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM DGNSS_COLUMNS
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectDgnssColumnsResCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM DGNSS_COLUMNS_RES
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectDgnssErrorCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM DGNSS_ERROR
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectFrqAnalsCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM FRQ_ANALS
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+	<select id="selectAnalsCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM ANALS
+		WHERE INSTT_CODE = #{insttCode}
+	</select>
+	
+</mapper>

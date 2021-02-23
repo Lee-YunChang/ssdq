@@ -1,0 +1,125 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+		<script type="text/javascript"  class="code-js">
+
+		$(document).ready(function(){
+			changeHeaderYn();
+		});
+
+		function link(page){
+			var delimiter = $("#delimiter").val();
+			var headerYn = $("#headerYn").val();
+			var culmLineCnt = $("#culmLineCnt").val();
+			
+			if(delimiter == "" || delimiter == null){
+				alert("컬럼 구분자를 반드시 입력해 주세요.");
+				$("#delimiter").focus();
+				return false;
+			}
+			if(headerYn == "" || headerYn == null){
+				alert("헤더 유무를 선택해 주세요.");
+				$("#headerYn").focus();
+				return false;
+			}
+
+			if(headerYn == "Y" ){
+				if(culmLineCnt == "0" || culmLineCnt == null){
+					alert("헤더 라인수를 입력해 주세요.");
+					$("#culmLineCnt").focus();
+					return false;
+				}
+			}
+			if(confirm("다음으로 진행 하시겠습니까?")){
+				var frm = $('#frm');
+				frm.submit();
+			}
+			
+		}
+		
+		function changeHeaderYn(){
+		
+			var headerYn = $("#headerYn").val();
+			if(headerYn == 1){
+				$("#culmLineCnt").attr('disabled',false);
+				$("#culmLineCnt").val("1");
+			}else{
+				$("#culmLineCnt").attr('disabled',true);
+				$("#culmLineCnt").val("0");
+			}
+		}
+		
+		</script>
+	</head>
+	<body id="page-top" style="width:100%;"> 
+	<form name="frm" id="frm"  method="post" action="/mngr/basicInfo/cvsFilePaser.do" >
+		<div class="card shadow mb-4">
+			<div class="card-body">
+				<div>
+					<label>
+					업로드 파일명 : ${fileName}
+					<input type="hidden" id="fileName" name="fileName" class="textStyle" value="${fileName}" >
+					<input type="hidden" id="path" name="path" class="textStyle" value="${attFileOutputFullPath}" >
+					</label>
+				</div>
+				<div class="card-body" >
+					<div id="grid" class="tb_type99">
+					<div id="dataTable_filter" class="dataTables_filter">
+				       
+					    <section class="l_box_type02">                                    
+						<div class="tb_type03">
+						    <table>
+							<tbody>
+							<c:forEach items="${dataList }" var="item" varStatus="status">
+							    <tr>
+								<td style="text-align: left;">
+								${item }
+								</td>
+							    </tr>
+							</c:forEach>
+							</tbody>
+						    </table>
+						</div>
+					    </section>
+					</div>
+					</div>
+					<div id="dataTable_filter" class="dataTables_filter">
+					<section class="l_box_type02">                                    
+						<div class="tb_type03">
+						    <table>
+							<tbody>
+							<tr>
+							<th style="width:95px;">컬럼구분자</th>
+                            <td style="text-align: left;"><input type="text" id="delimiter" name="delimiter" style="font-weight:bold; width: 40px;" value="," ></td>
+                            
+                            <th style="width:80px;">헤더유무</th>
+                            <td style="text-align: left;">
+                                <select id="headerYn" name="headerYn" style="width:80px;" onchange="changeHeaderYn(this);">
+                                    <option value="0" >N</option>
+									<option value="1" >Y</option>
+                                </select>  
+                                <input type="text" class="in_box_type01" id=culmLineCnt name="culmLineCnt" value="0" style="width:70px;">                                                              
+                            </td>
+                            </tr>
+							</tbody>
+						    </table>
+						</div>
+					    </section>
+					</div>
+					
+					<section style="text-align: center; padding: 10px;" >
+                        <button class="btn btn-primary btn_wd100" onclick="link('cvsFilePaser');">다음</button>
+                    </section>
+				</div>
+				
+			</div>
+		</div>
+	</form>
+	</body>
+
+</html>
+	

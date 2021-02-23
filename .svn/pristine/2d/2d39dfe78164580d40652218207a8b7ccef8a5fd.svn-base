@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MySQL.AnalysisMapper">
+
+	<resultMap id="columnMap" type="Map">
+		<result property="owner" column="OWNER"/>
+        <result property="columnName" column="column_name"/>
+        <result property="dataType" column="data_type"/>
+        <result property="dataLength" column="data_length"/>
+        <result property="dataPrecision" column="data_precision"/>
+        <result property="dataScale" column="data_scale"/>
+        <result property="nullable" column="nullable"/>
+        <result property="dataDefault" column="data_default" jdbcType="CLOB" javaType="java.lang.String"/>
+        <result property="lowValue" column="low_value"/>
+        <result property="highValue" column="high_value"/>
+        <result property="comments" column="comments"/>
+    </resultMap>
+    
+    <resultMap id="tableMap" type="Map">
+    	 <result property="tableName" column="table_name"/>
+        <result property="numRows" column="num_rows"/>
+        <result property="avgRowLen" column="avg_row_len"/>
+        <result property="comments" column="comments"/>
+        <result property="pkCnt" column="pk_cnt"/>
+        <result property="indexCnt" column="index_cnt"/>
+    </resultMap>
+
+
+	<select id="selectTableAnalysisTotalCnt" parameterType="map" resultType="int">
+		SELECT
+			COUNT(*) AS CNT 
+		FROM 
+		INFORMATION_SCHEMA.TABLES A 
+		, (SELECT
+		   C.TABLE_NAME
+		   , C.TABLE_SCHEMA
+		   , COUNT(C.COLUMN_KEY) COLUMNKEYCNT
+		 FROM INFORMATION_SCHEMA.COLUMNS C
+		 WHERE C.COLUMN_key = 'PRI'
+		 AND C.TABLE_SCHEMA = #{tableSchema}
+		 GROUP BY C.TABLE_NAME, C.TABLE_SCHEMA
+		 )  B
+		WHERE A.TABLE_NAME = B.TABLE_NAME
+		AND A.TABLE_SCHEMA = B.TABLE_SCHEMA
+		AND A.TABLE_TYPE = 'BASE TABLE'
+		AND A.TABLE_SCHEMA = #{tableSchema}
+		
+		ORDER BY A.TABLE_NAME
+	</select>
+	
+	<select id="selectTableAnalysis" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				T1.*, (@rownum2 := @rownum2+1) AS RNUM
+			FROM
+				(
+				SELECT
+					A.TABLE_NAME AS tableName
+					, A.TABLE_ROWS AS numRows
+					, A.AVG_ROW_LENGTH AS avgRowLen
+					, A.INDEX_LENGTH AS indexCnt
+					, A.TABLE_COMMENT AS comments
+					, B.COLUMNKEYCNT AS pkCnt
+				FROM 
+				INFORMATION_SCHEMA.TABLES A 
+				, (SELECT
+				   C.TABLE_NAME
+				   , C.TABLE_SCHEMA
+				   , COUNT(C.COLUMN_KEY) COLUMNKEYCNT
+				 FROM INFORMATION_SCHEMA.COLUMNS C
+				 WHERE C.COLUMN_key = 'PRI'
+				 AND C.TABLE_SCHEMA = #{tableSchema}
+				 GROUP BY C.TABLE_NAME, C.TABLE_SCHEMA
+				 )  B
+				
+				WHERE A.TABLE_NAME = B.TABLE_NAME
+				AND A.TABLE_SCHEMA = B.TABLE_SCHEMA
+				AND A.TABLE_TYPE = 'BASE TABLE'
+				AND A.TABLE_SCHEMA = #{tableSchema}
+				ORDER BY A.TABLE_NAME
+				) T1 ,(SELECT @rownum2 :=0) AS T2
+			) T3
+		WHERE 1=1		
+		<if test='tableAll != "1"'>
+	    AND RNUM BETWEEN #{start_row} AND #{end_row}
+	    </if>
+	</select>
+	
+	<select id="selectSchema" resultType="map">
+		SELECT
+		    TABLE_SCHEMA AS OWNER
+		FROM 
+			INFORMATION_SCHEMA.TABLES
+	        GROUP BY TABLE_SCHEMA
+	</select>
+	
+	<select id="selectTable" resultType="map">
+		SELECT
+			TABLE_NAME AS TABLENAME
+		FROM
+			INFORMATION_SCHEMA.TABLES
+		WHERE
+			TABLE_SCHEMA = #{tableSchema}
+	</select>
+	
+	<select id="selectColumnAnalysis" parameterType="map" resultType="map">
+		SELECT  
+			COLUMN_NAME AS columnName
+			, TABLE_SCHEMA as tableSchema
+			, DATA_TYPE AS dataType
+			, CHARACTER_MAXIMUM_LENGTH AS dataLength
+			, NUMERIC_PRECISION AS dataPrecision 
+			, NUMERIC_SCALE AS dataScale 
+			, IS_NULLABLE AS nullable
+			, COLUMN_DEFAULT AS dataDefault
+			, COLUMN_COMMENT AS comments
+			, TABLE_NAME AS tableName
+		FROM INFORMATION_SCHEMA.COLUMNS  
+		WHERE TABLE_NAME = #{tableName}
+		AND NOT DATA_TYPE IN ('TEXT','BLOB')
+		ORDER BY ORDINAL_POSITION
+	</select>
+	
+	<!-- 
+	<select id="selectColumnAnalysis" parameterType="Map" resultMap="columnMap">
+		SELECT
+ 			A.OWNER
+		    , A.COLUMN_ID 
+		    , A.COLUMN_NAME
+		    , A.TABLE_NAME
+		    , A.DATA_TYPE
+		    , A.DATA_LENGTH
+		    , A.DATA_PRECISION
+		    , A.DATA_SCALE
+		    , A.NULLABLE
+		    , A.DATA_DEFAULT
+		    , DECODE(A.DATA_TYPE, 
+				'NUMBER', UTL_RAW.CAST_TO_NUMBER(A.LOW_VALUE)||'',
+				'CHAR', UTL_RAW.CAST_TO_VARCHAR2(A.LOW_VALUE)||'',
+				'VARCHAR2', UTL_RAW.CAST_TO_VARCHAR2(A.LOW_VALUE), 
+				A.LOW_VALUE||''
+			) AS LOW_VALUE 
+			, DECODE(A.DATA_TYPE, 
+				'NUMBER', UTL_RAW.CAST_TO_NUMBER(A.HIGH_VALUE)||'', 
+				'CHAR', UTL_RAW.CAST_TO_VARCHAR2(A.LOW_VALUE)||'',
+				'VARCHAR2', UTL_RAW.CAST_TO_VARCHAR2(A.HIGH_VALUE), A.HIGH_VALUE||''
+			) AS HIGH_VALUE 
+    		, B.COMMENTS   
+		FROM 
+			ALL_TAB_COLUMNS A , ALL_COL_COMMENTS B
+		WHERE 1=1
+			AND A.OWNER = B.OWNER
+			AND A.TABLE_NAME = B.TABLE_NAME
+			AND A.COLUMN_NAME = B.COLUMN_NAME
+			AND A.OWNER = #{tableSchema }
+			AND A.TABLE_NAME = UPPER(#{tableName })
+		ORDER BY
+			A.COLUMN_ID
+	</select>
+	 -->
+	<select id="selectDualCheck" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(1) AS CNT
+		FROM DUAL
+	</select>
+	
+	<select id="selectCheckPatten" parameterType="map" resultType="int">
+		SELECT 
+		COUNT(CASE WHEN #{checkText} REGEXP BINARY #{analsFrmla} THEN 1 END) AS CNT
+		FROM DUAL
+	</select>
+	
+	<select id="checkCsvColumnNm" parameterType="map" resultType="string">
+		SELECT  
+			COLUMN_NAME AS columnName
+		FROM INFORMATION_SCHEMA.COLUMNS  
+		WHERE TABLE_NAME = #{tables}
+		AND COLUMN_COMMENT = #{comments}
+	</select>
+	
+	<select id="selectCheckSql" parameterType="map" resultType="int">
+		SELECT 
+		COUNT(1) AS CNT
+		FROM ${tables}
+		WHERE ${analsFrmla}
+	</select>
+	
+	<select id="selectMaxVal" parameterType="map" resultType="String">
+		SELECT 
+			MAX(${columnName})
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+	<select id="selectMinVal" parameterType="map" resultType="String">
+		SELECT 
+			MIN(${columnName})
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+	<select id="selectMinMaxVal" parameterType="map" resultType="map">
+		SELECT 
+			${columnName}
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+	<select id="selectTableAnalysisTotalColCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(1)
+		FROM(
+			SELECT 
+				${columnName}
+			FROM ${tableSchema}.${tableName}
+		) A
+	</select>
+	
+	<select id="selectTableAnalysisMtchgCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(1)
+		FROM(
+			SELECT 
+				${columnName}
+			FROM ${tableSchema}.${tableName}
+			WHERE ${columnName} IS NOT NULL
+		) A
+		${whereParam}<![CDATA[>=]]>DATE(#{chkDate})
+	</select>
+	
+	<select id="selectTableAnalysisMissCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(1)
+		FROM(
+			SELECT 
+				${columnName}
+			FROM ${tableSchema}.${tableName}
+			WHERE ${columnName} IS NOT NULL
+		) A
+		${whereParam}<![CDATA[<]]>DATE(#{chkDate})
+	</select>
+</mapper>

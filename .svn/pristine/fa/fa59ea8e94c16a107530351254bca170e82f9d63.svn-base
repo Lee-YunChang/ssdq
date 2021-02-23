@@ -1,0 +1,138 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title><c:if test="${not empty title}">${title} &lt;</c:if> :: 상상스토리  - DQ ::</title>
+
+	<!-- 폰트 -->
+	<link href="/resources/vendor/fontawesome-free/css/all.css" rel="stylesheet" />
+	<!-- Admin Bootstrap 스타일시트 -->
+	<link href="/resources/css/sb-admin-3.css" rel="stylesheet" />
+	<!-- TUI 스타일시트 -->
+	<link href="/resources/css/tui/tui-grid.css" rel="stylesheet" />
+	<!-- jquery ui -->
+	<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+	<!-- Sub -->
+	<link href="/resources/css/sub.css" rel="stylesheet">
+
+	<!-- TUI 스크립트 -->
+	<script type="text/javascript" src="/resources/js/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/underscore.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/backbone.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-code-snippet.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-grid.js"></script>
+	<script type="text/javascript" src="/resources/js/common.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-pagination.js"></script>
+	<!-- Bootstrap 스크립트 -->
+	<script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+	<!-- Admin Bootstrap 스크립트 -->
+	<script src="/resources/js/sb-admin-2.js"></script>
+	</head>
+	
+	<body id="page-top" style="overflow-x:hidden; overflow-y:hidden;">
+		<div id="wrapper">
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+					<!-- 본문 -->
+					<div class="container-fluid">
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<form id="frm" name="frm" action="list.do" method="get">
+									<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" value="${param.dgnssDbmsId}" />
+									<input type="hidden" id="dgnssInfoId" name="dgnssInfoId" value="${param.dgnssInfoId}" />
+								</form>
+								<div class="card shadow mb-4">
+									<div class="card-body">
+										<div class="modal-header">
+											<h5 class="modal-title" id="example">진단 오류 내역</h5>
+											<button type="button" class="btn btn-primary btn_wd100" onclick="self.close();">닫기</button>
+										</div>
+										<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10" />
+										<div id="grid" class="tb_type99"></div>
+										<div id="pagination" class="tui-pagination"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+<script>
+var grid = null;
+
+$(function() {
+	girdView();
+	fn_search();
+});
+
+function girdView(){
+
+	var columns = [
+		{header: '스키마명', name: 'schemaNm', width: 140, align: 'center'},
+		{header: '테이블명', name: 'tableNm', width: 140, align: 'center'},
+		{header: '컬럼명', name: 'columnNm', whiteSpace: 'nowrap'},
+		{header: '분석 아이디', name: 'analsId', whiteSpace: 'nowrap'},
+		{header: '오류명', name: 'errorNm', whiteSpace: 'nowrap', editor: 'text'},
+		{header: '오류내용', name: 'errorContent', whiteSpace: 'nowrap', editor: 'text'},
+		{header: '등록일시', name: 'registDt', width: 150, align: 'center'}
+	];
+
+	grid = new tui.Grid({
+		el: $('#grid')[0],
+		data: [],
+		scrollX: false,
+		scrollY: false,
+		bodyHeight : 'auto',
+		header: {
+			height: 50
+		},
+		columns: columns
+	});
+/*
+	const extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+*/
+}
+
+function fn_search() {
+
+	$.post('listAjax.do', {
+		dgnssInfoId: $('#dgnssInfoId').val(),
+		pageIndex: $('#pageIndex').val(),
+		itemsPerPage: $('#itemsPerPage').val()
+	}, function(data) {
+//		console.log(data);
+		var list = data.list;
+		var totalCnt = data.totalCnt;
+
+		for (var i in list) {
+			var item = list[i];
+		}
+		grid.resetData(list);
+
+		/* 페이징 function 호출 */
+//		fn_pagination(totalCnt); // 스타일이 안먹어서 주석처리 함.
+	});
+}
+</script>
+
+</html>

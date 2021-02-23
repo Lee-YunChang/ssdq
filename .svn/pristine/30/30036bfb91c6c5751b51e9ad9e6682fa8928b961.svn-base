@@ -1,0 +1,113 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+
+	<title>:: 상상스토리 DQ ::</title>
+
+	<!-- 폰트 -->
+	<link href="/resources/vendor/fontawesome-free/css/all.css" rel="stylesheet" type="text/css">
+	<link href="/resources/css/custom_font.css" rel="stylesheet">
+
+	<!-- 스타일시트 -->
+	<link href="/resources/css/sb-admin-2.css" rel="stylesheet">
+
+	<!-- TUI 스타일시트 -->
+	<link rel="stylesheet" type="text/css" href="/resources/css/tui/tui-grid.css" />
+	<!-- TUI 스크립트 -->
+	<script type="text/javascript" src="/resources/js/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/underscore.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/backbone.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-code-snippet.js"></script>
+	<script type="text/javascript" src="/resources/js/tui/tui-grid.js"></script>
+	<script type="text/javascript" src="/resources/data/basic-dummy.js"></script>
+
+</head>
+
+<style>
+	.textStyle{
+		border:none;
+		width:130px;
+		background-color:white;
+	}
+	.textAStyle{
+		border:none; 
+		width:600px; 
+		background-color:white;"
+	}
+</style>
+
+<body id="page-top" style="width:260px;">
+ 
+	<div id="wrapper">
+	
+    
+		<!-- Content Wrapper -->
+		<div id="content-wrapper" class="d-flex flex-column" >
+			<!-- 메인 -->
+			<div id="content">
+				<!-- 본문 -->
+				<div class="container-fluid">
+					<!-- 영역 -->
+					<div class="row">
+						<div style="height:145px;">
+							<!-- 내용 -->
+							<div class="card shadow mb-4">
+								<div class="card-body" >
+									<input type="text" value="연결 성공!" class="textStyle" style="margin-left:55px;" disabled />
+									<div>
+										<a class="btn focus" style="margin-left:64px; margin-top:15px;" onclick="closepop();">확인</a>		
+									</div>	
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+  </div>
+  <!-- End of Page Wrapper -->
+
+<script type="text/javascript"  class="code-js">
+
+$(document).ready(function() {
+	
+});
+
+function closepop(){
+	opener.$("#conCheck").val("Y");
+	window.close();
+
+}
+</script>
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="/resources/vendor/jquery/jquery.min.js"></script>
+  <script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="/resources/js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="/resources/js/demo/chart-area-demo.js"></script>
+  <script src="/resources/js/demo/chart-pie-demo.js"></script>
+
+
+	
+
+</body>
+
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+			<!-- 상단 내비 / 타이틀 -->
+			<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+	              			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; RULE &gt; <label th:text="#{UIT0188}">업무규칙 관리</label> &gt; <label th:text="#{UIT0231}">사용자 정의(SQL)</label></span>
+	                 </div> -->
+	                 
+	        <div class="location">
+				<ul>
+		            <li class="home">home</li>
+		            <li>RULE</li>
+		            <li><label th:text="#{UIT0188}">업무규칙 관리</label></li>
+		            <li><label th:text="#{UIT0231}">사용자 정의(SQL)</label></li>
+	            </ul>
+			</div>
+	                 
+	                 <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+				<h1 class="col_grey font_23" th:text="#{UIT0231}"> 사용자 정의(SQL)</h1>
+	                 </div> -->
+			<!-- 영역 -->
+			<div class="row">
+				<div class="col-lg mb-4">
+					<div class="card shadow mb-4">
+					<div class="card-body">
+	                    <!-- <section class="mgn_b20 txt_right">
+	                    	<button th:if="${connData eq null}" class="btn btn-primary btn_wd120" onclick="openInfoLayer('dbms')"  th:text="#{UIT0232}">테이블 정보</button>
+	                    	<button th:if="${connData ne null}" class="btn btn-primary btn_wd120" onclick="openInfoLayer('csv')"  th:text="#{UIT0233}">파일 정보</button>
+	                        <button class="btn btn-secondary btn_wd120" onclick="goList('list')"  th:text="#{UIT0190}">목록보기</button>
+	                        <button class="btn btn-secondary btn_wd120" onclick="fn_checkSql();" th:text="#{UIT0216}">유효성체크</button>
+	                        <button class="btn btn-primary btn_wd100" id="btnSave" name="btnSave" onclick="fn_saveSql();" th:text="#{UIT0088}">저장</button>
+	                    </section> -->
+	                    
+	                    <div class="button_area alignr marginb5">
+	                    	<button th:if="${connData eq null}" class="btn btn-s gray in_wp120" onclick="openInfoLayer('dbms')"  th:text="#{UIT0232}" style="width:80px;">테이블 정보</button>
+	                    	<button th:if="${connData ne null}" class="btn btn-s gray in_wp120" onclick="openInfoLayer('csv')"  th:text="#{UIT0233}" style="width:80px;">파일 정보</button>
+			                <button class="btn btn-s gray in_wp120" type="button"th:text="#{UIT0190}" onclick="goList('list')" style="width:80px;">목록보기</button>
+	                        <button class="btn btn-s gray in_wp120" onclick="fn_checkSql();" th:text="#{UIT0216}" style="width:80px;">유효성체크</button>
+			                <button class="btn btn-s blue in_wp100" id="btnSave" name="btnSave" th:text="#{UIT0088}"  onclick="fn_saveSql();" >저장</button>
+			         	</div>
+	                    
+	                    <!-- 영역 -->
+	                    <form action="">
+	                    	<input type="hidden" id="analsSe" name="analsSe" th:value="AG000400">
+	                    	<input type="hidden" id="analsTy" name="analsTy" th:value="AT000100">
+	                    	<input type="hidden" id="analsId" name="analsId" th:value="${analsId}">
+	                        <input type="hidden" id="checkYn" name="checkYn" th:value="N">
+	                        <section class="l_box_type02">                                    
+	                            <div class="table_area">
+	                                <table class="write fixed" style="background-color: white;"><!-- 탭이 없어서 백그라운드 컬러 설정 -->
+	                                  <colgroup>
+			                                    <col style="width: 15%;" />
+			                                    <col style="width: auto" />
+			                          </colgroup>
+	                                    <tbody>
+	                                        <tr>                                                                
+	                                            <th><span class="impo"></span> <label th:text="#{UIT0234}">SQL명</label></th>
+	                                            <td colspan="3">
+	                                                <input type="text" id="analsNm" name="analsNm" class="in_w100" maxlength="30" th:value="${analsNm}">
+	                                            </td>                                                                
+	                                        </tr>
+	                                        <tr id='dbmsTR' th:if='${connData eq null}'>     
+	                                            <th><span class='impo'></span> Database/Table</th>
+												<td style='text-align: left'>
+													<div class="selectbox" style="width:150px; display:inline-block;">
+		                                                <label for="la_schema"></label>
+														<select id='schema' name='schema' class='in_w100' style='width: 200px; margin-right: 20px' onchange='selDbmsTableListBox();'>
+															<option value='00' th:text="#{UIT0235}">데이터베이스 선택</option>
+														</select>
+													</div>
+													<div class="selectbox" style="width:200px; display:inline-block;">
+														<label for="la_tables">테이블 선택</label>
+														<select id='tables' name='tables' class='in_w100' style='width: 200px' >
+															<option value='00' th:text="#{UIT0236}">테이블 선택</option>
+														</select>
+													</div>
+													<!-- <div class="selectbox" style="width:150px; display:inline-block;"> 
+		                                                <label for="ex_select">셀렉트박스</label>
+		                                                <select id='tables' name='tables'> 
+		                                                    <option value='00' th:text="#{UIT0236}">테이블 선택</option>
+		                                                </select>
+		                                            </div> -->
+												</td>
+	                                        </tr>
+	                                        <tr id='csvTR' th:if='${connData ne null && connData.connType eq "CSV"}'>
+	                                        	<th><span class='impo'></span> <label th:text="#{UIT0237}">파일명</label></th>
+												<td style='text-align: left;'>
+													<input type='hidden' id='csvDatabase' name='csvDatabase'  th:value='${connData.database}'>
+													<input type='hidden' id='csvTable' name='csvTable'  th:value='${connData.connTableName}'>
+													<span th:text='${connData.connFileName}'></span>
+												</td>
+	                                        </tr>
+	                                        <tr>
+	                                            <th><span class="impo"></span> <label th:text="#{UIT0238}">where 절</label></th>
+	                                            <td colspan="3">
+	                                                <textarea rows="10" id="analsFrmla" name= "analsFrmla" type="text" onchange="resetYn();" class="in_w100" placeholder="WHERE 제외 입력  &#13;&#10;ex) 컬럼 명 = '비교값' " th:value="${viewFrmla}" th:text="${viewFrmla}" style="background-color: #f2f2f2;"></textarea>
+	                                            </td>
+	                                        </tr>
+	                                        <tr>
+	                                            <th th:text="#{UIT0092}">설명</th>
+	                                            <td colspan="3">
+	                                                <textarea rows="10" id="rm" name="rm" type="text" th:value="${rm}" th:text="${rm}" class="in_w100" style="background-color: #f2f2f2;"></textarea>
+	                                            </td>
+	                                        </tr>                                                                                                   
+	                                    </tbody>
+	                                </table>
+	                            </div>
+	                        </section>
+	                     </form>
+	                </div> 
+				</div>
+			</div>
+			
+			
+			<!-- 테이블 정보 팝업 open -->
+			<div id="openTableInfo" class="layer_pop_wrap " style="top:40%; left:40%;">
+				<div class="txt_right mgn_b10">
+				    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+				</div>
+				<div class="layer_pop" style="height: 600px;">
+					<div class="layer_header">
+					    <p th:text="#{UIT0232}">테이블 정보</p>
+					</div>
+						
+					<!-- <div style="padding:40px 50px; background-color: white;">				
+					</div> -->
+					<section class="l_box_type02" >
+							<!-- <p class="search">
+								<span class="sub_title2" th:text="#{UIT0240}">컬럼명</span>
+								<input type="text" id="dbmsSearchValue" class="in_box_type01 in_length400">
+								<a href="javascript:fn_search('dbms');" class="btn_find" th:text="#{UIT0008}">찾기</a>
+							</p> -->
+						<div class="content_body marginb10">	
+							<div class="alignc">
+								<span class="sub_title2" th:text="#{UIT0240}">컬럼명</span>
+								<input type="text" id="dbmsSearchValue" class="in_box_type01 in_length400 marginl10">
+								<a href="javascript:fn_search('dbms');" class="btn_find" th:text="#{UIT0008}">찾기</a>
+							</div>
+						</div>
+						<div class="content_body">
+							<div id="dbmsGrid" class="tb_type99" style="overflow-x: auto;overflow-y: auto;height: 400px;"></div>
+						</div>				
+					</section>
+	             </div>
+			</div>
+			<!-- 테이블 정보 팝업 close -->
+			
+			<!-- 파일 정보 팝업 open -->
+			<div id="openFileInfo" class="layer_pop_wrap " style="top:40%; left:35%;">
+				<div class="txt_right mgn_b10">
+				    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+				</div>
+				<div class="layer_pop" style="height: 600px;">
+					<div class="layer_header">
+					    <p th:text="#{UIT0241}">파일정보 </p>
+					</div>
+					<section class="l_box_type02">					
+						<p class="search">
+							<span class="sub_title2" th:text="#{UIT0240}">컬럼명</span>
+							<input type="text" id="csvSearchValue" class="in_box_type01 in_length400">
+							<a href="javascript:fn_search('csv');" class="btn_find" th:text="#{UIT0008}">찾기</a>
+						</p>
+						<div id="csvGrid" class="tb_type99" style="margin-top:20px;overflow-x: auto;overflow-y: auto;height: 400px;"></div>
+					</section>
+	             </div>
+			</div>
+			<!-- 파일 정보 팝업 close -->
+			
+		</div>
+				
+	<script type="text/javascript"  class="code-js" th:inline="javascript">
+		
+		
+		/*<![CDATA[*/
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+		var connData = /*[[${connData}]]*/;
+		var Schema = /*[[ ${schema} ]]*/;
+		var Tables = /*[[ ${tables} ]]*/;
+		var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var UIT0200 = /*[[ #{UIT0200} ]]*/; //: 해당 정보를 등록 하시겠습니까?
+		var UIT0201 = /*[[ #{UIT0201} ]]*/; //: 정상적으로 등록되었습니다.
+		var UIT0236 = /*[[ #{UIT0236} ]]*/; //: 테이블 선택
+		var UIT0242 = /*[[ #{UIT0242} ]]*/; //: SQL명을 반드시 입력해 주세요.
+		var UIT0243 = /*[[ #{UIT0243} ]]*/; //: 스키마를 선택해 주세요.
+		var UIT0244 = /*[[ #{UIT0244} ]]*/; //: 테이블을 선택해 주세요.
+		var UIT0245 = /*[[ #{UIT0245} ]]*/; //: where 절를  반드시 입력해 주세요.
+		var UIT0246 = /*[[ #{UIT0246} ]]*/; //: 유효성체크버튼을 클릭해 주세요.
+		var UIT0247 = /*[[ #{UIT0247} ]]*/; //: 정상적인 SQL 문입니다.
+		var UIT0248 = /*[[ #{UIT0248} ]]*/; //: WHERE 절 문에 오류가 있습니다.
+		var UIT0253 = /*[[ #{UIT0253} ]]*/; //: 데이터베이스를  반드시 선택해 주세요.
+		var UIT0254 = /*[[ #{UIT0254} ]]*/; //: 테이블을  반드시 선택해 주세요.
+		var UIT0240 = /*[[ #{UIT0240} ]]*/; //: 컬럼명
+		var UIT0255 = /*[[ #{UIT0255} ]]*/; //: Data 타입
+		var UIT0256 = /*[[ #{UIT0256} ]]*/; //: Data 길이
+		var UIT0257 = /*[[ #{UIT0257} ]]*/; //: Data 정밀도
+		var UIT0258 = /*[[ #{UIT0258} ]]*/; //: Data 스케일
+		var UIT0259 = /*[[ #{UIT0259} ]]*/; //: 널허용
+		var UIT0260 = /*[[ #{UIT0260} ]]*/; //: 디폴트값
+		var UIT0261 = /*[[ #{UIT0260} ]]*/; //: 컬럼설명
+		var UIT0262 = /*[[ #{UIT0262} ]]*/; //: 물리컬럼명
+		/*]]*/
+		
+		$(document).ready(function() {
+			// sessionCon 체크
+			isSessionConChk(sessionCon);
+			
+			$("label[for='la_schema']").text(Schema);
+			
+			// 접속상태 [dbms]일 시 
+			if(connData == null){
+				//dbms일 때만 검색
+	            selDbmsSchemaListBox();
+	            
+	            /* chosen Select Box 관련 추가  */
+				/* 2019-07-29 최보람 */
+				/*
+				$("#schema, #tables").chosen({
+					search_contains : true,
+					width : 230,
+					no_results_text : "검색결과가 없습니다. : "
+				});
+	            */
+	            //$('select').chosen();
+			}
+			
+			var analsId = /*[[ ${analsId} ]]*/;
+			if(analsId > -1 && (null != analsId || undefined != analsId)){
+				$("#btnSave").text(UIT0095);
+			}
+
+		});
+
+
+		// 스키마정보 조회
+		function selDbmsSchemaListBox(){
+			var Schema = /*[[ ${schema} ]]*/;
+			if($("#schema").val() != '00' && $("#schema").val() != ''){
+				Schema = $("#schema").val();
+			}
+			$.ajax({
+				url: '/mngr/ruleMng/selectSchemasList',
+				method : 'POST',
+				data: {dgnssDbmsId : sessionCon},
+				success: function(dataList){
+					for(var i = 0; i < dataList.length; i++){
+						var selected = "";
+						if(Schema != null){
+							if(Schema.toUpperCase().trim() == dataList[i].OWNER.toUpperCase()){
+								selected = "selected=true";
+								selDbmsTableListBox();
+							}
+						}else{
+							selected = "";
+						}
+						
+						var option  = $("<option value="+dataList[i].OWNER+" "+selected+">"+dataList[i].OWNER+"</option>");
+						$("#schema").append(option);
+													
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#schema").trigger("chosen:updated");
+					}
+		        }, error:function() {
+	                alert(UIT0041);
+	                return;
+	           }
+		    });
+		}
+
+		// 테이블정보 조회
+		function selDbmsTableListBox(){
+			//var Schema = /*[[ ${schema} ]]*/;
+			//var Tables = /*[[ ${tables} ]]*/;
+			
+			
+			$("#tables").empty();
+			var option  = $("<option value='00'>"+UIT0236+"</option>");
+			$("#tables").append(option);
+			
+			if($("#schema").val() != '00' && $("#schema").val() != ''){
+				Schema = $("#schema").val();
+			}
+			if($("#tables").val() != '00' && $("#tables").val() != ''){
+				Tables = $("#tables").val();
+			}
+			
+			$.ajax({
+				url: '/mngr/ruleMng/selectSchemaTablesList',
+				method : 'POST',
+				data: {dgnssDbmsId : sessionCon, tableSchema : Schema},
+				success: function(dataList){
+					for(var i = 0; i < dataList.length; i++){
+						
+						var selected = "";
+						if(Tables != null){
+							if(Tables.toUpperCase().trim() == dataList[i].TABLENAME.toUpperCase()){
+								selected = "selected=true";
+							}
+						}else{
+							selected = "";
+						}
+						option  = $("<option value="+dataList[i].TABLENAME+" "+selected+">"+dataList[i].TABLENAME+"</option>");
+						$("#tables").append(option);
+						
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tables").trigger("chosen:updated");
+												}
+		        }, error:function() {
+	                alert(UIT0041);
+	                return;
+	           }
+		    });
+		}
+
+		// 입력된 SQL 정보 등록
+		function fn_saveSql(){
+			var arr = [];
+			var obj = {};
+			var schema = "";
+			var tables = "";
+			
+			if(connData==null){
+				schema = $("#schema").val();
+				tables = $("#tables").val();
+			}else {
+				schema = $("#csvDatabase").val();
+				tables = $("#csvTable").val();
+			}
+			
+			var analsNm = $("#analsNm").val();
+			var analsFrmla = $("#analsFrmla").val();
+			var rm = $("#rm").val();
+			var checkYn = $("#checkYn").val();
+			var analsId = $("#analsId").val();
+			
+			if(analsNm == "" || analsNm == null){
+				alert(UIT0242);
+				$("#analsNm").focus();
+				return false;
+			}
+			
+			if(connData == null){
+				if(schema == "00" || schema == null){
+					alert(UIT0243);
+					$("#schema").focus();
+					return false;
+				}
+				if(tables == "00" || tables == null){
+					alert(UIT0244);
+					$("#tables").focus();
+					return false;
+				}
+			}
+			
+			
+			if(analsFrmla == "" || analsFrmla == null){
+				alert(UIT0245);
+				$("#analsFrmla").focus();
+				return false;
+			}
+
+			if(checkYn == "N" || checkYn == null){
+				alert(UIT0246);
+				return false;
+			}
+			obj.tables = tables ;
+			obj.schema = schema;
+			obj.analsNm = analsNm;
+			obj.analsFrmla = analsFrmla;
+			obj.rm = rm;
+			obj.analsId = analsId;
+			arr.push(obj);
+			
+			if(confirm(UIT0200)){
+				
+				$.ajax({
+					url: "/mngr/ruleMng/saveRuleSql",
+					data: {dataList : JSON.stringify(arr), analsId : analsId},
+					success: function(data){
+						if(data=='true'){
+							alert(UIT0201);
+							// 처리 완료시 페이지를 조회 페이지로 이동하여 등록 결과 목록을 확인 한다.
+							location.href = "/mngr/analysis/analysisPatternList";
+						}else{
+							alert(UIT0041);
+						}
+						
+					}, error:function() {
+		                alert(UIT0041);
+		                return;
+		           }
+				});
+			}
+		}
+		
+		function fn_checkSql(){
+			var schema = "";
+			var tables = "";
+			var analsFrmla = $("#analsFrmla").val();
+			
+			if(connData != null){
+				schema = $("#csvDatabase").val();
+				tables = $("#csvTable").val();
+			}else {
+				schema = $("#schema").val();
+				tables = $("#tables").val();					
+			}
+			
+			if(connData == null){
+				if(schema == "00" || schema == null){
+					alert(UIT0243);
+					$("#schema").focus();
+					return false;
+				}
+				if(tables == "00" || tables == null){
+					alert(UIT0244);
+					$("#tables").focus();
+					return false;
+				}
+			}
+			if(analsFrmla == "" || analsFrmla == null){
+				alert(UIT0245);
+				$("#analsFrmla").focus();
+				return false;
+			}
+			$.ajax({
+				url: "/mngr/ruleMng/checkRuleSql",
+				data: {tables : tables, schema : schema, analsFrmla : analsFrmla},
+				success: function(data){
+					if(data == "true"){
+						alert(UIT0247);
+						$("#checkYn").val("Y");
+					}else{
+						alert(UIT0248);
+						$("#checkYn").val("N");
+					}
+					
+				}, error:function() {
+	                alert(UIT0041);
+	                return;
+	           }
+			});
+		}
+
+		function resetYn(){
+			$("#checkYn").val("N");
+		}
+
+		function resetTables(){
+			$("#tables").reset();
+		}
+		
+		function goList(type){
+			location.href = "/mngr/analysis/analysisPatternList";
+		}
+		
+		
+		function openInfoLayer(type){
+			
+			if(type == "dbms"){
+				if($("#schema").val() == "00" || $("#schema").val() == null){
+					alert(UIT0253);
+					$("#schema").focus();
+					return false;
+					
+				}else if($("#tables").val() == "00" || $("#tables").val() == null){
+					alert(UIT0254);
+					$("#tables").focus();
+					return false;
+					
+				}else{
+					/*찾기 레이어 열기*/
+				    $('#openTableInfo').addClass('on');
+				    $('.cover').show();
+				    
+				    fn_search(type);
+				}
+			}
+			
+			if(type == "csv"){
+				/*찾기 레이어 열기*/
+			    $('#openFileInfo').addClass('on');
+			    $('.cover').show();
+			    
+			    fn_search(type);
+			}
+		}
+		
+		function fn_search(type){
+			var searchValue = "";
+			var schema = "";
+			var tables = "";
+			
+			//팝업을 open시  where 절 textarea의 value값을 초기화 함
+			// $("#analsFrmla").val("");
+			if(type == "dbms"){
+				searchValue = $("#dbmsSearchValue").val();
+				schema = $("#schema").val();
+				tables = $("#tables").val();
+
+				$("#dbmsGrid").empty();
+			}
+			
+			if(type == "csv"){
+				searchValue = $("#csvSearchValue").val();
+				schema = $("#csvDatabase").val();
+				tables = $("#csvTable").val();
+				
+				$("#csvGrid").empty();
+			}
+			
+			
+			$.ajax({
+				url: "/mngr/ruleMng/selectColumnAnalysis",
+				data: {"tableName" : tables, "tableSchema" : schema, "searchValue" : searchValue},
+				success: function(data){
+					var obj = JSON.parse(data);
+					
+					fn_setLayerGrid(obj);
+					
+				}, error:function() {
+	                alert(UIT0041);
+	                return;
+	           }
+			});
+		}
+		
+		function fn_setLayerGrid(data){
+			
+			var columns;
+			var gridId = "";
+			
+			if(connData == null){
+				columns = [
+				{header: UIT0240, name: 'columnName', whiteSpace: 'normal', sortable: true, align:'center'},			
+				{header: UIT0255, name: 'dataType', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'}, 
+				{header: UIT0256, name: 'dataLength', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'}, 
+				{header: UIT0257, name: 'dataPrecision', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'}, 
+				{header: UIT0258, name: 'dataScale', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'},
+				{header: UIT0259,name: 'nullable', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'},
+				{header: UIT0260,name: 'dataDefault', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'},
+				{header: UIT0261,name: 'comments', whiteSpace: 'normal', sortable: true, align:'left'}
+				];
+				
+				gridId = document.getElementById("dbmsGrid");
+			}else{
+				columns = [
+				{header: UIT0262, name: 'columnName', hidden:true},	
+				{header: UIT0240, name: 'comments', whiteSpace: 'normal', sortable: true, align:'center'},			
+				{header: UIT0255, name: 'dataType', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'}, 
+				{header: UIT0256, name: 'dataLength', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'}, 
+				{header: UIT0257, name: 'dataPrecision', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'}, 
+				{header: UIT0258, name: 'dataScale', whiteSpace: 'normal', sortable: true,  width: 100,align:'right'},
+				{header: UIT0259,name: 'nullable', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'},
+				{header: UIT0260,name: 'dataDefault', whiteSpace: 'normal', sortable: true,  width: 100,align:'center'},
+				{header: UIT0261,name: 'comments', whiteSpace: 'normal', sortable: true, align:'left'}
+				];
+				
+				gridId = document.getElementById("csvGrid");
+			}
+			
+			
+			
+			const columnAnalysisGrid = new tui.Grid({
+		           el : gridId,
+		           data : data,
+		           scrollX : false,
+		           scrollY : false,
+		           width : 'auto',
+		           rowHeight : 40,
+		           minBodyHeight : 40,
+		           bodyHeight: 'auto',
+		           header: {
+		             height: 50
+		           },
+		           columns : columns
+		     });
+		     
+		     const extOptions = {
+		           cell: {
+		                focused: {
+		                 border: 0 // 선택 셀 강조 표시 x
+		             }
+		           }
+		     };
+		     
+		     tui.Grid.applyTheme('default', extOptions);
+		    	 
+	    	 columnAnalysisGrid.on('click', function(ev) {
+				var inText = ev.nativeEvent.target.innerText;
+				var obj = ev.nativeEvent.target;
+				var mode = $(obj).data("value");
+				
+				var rowData = columnAnalysisGrid.getRow(ev.rowKey);
+				var columnName = "";
+				var sqlText = $("#analsFrmla").val();
+				if(connData == null){
+					columnName += rowData.columnName;	
+					$("#analsFrmla").val(sqlText+columnName);
+					
+					//데이터가 있을 시 close
+					if($("#analsFrmla").val() != null || $("#analsFrmla").val() != ""){
+						fn_modalCloseLayer();
+					}
+				}else {
+					columnName += "["+rowData.comments+"]";
+					$("#analsFrmla").val(sqlText+columnName);						
+					
+					//데이터가 있을 시 close
+					if($("#analsFrmla").val() != null || $("#analsFrmla").val() != ""){
+						fn_modalCloseLayer();
+					}
+				}
+			});
+			     
+		    columnAnalysisGrid.resetData(data);
+		}
+			
+		</script>
+	</div>
+</html>

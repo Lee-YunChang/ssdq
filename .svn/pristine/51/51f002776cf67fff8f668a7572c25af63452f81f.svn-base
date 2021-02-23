@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.DataStandardMapper">
+
+	<insert id="insertDomainInfo" parameterType="map">
+		<selectKey resultType="Integer" keyProperty="domainId" order="BEFORE">
+			SELECT IFNULL(MAX(cast(DOMAIN_ID as unsigned)),0)+1 AS domainId FROM STANDARD_DOMAIN 
+		</selectKey>
+		
+		INSERT INTO STANDARD_DOMAIN
+		(
+			DOMAIN_ID 
+			, DOMAIN_CL 
+			, DOMAIN_NM 
+			, DOMAIN_TY
+			, DOMAIN_LT
+			, RM
+			, USE_AT
+			, REGIST_DT
+			, DBMS_KND
+		)
+		VALUES
+		(
+			#{domainId}
+			, #{domainCl}
+			, #{domainNm} 
+			, #{domainTy}
+			, #{domainLt}
+		 	, #{domainRm}
+			, 1
+			, now()
+			, #{domainDbms}
+		)
+	</insert>
+	
+	<select id="selectDomainId" resultType="String">
+		SELECT IFNULL(MAX(cast(DOMAIN_ID as unsigned)),0) AS domainId FROM STANDARD_DOMAIN 
+	</select>
+	
+	
+	<select id="selectDomainListTotalCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM STANDARD_DOMAIN
+		WHERE 1=1
+		<if test="searchDomainCl != '' and searchDomainCl != NULL">
+			AND DOMAIN_CL LIKE CONCAT('%', #{searchDomainCl}, '%')
+		</if>
+		<if test="searchDomainNm != '' and searchDomainNm != NULL">
+			AND DOMAIN_NM LIKE CONCAT('%', #{searchDomainNm}, '%')
+		</if>
+		<if test="searchDomainDbms != '' and searchDomainDbms != NULL">
+			AND DBMS_KND = #{searchDomainDbms}
+		</if>
+	</select>
+	
+	<select id="selectDomainList" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				T1.*, (@rownum2 := @rownum2+1) AS RNUM
+			FROM(
+				SELECT 
+					D.DOMAIN_ID AS domainId
+					, D.DOMAIN_CL AS domainCl 
+					, D.DOMAIN_NM AS domainNm
+					, D.DOMAIN_TY AS domainTy
+					, D.DOMAIN_LT AS domainLt
+					, D.RM AS rm
+					, D.USE_AT AS useAt
+					, D.REGIST_DT AS registDt
+					, (SELECT DBMS_KND FROM INSTT_DBMS WHERE DBMS_ID = D.DBMS_KND) AS dbmsKnd
+					, (@rownum := @rownum+1) AS RN
+				FROM STANDARD_DOMAIN D, (SELECT @rownum :=0) AS R
+				WHERE 1=1
+				<if test="searchDomainCl != '' and searchDomainCl != NULL">
+					AND D.DOMAIN_CL LIKE CONCAT('%', #{searchDomainCl}, '%')
+				</if>
+				<if test="searchDomainNm != '' and searchDomainNm != NULL">
+					AND D.DOMAIN_NM LIKE CONCAT('%', #{searchDomainNm}, '%')
+				</if>
+				<if test="searchDomainDbms != '' and searchDomainDbms != NULL">
+					AND DBMS_KND = #{searchDomainDbms}
+				</if>
+			<!-- 	<if test="searchDomainDbms = '' and searchDomainDbms = NULL">
+					<if test="dbmsId != '' and dbmsId != NULL">
+						AND DBMS_KND = #{dbmsId}
+					</if>
+				</if> -->
+				ORDER BY CAST(D.DOMAIN_ID AS UNSIGNED)
+				) T1, (SELECT @rownum2 :=0) AS T2
+			) T3
+		WHERE 1=1	
+		<if test="tabType != 'match'">
+			AND RNUM BETWEEN #{start_row} AND #{end_row}
+		</if>	
+		
+	</select>
+	
+	<insert id="insertWordInfo" parameterType="map">
+		<selectKey resultType="Integer" keyProperty="wordId" order="BEFORE">
+			SELECT IFNULL(MAX(cast(WORD_ID as unsigned)),0)+1 AS wordId FROM STANDARD_WORD 
+		</selectKey>
+		
+		INSERT INTO STANDARD_WORD
+		(
+			WORD_ID 
+			, WORD_NM 
+			, WORD_ENG_NM
+			, WORD_ENG_AB
+			, WORD_CL 
+			, RM
+			, USE_AT
+			, REGIST_DT
+		)
+		VALUES
+		(
+			#{wordId}
+			, #{wordNm}
+			, #{wordEngNm} 
+			, #{wordEngAb}
+			, #{wordCl}
+		 	, #{wordRm}
+			, 1
+			, now()
+		)
+	</insert>
+	
+	<select id="selectWordListTotalCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM STANDARD_WORD
+		WHERE 1=1
+		<if test="searchWordNm != '' and searchWordNm != NULL">
+			AND WORD_NM LIKE CONCAT('%', #{searchWordNm}, '%')
+		</if>
+		<if test="searchWordEngNm != '' and searchWordEngNm != NULL">
+			AND WORD_ENG_NM LIKE CONCAT('%', #{searchWordEngNm}, '%')
+		</if>
+	</select>
+	
+	<select id="selectWordList" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				T1.*, (@rownum2 := @rownum2+1) AS RNUM
+			FROM(
+				SELECT 
+					W.WORD_ID AS wordId
+					, W.WORD_NM AS wordNm
+					, W.WORD_ENG_NM AS wordEngNm
+					, W.WORD_ENG_AB AS wordEngAb
+					, IF(W.WORD_CL = '1', '동의어', '표준어') AS wordCl
+					, W.RM AS rm
+					, W.USE_AT AS useAt
+					, W.REGIST_DT AS registDt
+					, (@rownum := @rownum+1) AS RN
+				FROM STANDARD_WORD W, (SELECT @rownum :=0) AS R
+				WHERE 1=1
+				<if test="searchWordNm != '' and searchWordNm != NULL">
+					AND W.WORD_NM LIKE CONCAT('%', #{searchWordNm}, '%')
+				</if>
+				<if test="searchWordEngNm != '' and searchWordEngNm != NULL">
+					AND W.WORD_ENG_NM LIKE CONCAT('%', #{searchWordEngNm}, '%')
+				</if>
+				ORDER BY W.WORD_NM
+				) T1, (SELECT @rownum2 :=0) AS T2
+			) T3
+		WHERE 1=1		
+		AND RNUM BETWEEN #{start_row} AND #{end_row}
+		
+	</select>
+	
+	
+	
+	<insert id="insertStandardSchema" parameterType="map">
+		INSERT INTO STANDARD_SCHEMA
+			(
+				INSTT_CODE,
+				DGNSS_DBMS_ID,
+				DGNSS_INFO_ID,
+				DGNSS_NM,
+				SCHEMA_NM,
+				ALL_CO,
+				EXC_BEGIN_TIME,
+				EXC_END_TIME,
+				EXC_STTUS,
+				REGIST_DT
+			)
+			VALUES
+			(
+				#{insttCode},
+				#{dgnssDbmsId},
+				#{dgnssInfoId},
+				#{dgnssNm},
+				#{schemaName},
+				#{allCo},
+				NOW(),
+				NULL,
+				'S',
+				NOW()
+			)
+	</insert>
+	
+	<update id="updateDataStandardShema">
+		UPDATE
+			STANDARD_SCHEMA
+		SET
+			EXC_STTUS = #{excSttus}
+		WHERE
+			DGNSS_INFO_ID = #{dgnssInfoId}
+	</update>
+	
+	
+	
+	
+	<select id="selectStandardSchemaList" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			DGNSS_NM,
+			SCHEMA_NM,
+			ALL_CO,
+			DATE_FORMAT(EXC_BEGIN_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_BEGIN_TIME,
+			DATE_FORMAT(EXC_END_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_END_TIME,
+			CONCAT(TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME), 's') AS WORK_TIME,
+			EXC_STTUS,
+			REGIST_DT
+		FROM
+			STANDARD_SCHEMA
+		ORDER BY
+			REGIST_DT DESC
+		LIMIT
+			#{startIdx}, ${perPage}
+	</select>
+	
+	<select id="selectStandardSchemaListCnt" resultType="int">
+		SELECT
+			COUNT(*) AS CNT
+		FROM
+			STANDARD_SCHEMA
+	</select>
+	
+	
+	<insert id="insertStandardTable" parameterType="map">
+		INSERT INTO STANDARD_TABLE
+			(
+				INSTT_CODE,
+				DGNSS_DBMS_ID,
+				DGNSS_INFO_ID,
+				TABLE_NM,
+				WORD_AT,
+				DOMAIN_AT,
+				TRGCNT,
+				REGIST_DT
+			)
+				VALUES
+			(
+				#{insttCode},
+				#{dgnssDbmsId},
+				#{dgnssInfoId},
+				#{tableName},
+				#{wordAt},
+				#{domainAt},
+				NULL,
+				NOW()
+			)
+	</insert>
+	
+	<insert id="insertStandardColumn" parameterType="map">
+		INSERT INTO STANDARD_COLUMN
+			(
+				INSTT_CODE,
+				DGNSS_DBMS_ID,
+				DGNSS_INFO_ID,
+				TABLE_NM,
+				COLUMN_NM,
+				COLUMN_TY,
+				COLUMN_LT,
+				WORD_OBSRY,
+				DOMAIN_OBSRY,
+				REGIST_DT,
+				COLUMN_CM
+			)
+				VALUES
+			(
+				#{insttCode},
+				#{dgnssDbmsId},
+				#{dgnssInfoId},
+				#{tableName},
+				#{columnNm},
+				#{columnTy},
+				#{columnLt},
+				NULL,
+				NULL,
+				NOW(),
+				#{columnCm}
+			)
+	</insert>
+	
+	
+	<select id="selectDataStandardWord" resultType="map">
+		SELECT 
+			* 
+		FROM 
+			STANDARD_WORD
+		WHERE
+			WORD_ENG_NM = #{columnNm} 
+		OR  
+			WORD_ENG_AB  = #{columnNm}
+	</select>
+	
+	
+	<update id="updateDataStandardColumn">
+		UPDATE
+			STANDARD_COLUMN
+		SET
+			WORD_OBSRY = #{wordResult},
+			DOMAIN_OBSRY = #{domainResult}
+		WHERE
+			COLUMN_NM = #{columnNm}
+		AND	
+			DGNSS_INFO_ID = #{dgnssInfoId}
+		AND	
+			TABLE_NM = #{tableName}
+	</update>
+	
+	
+	<select id = "selectDataStansdardDomain" resultType="String">
+		<!-- SELECT 
+			* 
+		FROM 
+			STANDARD_DOMAIN
+		WHERE
+			DOMAIN_NM IN 
+			(
+				<foreach item="domainList" separator="," collection="domainList">#{domainList}</foreach>
+			)
+		AND DOMAIN_TY = #{columnTy}
+		AND DOMAIN_LT = #{columnLt} -->
+	
+			SELECT 
+				*
+			FROM 
+				STANDARD_DOMAIN 
+				
+			WHERE DOMAIN_ID =(SELECT 
+								 DOMAIN_ID 
+							  FROM 
+							  	 STANDARD_MATCH  
+							  WHERE	
+							  	 SCHEMA_NM = #{schemaName}
+							  AND 
+								 TABLE_NM = #{tableName}
+							  AND
+		 						 COLUMN_NM  =  #{columnNm}
+		 						)
+			AND DOMAIN_TY = #{columnTy}
+			AND DOMAIN_LT = #{columnLt}
+	</select>
+	
+	
+	<update id="executeUpdateEndStandardSchema">
+		UPDATE
+			STANDARD_SCHEMA
+		SET
+			EXC_END_TIME = NOW(),
+			EXC_STTUS = 'E'
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_DBMS_ID = #{dgnssDbmsId}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+	</update>
+	
+	
+	<select id="selectStandardSchema" resultType="sangsmap">
+		SELECT
+			INSTT_CODE,
+			DGNSS_DBMS_ID,
+			DGNSS_INFO_ID,
+			DGNSS_NM,
+			SCHEMA_NM,
+			ALL_CO,
+			DATE_FORMAT(EXC_BEGIN_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_BEGIN_TIME,
+			DATE_FORMAT(EXC_END_TIME, '%Y-%m-%d %H:%i:%s') AS EXC_END_TIME,
+			CONCAT(TIMESTAMPDIFF(SECOND, EXC_BEGIN_TIME, EXC_END_TIME), 's') AS WORK_TIME,
+			EXC_STTUS,
+			REGIST_DT
+		FROM
+			STANDARD_SCHEMA
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND DGNSS_INFO_ID = #{dgnssInfoId}
+	</select>
+	
+	<select id="selectStandardTableList" resultType="sangsmap">
+		SELECT
+				INSTT_CODE,
+				DGNSS_INFO_ID,
+				DGNSS_DBMS_ID,
+				TABLE_NM,
+				COLUMN_TY,
+				COLUMN_LT,
+				CASE 
+					WHEN (WORD_OBSRY = '2') then '-'
+					ELSE (count(*)- sum(WORD_OBSRY))
+				END as wordObsry,
+				CASE 
+					WHEN (DOMAIN_OBSRY = '2') then '-'
+					ELSE (count(*)- sum(DOMAIN_OBSRY))
+				END as domainObsry
+			FROM
+				STANDARD_COLUMN 
+			WHERE 
+				DGNSS_INFO_ID = #{dgnssInfoId} 
+				AND NOT (DOMAIN_OBSRY = '2' and WORD_OBSRY ='2')
+ 			GROUP BY TABLE_NM
+		
+	</select>
+	
+	<select id="selectStandardColumnResList" resultType="sangsmap">
+			SELECT
+				INSTT_CODE,
+				DGNSS_INFO_ID,
+				DGNSS_DBMS_ID,
+				TABLE_NM,
+				COLUMN_TY,
+				COLUMN_LT,
+				CASE 
+				 	WHEN (WORD_OBSRY = '2') then '-'
+					ELSE (count(*)- sum(WORD_OBSRY))
+				END as wordObsry,
+				CASE 
+					WHEN (DOMAIN_OBSRY = '2') then '-'
+					ELSE (count(*)- sum(DOMAIN_OBSRY))
+				END as domainObsry
+			FROM
+				STANDARD_COLUMN 
+			WHERE 
+				DGNSS_INFO_ID = #{dgnssInfoId} 
+			AND NOT (DOMAIN_OBSRY = '2' and WORD_OBSRY ='2')
+ 			GROUP BY TABLE_NM
+				
+	</select>
+	
+	<select id="selectStandardSummery" resultType="sangsmap">
+		SELECT
+				count(distinct TABLE_NM) as tableCnt,
+				count(COLUMN_NM) as columnCnt,
+				CASE 
+				 	WHEN (sum(WORD_OBSRY) is null) then count(*)
+					ELSE (count(*)- sum(WORD_OBSRY))
+				END as wordObsry,
+				CASE 
+					WHEN (sum(DOMAIN_OBSRY) is null) then count(*)
+					ELSE (count(*)- sum(DOMAIN_OBSRY))
+				END as domainObsry
+			FROM
+				STANDARD_COLUMN  
+			WHERE 
+				DGNSS_INFO_ID = #{dgnssInfoId} 
+	</select>
+	
+	
+	<select id="selectWordObsryList" resultType="sangsmap">
+			SELECT
+				 COLUMN_NM ,
+				 COLUMN_LT,
+				 COLUMN_TY,
+				 TABLE_NM
+			FROM
+				STANDARD_COLUMN 
+			WHERE 
+				WORD_OBSRY = '0' 
+			AND DGNSS_INFO_ID =#{dgnssInfoId} 
+				
+	</select>
+	
+	<select id="selectDomainObsryList" resultType="sangsmap">
+			SELECT
+				 COLUMN_NM ,
+				 COLUMN_LT,
+				 COLUMN_TY,
+				 TABLE_NM
+			FROM
+				STANDARD_COLUMN 
+			WHERE 
+				DOMAIN_OBSRY = '0' 
+			AND DGNSS_INFO_ID =#{dgnssInfoId} 
+				
+	</select>
+	
+
+	<update id="updateDomainInfo" parameterType="map">
+		UPDATE 
+			STANDARD_DOMAIN
+		SET 
+			DOMAIN_CL = #{domainCl}
+			, DOMAIN_NM = #{domainNm}
+			, DBMS_KND = #{domainDbms} 
+			, DOMAIN_TY = #{domainTy}
+			, DOMAIN_LT = #{domainLt}
+		 	, RM = #{domainRm}
+			, USE_AT = 1
+		WHERE
+			DOMAIN_ID = #{domainId} 
+	</update>
+	
+	<select id="selectTableCnt" resultType="sangsmap">
+			
+			SELECT
+			 count(*) as columnCnt,
+			 count(distinct TABLE_NM ) as tableCnt
+			FROM
+				STANDARD_COLUMN  
+			WHERE 
+				DGNSS_INFO_ID = #{dgnssInfoId} 
+			AND NOT (DOMAIN_OBSRY = '2' and WORD_OBSRY ='2') 
+	
+	</select>
+	
+	<update id="updateWordInfo" parameterType="map">
+		UPDATE
+			 STANDARD_WORD
+		SET
+			WORD_NM = #{wordNm}
+			, WORD_ENG_NM = #{wordEngNm}
+			, WORD_ENG_AB = #{wordEngAb}
+			, WORD_CL = #{wordCl}
+			, RM = #{wordRm}
+			, USE_AT = 1
+		WHERE
+			WORD_ID = #{wordId}
+	</update>
+	
+
+	<delete id="deleteDomainInfo" parameterType="map">
+		DELETE FROM
+			 STANDARD_DOMAIN
+		WHERE
+			DOMAIN_ID = #{domainId}
+	</delete>
+	
+	<delete id="deleteWordInfo" parameterType="map">
+		DELETE FROM
+			 STANDARD_WORD		
+		WHERE
+			WORD_ID = #{wordId}
+	</delete>
+	
+	<select id="selectWordObsry" resultType="String">
+			SELECT 
+				count(*) as wordObsry
+			FROM 
+				standard_column
+			WHERE 
+				DGNSS_INFO_ID = #{dgnssInfoId}  
+			AND 
+				WORD_OBSRY !='1' 
+			AND 
+				WORD_OBSRY !='2'
+	</select>
+	
+	
+	<select id="selectDomainObsry" resultType="String">
+		
+			SELECT 
+				count(*) as domainObsry
+			FROM 
+				standard_column
+			WHERE 
+				DGNSS_INFO_ID = #{dgnssInfoId}  
+			AND 
+				DOMAIN_OBSRY !='1' 
+			AND 
+				DOMAIN_OBSRY !='2'
+	
+	</select>
+	
+	
+	<insert id="insertDomainMatch" parameterType="map">
+		
+		<selectKey resultType="Integer" keyProperty="matchId" order="BEFORE">
+			SELECT IFNULL(MAX(cast(MATCH_ID as unsigned)),0)+1 AS matchId FROM STANDARD_MATCH
+		</selectKey>
+		
+		INSERT INTO STANDARD_MATCH
+		(
+			MATCH_ID 
+			, DOMAIN_ID 
+			, SCHEMA_NM
+			, TABLE_NM
+			, COLUMN_NM
+			, DBMS_ID
+			, REGIST_DT
+		)
+		VALUES
+		(
+			#{matchId}
+			, #{domainId}
+			, #{schema} 
+			, #{tableNm}
+			, #{columnNm}
+			, #{dbmsId}
+			, now()
+		)
+	</insert>
+	
+	
+	<select id="selectMatchData"  parameterType="map" resultType="map">
+	
+		SELECT
+		 	*
+		FROM
+			STANDARD_MATCH
+		WHERE
+			SCHEMA_NM = #{tableSchema}
+		AND
+			TABLE_NM = #{tableName}
+		AND
+			DBMS_ID = #{dbmsId}
+	
+	</select>
+	
+	
+	<select id ="domainDataList" parameterType="map" resultType="map">
+	
+		SELECT 
+			*
+		FROM
+			STANDARD_DOMAIN
+		WHERE
+			DOMAIN_ID = #{domainId}
+	
+	</select>		
+	
+	
+	<delete id="deleteMatch"  parameterType="map">
+		DELETE FROM
+			STANDARD_MATCH
+		WHERE MATCH_ID = #{matchId}
+	</delete>
+	
+	<update id="updateDomainMatch">
+		UPDATE
+			STANDARD_MATCH
+		SET
+			DOMAIN_ID = #{domainId}
+		WHERE
+			SCHEMA_NM = #{schema}
+		AND
+			TABLE_NM = #{tableNm}
+		AND 
+			COLUMN_NM = #{columnNm}
+		AND
+			DBMS_ID = #{dbmsId}
+	</update>
+	
+	
+	<select id="selectDomainGroupList" parameterType="map" resultType="map">
+	
+		SELECT
+			*
+		FROM
+			CMMN_CODE_DETAIL
+		WHERE
+			GROUP_CODE = #{groupCode}
+	
+	</select>
+	
+</mapper>

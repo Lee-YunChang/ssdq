@@ -1,0 +1,232 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+
+		<title>Insert title here</title>
+		<style>
+			.textStyle{
+				border:none;
+				width:100px;
+				background-color:white;
+			}
+			.textAStyle{
+				border:none; 
+				width:600px; 
+				background-color:white;"
+			}
+		</style>
+		<script type="text/javascript"  class="code-js">
+
+			$(document).ready(function() {
+				if(sessionCon == ''){
+					alert('진단대상 데이터베이스 설정이 안되어 있습니다.\n\n 설정페이지로 이동합니다.');
+					location.href = "/mngr/basicInfo/dgnssDbmsList";
+					return false;
+				}
+				changeInput();
+				var analsId = "${analsId}";
+				if(analsId > -1 && "" != analsId){
+					$("#btnSave").text("수정");
+				}
+			});
+
+			function changeInput(type){
+				var analsSe = $("#analsSe").val(); // 분석 구분
+				var analsNm = $("#analsNm").val();
+				var analsFrmla = $("#analsFrmla").val();
+				var rm = $("#rm").val();
+
+				$("#patten").val(analsFrmla);
+				$("#checkText").val('');
+				
+			}
+
+			// 선택된 지정 DB 접속 정보를 세션에 등록한다.
+			function savePatten(){
+				
+				var analsSe = $("#analsSe").val(); // 분석 구분
+				if("" == analsSe){
+					analsSe = "AG000401";
+				}
+				var analsNm = $("#analsNm").val();
+				var analsFrmla = $("#analsFrmla").val();
+				var rm = $("#rm").val();
+				var checkYn = $("#checkYn").val();
+				var analsId = $("#analsId").val();
+				var pttrnSe = $("#pttrnSe").val();
+				
+				if(analsNm == "" || analsNm == null){
+					alert("정규식 이름을 반드시 입력해 주세요.");
+					$("#analsNm").focus();
+					return false;
+				}
+				
+				if(analsFrmla == "" || analsFrmla == null){
+					alert("정규식을 반드시 입력해 주세요.");
+					$("#analsFrmla").focus();
+					return false;
+				}
+
+				if(checkYn == "N" || checkYn == null){
+					alert("유효성체크를 해주세요.");
+					return false;
+				}
+				if(confirm("해당 정보를 등록 하시겠습니까?")){
+					
+					$.ajax({
+						url: "/mngr/ruleMng/saveRulePatten",
+						data: {analsSe : analsSe, analsNm : analsNm, analsFrmla : analsFrmla, rm : rm, analsId : analsId},
+						success: function(data){
+							if(data == "true"){
+								alert("정상적으로 등록되었습니다.");
+								// 처리 완료시 페이지를 조회 페이지로 이동하여 등록 결과 목록을 확인 한다.
+								location.href = "/mngr/analysis/analysisPatternList";
+							}
+							
+						}, error:function() {
+			                alert("처리중 에러가 발생하였습니다");
+			                return;
+			           }
+					});
+				}
+					
+			}
+
+
+			function fn_checkPatten(){
+				var analsSe = $("#analsSe").val(); // 분석 구분 AG000400
+				var analsNm = $("#analsNm").val();
+				var analsFrmla = $("#analsFrmla").val();
+				var rm = $("#rm").val();
+				var checkText = $("#checkText").val();
+				
+				if(analsFrmla == "" || analsFrmla == null){
+					alert("정규식을 반드시 입력해 주세요.");
+					$("#analsSe").focus();
+					return false;
+				}
+
+				if(checkText == "" || checkText == null){
+					alert("유효성체크 할 입력 값을 입력해 주세요.");
+					$("#checkText").focus();
+					return false;
+				}
+					
+				$.ajax({
+					url: "/mngr/ruleMng/checkRulePatten",
+					data: {analsFrmla : analsFrmla, checkText : checkText},
+					success: function(data){
+						if(data == "true"){
+							alert("입력값에 유효한 정규식 입니다.");
+							$("#checkYn").val("Y");
+							fn_modalClose();
+						}else{
+							alert("입력값에 유효한 정규식이 아닙니다.");
+							$("#checkYn").val("N");
+						}
+						
+					}, error:function() {
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+				});
+					
+			}
+			
+			function goList(type){
+				location.href = "/mngr/analysis/analysisPatternList";
+			}
+			
+		</script>
+	</head>
+	<body id="page-top">
+		<div id="wrapper">
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+			
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+					<!-- 상단영역 nav -->
+					<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />	
+				
+					<!-- 본문 -->
+					<div class="container-fluid">
+						
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+                  			<span class="col_gray01 font_14 mgn_b0"><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> RULE &gt; 업무규칙 관리 &gt; 사용자 정의(정규식)</span>
+	                    </div>
+	                    
+	                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim"> 사용자 정의(정규식)</h1>
+	                    </div>
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<!-- 내용 -->
+							<div class="card shadow mb-4">
+								<div class="card-body">
+                                    <div id="dataTable_filter" class="dataTables_filter">
+                                        <section class="mgn_b20 txt_right">
+                                            <button class="btn btn-secondary btn_wd120" onclick="goList('list')" >목록보기</button>
+                                            <button class="btn btn-secondary btn_wd120" data-value='UDT' data-toggle='modal' data-target='#pattenCheckModal' data-backdrop='static' data-keyboard='false'>유효성체크</button>
+                                            <button class="btn btn-primary btn_wd100" id="btnSave" name="btnSave" onclick="savePatten();">저장</button>
+                                        </section>
+                                        <form action="" id="frm" method="post" >    
+                                        	<input type="hidden" id="analsSe" name="analsSe" value="${analsSe}">  
+                                        	<input type="hidden" id="analsId" name="analsId" value="${analsId}">
+                                        	<input type="hidden" id="pttrnSe" name="pttrnSe" value="${pttrnSe}">
+                                        	<input type="hidden" id="checkYn" name="checkYn" value="N">                                                                                  
+                                            <section class="l_box_type02">                                    
+                                                <div class="tb_type03">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>                                                                
+                                                                <th><span class="str">*</span> 정규식 이름</th>
+                                                                <td colspan="3">
+                                                                    <input type="text" id="analsNm" name="analsNm" class=" " maxlength="30" value="${analsNm}">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><span class="str">*</span> 정규식</th>
+                                                                <td colspan="3">
+                                                                    <textarea type="text" id="analsFrmla" name="analsFrmla" onchange="changeInput();">${analsFrmla}</textarea>
+                                                                </td>
+                                                            </tr>  
+                                                            <tr>
+                                                                <th>설명</th>
+                                                                <td colspan="3">
+                                                                    <textarea type="text" id="rm" name="rm" >${rm}</textarea>
+                                                                </td>
+                                                            </tr>                                                                                                   
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </section>
+                                           
+                                        </form>
+									</div>
+                                    
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+				
+			
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+				
+			</div>
+		</div>
+		
+	</body>
+	
+</html>

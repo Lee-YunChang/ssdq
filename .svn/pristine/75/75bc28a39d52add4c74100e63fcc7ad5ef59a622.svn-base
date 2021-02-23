@@ -1,0 +1,147 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+	</head>
+	<body id="page-top">
+
+		<div id="wrapper">
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+				<!-- 상단영역 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />
+					<!-- 본문 -->
+					<div class="container-fluid l_position_parent">
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between ">
+							<span class="col_gray01 font_14 "><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROFILING &gt; 프로파일링 결과 </span>
+						</div>
+						<div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim"></i> 프로파일링 결과</h1>
+						</div>
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<form id="frm" name="frm" action="view.do" method="get">
+									<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" value="" />
+									<input type="hidden" id="dgnssInfoId" name="dgnssInfoId" value="" />
+									<input type="hidden" name="pageIndex" value="1" />
+								</form>
+								<div class="card shadow mb-4">
+									<div class="card-body">
+										<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10" />
+										<div id="grid" class="tb_type99"></div>
+										<div id="pagination" class="tui-pagination"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+			</div>
+		</div>
+	</body>
+
+<script type="text/javascript" class="code-js">
+var grid = null;
+var intervalId = null;
+
+$(function() {
+	girdView();
+	fn_search();
+});
+
+function girdView(){
+
+	var columns = [
+		{header: '시작시간', name: 'excBeginTime', width: 150},
+		{header: '작업명', name: 'dgnssNm', whiteSpace: 'normal'},
+		{header: '작업상태', name: 'excSttusNm', width: 130, align: 'center'},
+		{header: '수행시간', name: 'workTime', width: 100, align: 'center'},
+		{header: '결과보기', name: 'viewResult', width: 100, align: 'center'}
+	];
+
+	grid = new tui.Grid({
+		el: document.getElementById("grid"),
+		data: [],
+		scrollX: false,
+		scrollY: false,
+		minBodyHeight: "auto",
+		bodyHeight : 800,
+		header: {
+			height: 50
+		},
+		columns: columns
+	});
+
+	const extOptions = {
+		cell: {
+			focused: {
+				border: 0 // 선택 셀 강조 표시 x
+			}
+		}
+	};
+
+	tui.Grid.applyTheme('default', extOptions);
+}
+
+function fn_search() {
+
+	$.post('listAjax.do', {
+		pageIndex: $('#pageIndex').val(),
+		itemsPerPage: $('#itemsPerPage').val()
+	}, function(data) {
+//		console.log(data);
+		var list = data.list;
+		var totalCnt = data.totalCnt;
+
+		for (var i in list) {
+
+			var item = list[i];
+
+			if (item.excSttus == 'S') { // 시작 (진행중)
+				item.excSttusNm = '작업중&nbsp;&nbsp;&nbsp;<i class="fas fa-spinner fa-pulse" style="color: blue"></i>';
+				item.viewResult = '';
+			} else if (item.excSttus == 'E') { // 종료
+				item.excSttusNm = '작업완료&nbsp;<i class="fas fa-check" style="color: green"></i>';
+				item.viewResult = '<input type="button" class="btn_select" value="확인" onclick="goView(\'' + item.dgnssDbmsId + '\', \'' + item.dgnssInfoId + '\')" />';
+			} else { // 실패
+				item.excSttusNm = '작업실패&nbsp;<i class="far fa-times-circle" style="color: red"></i>';
+				item.viewResult = '<input type="button" class="btn_select" value="오류확인" onclick="openError(\'' + item.dgnssDbmsId + '\', \'' + item.dgnssInfoId + '\')" />';
+			}
+		}
+		grid.resetData(list);
+		intervalId = setTimeout(fn_search, 3000);
+
+		/* 페이징 function 호출 */
+		fn_pagination(totalCnt);
+	});
+}
+
+function goView(dgnssDbmsId, dgnssInfoId) {
+	$('#dgnssDbmsId').val(dgnssDbmsId);
+	$('#dgnssInfoId').val(dgnssInfoId);
+	$('#frm').submit();
+}
+
+function openError(dgnssDbmsId, dgnssInfoId) {
+
+	window.open('', 'error_pop', 'width=1265,height=600, left=300,top=210');
+
+	$('#dgnssDbmsId').val(dgnssDbmsId);
+	$('#dgnssInfoId').val(dgnssInfoId);
+	$('#frm').attr('action', '../error/list.do').attr('target', 'error_pop');
+	$('#frm').submit();
+	$('#frm').attr('action', 'view.do').attr('target', '');
+}
+</script>
+
+</html>

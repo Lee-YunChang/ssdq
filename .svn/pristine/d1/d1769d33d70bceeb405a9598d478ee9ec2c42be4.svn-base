@@ -1,0 +1,139 @@
+package com.webapp.dqsys.configuration;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+import org.apache.commons.collections4.MapUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+
+public class AnalsSqlSessionTemplate extends SqlSessionTemplate {
+
+	protected Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Resource(name = "analsDataSource")
+	private AnalsRoutingDataSource analsDataSource;
+
+	private String dbmsKnd = "";
+
+	public AnalsSqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
+	/**
+	 * AnalsDataSource에 분석에 사용할 DataSource를 추가한다.
+	 * @param dataMap
+	 */
+	public void addDataSource(Map<String, Object> dataMap, String strUrl) throws Exception {
+
+		this.dbmsKnd = MapUtils.getString(dataMap, "dbmsKnd");
+		if("CSV".equals(dbmsKnd)) {
+			this.dbmsKnd = "MySQL";
+		}
+		log.debug("dbmsKnd: {}", dbmsKnd);
+		analsDataSource.setDdId(MapUtils.getString(dataMap, "dgnssDbmsId"));
+/* 세션과 DS가 일치하지 않아 개발 시 오류가 발생 
+		if (analsDataSource.getTargetDataSources().containsKey(MapUtils.getString(dataMap, "dgnssDbmsId"))) { // 이미 있으면 Skip
+			return;
+		}
+*/
+		DataSource dataSource = DataSourceBuilder.create()
+//				.driverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy")
+				.url(strUrl)
+				.username(MapUtils.getString(dataMap, "id"))
+				.password(MapUtils.getString(dataMap, "password"))
+				.build();
+		log.debug("DB Url: {}", strUrl);
+
+		analsDataSource.getTargetDataSources().put(MapUtils.getString(dataMap, "dgnssDbmsId"), dataSource);
+		analsDataSource.reloadTargetDataSources();
+	}
+
+	@Override
+	public <T> T selectOne(String statement) {
+		log.debug("{}.{}", dbmsKnd, statement);
+		try {
+			return super.selectOne(dbmsKnd + "." + statement);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}finally {
+//			try {
+//			if(super.getConnection() != null) {
+//				super.getConnection().close();
+//			}
+//			}catch(SQLException e){
+//				e.printStackTrace();
+//			}
+//			
+//			super.clearCache();
+		}
+	}
+
+	@Override
+	public <T> T selectOne(String statement, Object parameter) {
+		log.debug("{}.{}", dbmsKnd, statement);
+		try {
+			return super.selectOne(dbmsKnd + "." + statement, parameter);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}finally {
+//			try {
+//				if(super.getConnection() != null) {
+//					super.getConnection().close();
+//				}
+//				}catch(SQLException e){
+//					e.printStackTrace();
+//				}
+//			super.clearCache();
+		}
+	}
+
+	@Override
+	public <E> List<E> selectList(String statement) {
+		log.debug("{}.{}", dbmsKnd, statement);
+		try {
+			return super.selectList(dbmsKnd + "." + statement);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}finally {
+//			try {
+//				if(super.getConnection() != null) {
+//					super.getConnection().close();
+//				}
+//				}catch(SQLException e){
+//					e.printStackTrace();
+//				}
+//			super.clearCache();
+		}
+	}
+
+	@Override
+	public <E> List<E> selectList(String statement, Object parameter) {
+		log.debug("{}.{}", dbmsKnd, statement);
+		try {
+			return super.selectList(dbmsKnd + "." + statement, parameter);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}finally {
+//			try {
+//				if(super.getConnection() != null) {
+//					super.getConnection().close();
+//				}
+//				}catch(SQLException e){
+//					e.printStackTrace();
+//				}
+//			super.clearCache();
+		}
+	}
+	
+}

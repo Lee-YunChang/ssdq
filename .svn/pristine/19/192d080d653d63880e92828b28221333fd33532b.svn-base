@@ -1,0 +1,209 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+	<title>Insert title here</title>
+	</head>
+	<body id="page-top">
+		<div id="wrapper">
+			<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/left_inc" />
+	                
+			<!-- Content Wrapper -->
+			<div id="content-wrapper" class="d-flex flex-column">
+				<!-- 메인 -->
+				<div id="content">
+				<!-- 상단영역 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/top_inc" />
+					<!-- 본문 -->
+					<div class="container-fluid l_position_parent">
+						<!-- 상단 내비 / 타이틀 -->
+						<div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+							<span class="col_gray01 font_14 mgn_b0"><img src="/resources/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROFILING &gt; 스키마 구조 분석 &gt; 컬럼 구조 분석 </span>
+						</div>
+						<div class="d-sm-flex align-items-center justify-content-between mb-4">
+							<h1 class="col_grey font_23 font_slim" style="color: gray; font-weight: 100;"></i> 컬럼 구조 분석</h1>
+						</div>
+	     
+						<!-- 영역 -->
+						<div class="row">
+							<div class="col-lg mb-4">
+								<!-- 조회 영역 -->
+								<div class="card shadow mb-4">
+									<div class="input_table" style="border: none;">
+										<table>
+                                            <colgroup>
+                                                <col style="width:20%">
+                                                <col style="width:25%">
+                                                <col style="width:10%">
+                                                <col style="width:25%">
+                                                <col style="width:20%">
+                                            </colgroup>
+                                            <tbody>
+                                                <tr>
+                                                    <th>
+                                                    	<label for="data"><span class="str">*</span> 스키마명</label>
+                                                    </th>
+                                                    <td>
+                                                         <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+                                                        	<option>선택해주세요</option>
+                                                        </select>
+                                                    </td>    
+                                                    <th>
+                                                    	<label for="name"><span class="str">*</span> 테이블명</label>
+                                                    </th>
+                                                    <td>
+                                                        <select name="tableName" id="tableName" onchange="fn_changeTable()">
+                                                        	<option>선택해주세요</option>
+                                                        </select>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+										</table>
+									</div>
+								</div>
+	     
+								<!-- 내용 -->
+	                                           
+								<div class="card shadow mb-4">
+									<div class="card-body">
+										<div id="columnAnalysisGrid" class="tb_type99" style="clear: both;"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 풋터 -->
+				<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/footer_inc" />
+			</div>
+		</div>
+	</body>
+<script type="text/javascript"  class="code-js">
+$(document).ready(function() { 
+	if(sessionCon == ''){
+		alert("진단대상 데이터베이스 설정이 안되어 있습니다.\n\n 설정페이지로 이동합니다.");
+		location.href = "/mngr/basicInfo/dgnssDbmsList";
+		return false;
+	}
+	/* chosen Select Box 관련 추가  */
+	/* 2019-07-29 최보람 */
+	$("#tableSchema, #tableName").chosen({
+		search_contains : true,
+		width : 230,
+		no_results_text : "검색결과가 없습니다. : "
+	});
+	
+	fn_selectTableSchema();
+	
+});
+function fn_selectTableSchema(){
+	var option = "";
+	
+	$.ajax({
+		url: "/mngr/analysis/selectColumnAnalysis",
+		success: function(data){
+			var jsonData = JSON.parse(data);
+			
+			for(var i = 0; i < jsonData.length; i++){
+				option  = $("<option>"+jsonData[i].OWNER+"</option>");
+				$("#tableSchema").append(option);
+				
+				/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+				$("#tableSchema").trigger("chosen:updated");
+
+			} 
+		}
+	});
+	
+}
+
+function fn_changeSchema(){
+	var option = "";
+	var tableSchema = $("#tableSchema").val();
+	$("#tableName").empty();
+	$("#columnAnalysisGrid").empty();
+	
+	option  = $("<option>선택해주세요</option>");
+	$("#tableName").append(option);
+	
+	$.ajax({
+		url: "/mngr/analysis/selectTable",
+		data: {"tableSchema":tableSchema},
+		success: function(data){
+			var jsonData = JSON.parse(data);
+			
+			for(var i = 0; i < jsonData.length; i++){
+				option  = $("<option>"+jsonData[i].TABLENAME+"</option>");
+				$("#tableName").append(option);
+
+				/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+				$("#tableName").trigger("chosen:updated");
+			} 
+		}
+		
+	});
+}
+
+function fn_changeTable(){
+	var tableName = $("#tableName").val();
+	var tableSchema = $("#tableSchema").val();
+	$("#columnAnalysisGrid").empty();
+	$.ajax({
+		url: "/mngr/analysis/selectColumnAnalysis",
+		data: {"tableName":tableName, "tableSchema":tableSchema},
+		success: function(data){
+			var jsonData = JSON.parse(data);
+			
+			fn_setGrid(jsonData);
+		}
+	});
+	
+}
+
+function fn_setGrid(data){
+	var columns = [
+		{header: '컬럼명', name: 'columnName',align:'center'},			
+		{header: 'Data 타입', name: 'dataType', width: 100,align:'center'}, 
+		{header: 'Data 길이', name: 'dataLength', width: 100,align:'right'}, 
+		{header: 'Data 정밀도', name: 'dataPrecision', width: 100,align:'right'}, 
+		{header: 'Data 스케일', name: 'dataScale', width: 100,align:'right'},
+		{header: '널허용',name: 'nullable', width: 100,align:'center'},
+		{header: '디폴트값',name: 'dataDefault', width: 100,align:'center'},
+		{header: '최소값',name: 'lowValue',align:'left'},
+		{header: '최대값',name: 'highValue',align:'left'},
+		{header: '컬럼설명',name: 'comments',align:'left'}
+	];
+	const columnAnalysisGrid = new tui.Grid({
+           el : document.getElementById("columnAnalysisGrid"),
+           data : data,
+           scrollX : false,
+           scrollY : false,
+           rowHeight : 40,
+           minBodyHeight : 40,
+           header: {
+             height: 50
+           },
+           columns : columns
+     });
+     
+     const extOptions = {
+           cell: {
+                focused: {
+                 border: 0 // 선택 셀 강조 표시 x
+             }
+           }
+     };
+     
+     tui.Grid.applyTheme('default', extOptions);
+     
+     columnAnalysisGrid.resetData(data);
+}
+
+
+</script>
+     
+</html>

@@ -1,0 +1,9 @@
+분류,도메인명,데이터타입,데이터길이,설명,DBMS구분
+test1,num,varchar,45,test,mysql
+test2,num,varchar,45,test,oracle
+test3,num,varchar,45,test,mssql
+test4,num,varchar,45,test,tibero
+test5,num,varchar,45,test,mysql
+test6,num,varchar,45,test,tibero
+test7,num,varchar,45,test,mysql
+test8,num,varchar,45,test,mysq

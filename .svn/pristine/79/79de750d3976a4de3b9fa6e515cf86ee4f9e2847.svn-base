@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="d-sm-flex align-items-center justify-content-between ">
+			<span class="col_gray01 font_14 "><img src="/img/icon/icon_home.png" alt="집 아이콘" class="vtc_unset"> PROFILING &gt; 프로파일링 결과 </span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23 font_slim"></i> 프로파일링 결과</h1>
+		</div>
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				
+				<form id="frm" name="frm" action="view.do" method="get">
+					<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" value="" />
+					<input type="hidden" id="dgnssInfoId" name="dgnssInfoId" value="" />
+					<input type="hidden" name="pageIndex" value="1" />
+				</form>
+				<form id="frm2" name="frm2" action="export.do" method="get">
+					<input type="hidden" id="dgnssDbmsId" name="dgnssDbmsId" value="" />
+					<input type="hidden" id="dgnssInfoId" name="dgnssInfoId" value="" />
+					<input type="hidden" name="pageIndex" value="1" />
+				</form>
+				
+				<div class="card shadow mb-4">
+					<div class="card-body">
+						<section class="mgn_b20 txt_right">
+						<button class='btn btn-primary wd_50' type='button' style="width:150px;" onclick="fn_dataExport();" >데이터 내보내기</button>
+						</section>
+						<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10" />
+						<div id="grid" class="tb_type99" style="clear: both; min-height: 440px; width:1610px;"></div>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 오류정보확인 팝업 open -->
+		<div id="errorListLayer" class="layer_pop_wrap " style="top:40%; left:30%;">
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_errorCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" alt="닫기 버튼"></a>
+			</div>
+			<div class="layer_pop" style="height: 600px;">
+				<div class="layer_header">
+				    <p>진단 오류 내역 </p>
+				</div>
+				<section class="l_box_type02">					
+					<div style="height: 400px;">
+						<div id="errorList_grid" class="tb_type99" style="margin-top:20px;min-height: 380px;"></div>
+					</div>
+					<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10" />
+					<div id="pagination" class="tui-pagination"></div>					
+				</section>
+             </div>
+		</div>
+		<!-- 오류정보확인 팝업 close -->
+					
+
+		<script type="text/javascript" class="code-js">
+			var grid = null;
+			var errorGrid = null;
+			var intervalId = null;
+			
+			$(function() {
+				girdView();
+				fn_search();
+			});
+			
+			function girdView(){
+			
+				var columns = [
+					{header: '시작시간', name: 'excBeginTime', whiteSpace: 'normal', width: 150},
+					{header: '작업명', name: 'dgnssNm', whiteSpace: 'normal'},
+					{header: '작업상태', name: 'excSttusNm', whiteSpace: 'normal', width: 130, align: 'center'},
+					{header: '수행시간', name: 'workTime', whiteSpace: 'normal', width: 100, align: 'center'},
+					{header: '결과보기', name: 'viewResult', whiteSpace: 'normal', width: 100, align: 'center'}
+				];
+			
+				grid = new tui.Grid({
+					el: document.getElementById("grid"),
+					data: [],
+					scrollX: false,
+					scrollY: false,
+					minBodyHeight: "auto",
+					bodyHeight : 800,
+					header: {
+						height: 50
+					},
+					columns: columns
+				});
+			
+				const extOptions = {
+					cell: {
+						focused: {
+							border: 0 // 선택 셀 강조 표시 x
+						}
+					}
+				};
+			
+				tui.Grid.applyTheme('default', extOptions);
+			}
+			
+			function fn_search() {
+			
+				$.post('listAjax.do', {
+					pageIndex: $('#pageIndex').val(),
+					itemsPerPage: $('#itemsPerPage').val()
+				}, function(data) {
+			//		console.log(data);
+					var list = data.list;
+					var totalCnt = data.totalCnt;
+			
+					for (var i in list) {
+			
+						var item = list[i];
+			
+						if (item.excSttus == 'S') { // 시작 (진행중)
+							item.excSttusNm = '작업중&nbsp;&nbsp;&nbsp;<i class="fas fa-spinner fa-pulse" style="color: blue"></i>';
+							item.viewResult = '';
+						} else if (item.excSttus == 'E') { // 종료
+							item.excSttusNm = '작업완료&nbsp;<i class="fas fa-check" style="color: green"></i>';
+							item.viewResult = '<input type="button" class="btn_select" value="확인" onclick="goView(\'' + item.dgnssDbmsId + '\', \'' + item.dgnssInfoId + '\')" />';
+						} else { // 실패
+							item.excSttusNm = '작업실패&nbsp;<i class="far fa-times-circle" style="color: red"></i>';
+							item.viewResult = '<input type="button" class="btn_select" value="오류확인" onclick="fn_openError(\'' + item.dgnssDbmsId + '\', \'' + item.dgnssInfoId + '\')" />';
+						}
+					}
+					grid.resetData(list);
+					intervalId = setTimeout(fn_search, 3000);
+			
+					/* 페이징 function 호출 */
+					fn_pagination(totalCnt);
+				});
+			}
+			
+			function goView(dgnssDbmsId, dgnssInfoId) {
+				$('#dgnssDbmsId').val(dgnssDbmsId);
+				$('#dgnssInfoId').val(dgnssInfoId);
+				$('#frm').submit();
+			}
+			
+			// csv_data 
+			function fn_openError(dgnssDbmsId, dgnssInfoId){
+				console.log("dgnssDbmsId : "+dgnssDbmsId);
+				console.log("dgnssInfoId : "+dgnssInfoId);
+				var obj = {"dgnssDbmsId":dgnssDbmsId,"dgnssInfoId":dgnssInfoId};
+				console.log(obj);
+				
+				//errorListLayer		
+				/*찾기 레이어 열기*/
+			    $('#errorListLayer').addClass('on');
+			    $('.cover').show();
+			    
+			    fn_errorList(obj);
+			}
+			
+			function fn_errorCloseLayer(){
+				$('.layer_pop_wrap').removeClass('on');
+				$('.cover').hide();
+			}
+			
+			function fn_errorList(obj){
+				//그리드 초기화
+				$("#errorList_grid").empty();
+				$.ajax({
+					url: "/mngr/diagnosis/error/listAjax.do",
+					method : 'POST',
+					data: {"dgnssDbmsId" : obj.dgnssDbmsId, "dgnssInfoId" : obj.dgnssInfoId},
+					success: function(data){
+						fn_errorGirdView(data);
+			        }
+			    });
+				
+			}
+			
+			function fn_errorGirdView(data){
+				var data = data.list;
+				var columns = [
+					{header: '스키마명', name: 'schemaNm', whiteSpace: 'normal', width: 120, align: 'center'},
+					{header: '테이블명', name: 'tableNm', whiteSpace: 'normal', width: 140, align: 'center'},
+					{header: '컬럼명', name: 'columnNm', whiteSpace: 'normal',width: 120},
+					{header: '분석 아이디', name: 'analsId', whiteSpace: 'normal',width: 120},
+					{header: '오류내용', name: 'errorNm', whiteSpace: 'normal', editor: 'text'},
+					{header: '등록일시', name: 'registDt', whiteSpace: 'normal', width: 130, align: 'center'}
+				];
+			
+				errorGrid = new tui.Grid({
+					el: document.getElementById("errorList_grid"),
+					data: data,
+					scrollX: false,
+					scrollY: false,
+					bodyHeight : 'auto',
+					rowHeight : 40,
+					minBodyHeight : 40,
+					header: {
+						height: 50
+					},
+					columns: columns
+				});
+				
+				const extOptions = {
+					cell: {
+						focused: {
+							border: 0 // 선택 셀 강조 표시 x
+						}
+					}
+				};
+			
+				tui.Grid.applyTheme('default', extOptions);
+				errorGrid.resetData(data.list);
+			}
+			
+			// 데이터 내보내기 
+			function fn_dataExport(){
+				alert('데이터 내보내기 실행');
+				
+			}
+			
+		</script>
+	</div>
+</html>

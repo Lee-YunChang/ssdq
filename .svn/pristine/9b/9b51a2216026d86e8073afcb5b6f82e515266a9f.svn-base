@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html th:lang = "ko"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title th:text="#{UIT0057}">:: 상상스토리 ::</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="shortcut icon" th:href="@{/img_v1/icon/favicon.ico}"  type="image/x-icon" />
+<!-- 공통으로 쓰이는 css파일을넣는다.-->
+<link rel="stylesheet" th:href="@{/vendor_v1/fontawesome-free/css/all.css}" />
+<link rel="stylesheet" th:href="@{/css_v1/sb-admin-3.css}" />
+<link rel="stylesheet" th:href="@{/css_v1/tui/tui-grid.css}" />
+<link rel="stylesheet" th:href="@{/css_v1/tui/tui-pagination.css}" />
+<link rel="stylesheet" th:href="@{/css_v1/sub.css}" />
+<link rel="stylesheet" th:href="@{/css_v1/jquery-ui.css}" />
+<link rel="stylesheet" th:href="@{/css_v1/chosen.css}" />
+
+<script th:src="@{/js_v1/jquery-1.11.2.min.js}"></script>
+<script th:src="@{/js_v1/jquery-ui.js}"></script>
+<script th:src="@{/js_v1/tui/underscore.js}"></script>
+<script th:src="@{/js_v1/tui/backbone.js}"></script>
+<script th:src="@{/js_v1/tui/tui-code-snippet.js}"></script>
+<script th:src="@{/js_v1/tui/tui-pagination.js}"></script>
+<script th:src="@{/js_v1/tui/tui-grid.js}"></script>
+
+<script th:src="@{/vendor_v1/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor_v1/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/js_v1/sb-admin-2.js}"></script>
+<script th:src="@{/js_v1/common.js}"></script>
+<script type="text/javascript">
+	jQuery.browser = {};
+	(function () {
+	    jQuery.browser.msie = false;
+	    jQuery.browser.version = 0;
+	    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+	        jQuery.browser.msie = true;
+	        jQuery.browser.version = RegExp.$1;
+	    }
+	})();
+</script>
+
+<style type="text/css">
+	#basic {width:500px; margin:0 auto; padding:0;}
+	#basic li {display:none; width: 452px;}
+	#basic li:first-child {display:block;}
+	#btn_basic {text-align:center;}
+	#btn_basic button.off {cursor:default; opacity:0.5;}
+</style>
+
+<input type="hidden" id="pageIndex" name="pageIndex" value=""/>
+<input type="hidden" id="totalCnt" name="totalCnt" value=""/>
+<input type="hidden" id="searchCnt" name="searchCnt" value=""/>
+
+<body id="page-top" class="in_length_100pro" th:with="pubInstYn = ${pubInstYn}">
+	<div class="write_db_area">
+		<div layout:fragment="content"></div>  <!-- 실제 콘텐츠  -->
+	</div>
+	<footer th:replace="fragments/footer :: footerFragment"></footer>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+	<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" th:fragment="headerFragment">
+	
+		<div style="text-align:center;">
+	        <h6>
+	            <p class="textAStyle txt_left mgn_b0">
+	                <img src="/img/icon/icon_wifi.png" th:alt="#{UIT0053}" class="vtc_unset">
+	                
+	                <span class="col_blue01" th:if="${conType != null}" th:text="${#strings.contains(conType, 'CSV')} ? #{UIT0054}+' : ' + ${session.conFileName } : #{UIT0055}+' : ' + ${session.conDbUrl }"></span>
+	            </p>
+	        </h6>
+	    </div>
+	    
+		<!-- 상단 이동 버튼 -->
+		<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+			<i class="fa fa-bars"></i>
+		</button>
+		
+		<!-- 상단 네비 -->
+		<ul class="navbar-nav ml-auto" style="margin-left: auto;padding-right: 50px;">
+			<div class="dropdown-item" style="width: auto; text-align: left;" th:each="member : ${session.member}">
+		        <span th:text="${member.userNm}"></span>
+		    </div>
+			
+			<div class="topbar-divider d-none d-sm-block"></div>
+			<a class="dropdown-item" style="width: 100px;" href="#" data-toggle="modal" data-target="#logoutModal">
+				<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-600" th:text="#{UIT0051}"> 로그아웃</i>
+			</a>
+			
+		</ul>
+	</nav>
+
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+	
+		<!-- 상단 내비 / 타이틀 !-->
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+  			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; RULE &gt; <label th:text="#{UIT0188}">업무규칙 관리</label> &gt; <label th:text="#{UIT0189}">허용 값 범위 설정</label></span>
+        </div>  -->
+        
+	    <div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>RULE</li>
+	            <li><label th:text="#{UIT0188}">업무규칙 관리</label></li>
+	            <li><label th:text="#{UIT0189}">허용 값 범위 설정</label></li>
+            </ul>
+		</div>            
+	               
+       	<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0189}"> 허용 값 범위 설정</h1>
+        </div> -->
+		
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+			<!-- 내용 -->
+			<div class="card shadow mb-4">
+				<div class="card-body">
+					<div id="dataTable_filter" class="dataTables_filter">
+                          <!-- <section class="mgn_b20 txt_right">
+                              <button class="btn btn-secondary btn_wd120" onclick="goList('list')" th:text="#{UIT0190}">목록보기</button>
+                              <button class="btn btn-primary btn_wd100" id="btnSave" name="btnSave" onclick="saveLimit();" th:text="#{UIT0088}">저장</button>
+                          </section> -->
+                          
+                         <div class="button_area alignr pad100">
+				                <button class="btn btn-s gray in_wp100" th:text="#{UIT0190}" onclick="goList('list')" >목록보기</button>
+				                <button class="btn btn-s blue in_wp100" id="btnSave" name="btnSave" th:text="#{UIT0088}"  onclick="saveLimit();" >저장</button>
+				         </div>
+							
+                          <form action="">
+                          
+                          <input type="hidden" id="analsId" name="analsId" class=" " th:value="${analsId}">
+                              <section class="l_box_type02">                                    
+                                  <div class="table_area">
+                                      <table class="write fixed" style="background-color: white;"><!-- 탭이 없어서 백그라운드 컬러 설정 -->
+                                      	<colgroup>
+			                                    <col style="width: 15%;" />
+			                                    <col style="width: auto" />
+			                                    <col style="width: 15%;" />
+			                                    <col style="width: auto" />
+			                            </colgroup>
+                                          <tbody>
+                                              <tr>                                                                
+                                                  <th><span class="impo"></span> <label th:text="#{UIT0191}">허용 값 이름</label></th>
+                                                  <td>
+                                                      <input type="text" id="analsNm" name="analsNm" class="in_w100" maxlength="30" th:value="${analsNm}">
+                                                  </td>
+                                                  
+                                                  <!-- <th><span class="impo">*</span> <label th:text="#{UIT0192}">허용 값 종류</label></th>
+                                                  <td style="text-align: left;">
+                                                      <select id="analsSe" name="analsSe" class="" style="width: 200px;" onchange="changeAnalsSe(this);">
+                                                            <option value="AG000600" th:text="#{UIT0045}">선택</option>
+                                                        </select> 
+                                                    </td> -->
+                                                    
+                                                  <th><span class="impo"></span><label for="analsSe" th:text="#{UIT0192}">허용 값 종류</label></th>
+			                                        <td>
+			                                            <div class="selectbox" style="width: 150px;"> 
+			                                                <label for="ex_select">허용 값 종류</label>
+			                                                <select id="analsSe" name="analsSe" class="in_w100" onchange="changeAnalsSe(this);"> 
+			                                                    <option value="AG000600"  th:text="#{UIT0045}">선택</option>
+			                                                </select>
+			                                            </div>
+			                                       	</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="impo"></span> FROM</th>
+                                                    <td>
+                                                        <input type="text" id="beginValue" name="beginValue" class="in_w100" maxlength="20" th:value="${beginValue}" >
+                                                        <input type="hidden" id="beginDate" name="beginDate" class=" " th:value="${beginValue}" readonly>
+                                                    </td>
+                                                    <th><span class="impo"></span> TO</th>
+                                                    <td>
+                                                        <input type="text" id="endValue" name="endValue" class="in_w100" maxlength="20" th:value="${endValue}" >
+                                                        <input type="hidden" id="endDate" name="endDate" class=" " th:value="${endValue}" readonly>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th th:text="#{UIT0092}">설명</th>
+                                                    <td colspan="3">
+                                                        <textarea rows = "10" type="text" id="rm" name="rm" class="in_w100" th:value="${rm}" th:text="${rm}" style="background-color: #f2f2f2;"></textarea>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+                            </form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript"  class="code-js" th:inline="javascript">
+		
+		/*<![CDATA[*/
+		var UIT0162 = /*[[ #{UIT0162} ]]*/; //: 전체 선택
+		var UIT0166 = /*[[ #{UIT0166} ]]*/; //: 저장 되었습니다.
+		var UIT0193 = /*[[ #{UIT0193} ]]*/; //: 허용 값 이름을 반드시 입력해 주세요.
+		var UIT0194 = /*[[ #{UIT0194} ]]*/; //: 허용 값 종류를 반드시 선택해 주세요.
+		var UIT0195 = /*[[ #{UIT0195} ]]*/; //: FORM를 반드시 입력해 주세요.
+		var UIT0196 = /*[[ #{UIT0196} ]]*/; //: TO를  반드시 입력해 주세요.
+		var UIT0197 = /*[[ #{UIT0197} ]]*/; //: FORM 값은 숫자만 가능합니다.
+		var UIT0198 = /*[[ #{UIT0198} ]]*/; //: TO 값은 숫자만 가능합니다.
+		var UIT0199 = /*[[ #{UIT0199} ]]*/; //: TO 값은 FROM 값보다 작을 수 없습니다.
+		var UIT0200 = /*[[ #{UIT0200} ]]*/; //: 해당 정보를 등록 하시겠습니까?
+		var UIT0201 = /*[[ #{UIT0201} ]]*/; //: 정상적으로 등록되었습니다.
+		var UIT0202 = /*[[ #{UIT0202} ]]*/; //: 반드시 입력해야 합니다.
+		var UIT0203 = /*[[ #{UIT0203} ]]*/; //: FORM 값은 
+		var UIT0204 = /*[[ #{UIT0204} ]]*/; //: TO 값은
+		var UIT0205 = /*[[ #{UIT0205} ]]*/; //: Email 형식만 가능합니다. 예)user@example.com
+		var UIT0206 = /*[[ #{UIT0206} ]]*/; //: URL 형식만 가능합니다. 예)http: //www.example.com
+		var UIT0207 = /*[[ #{UIT0207} ]]*/; //: 알파벳만 가능합니다.
+		var UIT0208 = /*[[ #{UIT0208} ]]*/; //: 알파벳과 숫자만 가능합니다.
+		var UIT0209 = /*[[ #{UIT0209} ]]*/; //: 숫자만 가능합니다.
+		var UIT0210 = /*[[ #{UIT0210} ]]*/; //: 날짜만 가능합니다. 예)20090101
+		var UIT0211 = /*[[ #{UIT0211} ]]*/; //: IP주소만 가능합니다.
+		var UIT0212 = /*[[ #{UIT0212} ]]*/; //: 비밀번호는 6~12자리의 영문자와 숫자를 혼용해서 사용해야 합니다.
+		var UIT0213 = /*[[ #{UIT0213} ]]*/; //: 비밀번호는 영문자와 숫자를 혼용해서 사용해야 합니다.
+		/*]]*/
+		
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+
+			$(document).ready(function() {
+				// sessionCon 체크
+				isSessionConChk(sessionCon);
+				
+				selDbmsKindListBox();
+				
+				onAnalsSe();
+				var analsId = "${analsId}";
+				
+				if(analsId > -1 && "" != analsId){
+					$("#btnSave").text("수정");
+				}
+				
+			});
+
+			// 허용값종류 조회
+			function selDbmsKindListBox(){
+				var groupCode = 'AG000000';
+				var analsSe = /*[[ ${analsSe} ]]*/;
+				var sbStr = "";
+				
+				if(analsSe == null){
+					analsSe = "AG000600";
+				}
+				
+				$.ajax({
+					url: '/mngr/ruleMng/selectCmmnList',
+					method : 'POST',
+					data: {groupCode : groupCode, cmmnCode : analsSe.substring(0,6)},
+					success: function(dataList){
+						
+						$.each(dataList, function(index, value) {
+							var selected = "";
+							
+							if(analsSe.trim() == value.analsSe){
+								selected = "selected=true";
+							}
+							var option  = $("<option value="+value.analsSe+" "+selected+">"+value.analsSeNm+"</option>");
+							$("#analsSe").append(option);
+						})
+						
+			        }, error:function() {
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+			    });
+			}
+
+			// 선택된 지정 DB 접속 정보를 세션에 등록한다.
+			function saveLimit(){
+				
+				var analsSe = $("#analsSe").val(); // 분석 구분 AG000601, AG000602, AG000603
+				var analsNm = $("#analsNm").val();
+				var beginValue = $("#beginValue").val();
+				var endValue = $("#endValue").val();
+				var analsId = $("#analsId").val();
+				var rm = $("#rm").val();
+				
+				if(analsSe == "AG000603"){
+					beginValue = $("#beginDate").val();
+					endValue = $("#endDate").val();
+					//beginValue = beginValue.replace(/-/gi,'');
+					//endValue = endValue.replace(/-/gi,'');
+				}
+				
+				if(analsNm == "" || analsNm == null){
+					alert(UIT0193);
+					$("#analsNm").focus();
+					return false;
+				}
+				
+				if(analsSe == "AG000600" || analsSe == null){
+					alert(UIT0194);
+					$("#analsSe").focus();
+					return false;
+				}
+				
+				if(beginValue == "" || beginValue == null){
+					alert(UIT0195);
+					$("#beginValue").focus();
+					return false;
+				}
+
+				if(endValue == "" || endValue == null){
+					alert(UIT0196);
+					$("#endValue").focus();
+					return false;
+				}
+
+				if(analsSe == "AG000601"){
+					if(isNumber(beginValue)== false){
+						alert(UIT0197);
+						$("#beginValue").focus();
+						return false;
+					}
+					if(isNumber(endValue)== false){
+						alert(UIT0198);
+						$("#endValue").focus();
+						return false;
+					}
+
+					if(beginValue > endValue){
+						alert(UIT0199);
+						$("#endValue").focus();
+						return false;
+					}
+				}
+
+				if(analsSe == "AG000603"){
+					if(TypeChecker.date(beginValue)== false){
+						alert(UIT0203+' '+TypeChecker.dateText);
+						//$("#beginValue").focus();
+						return false;
+					}
+					if(TypeChecker.date(endValue)== false){
+						alert(UIT0204+' '+TypeChecker.dateText);
+						//$("#endValue").focus();
+						return false;
+					}
+					if(beginValue > endValue){
+						alert(UIT0199)
+						//$("#endValue").focus();
+						return false;
+					}
+				}
+				if(confirm(UIT0200)){
+					
+					$.ajax({
+						url: "/mngr/ruleMng/saveRuleLimit",
+						data: {analsSe : analsSe, analsNm : analsNm, beginValue : beginValue, endValue : endValue, analsId : analsId, rm : rm},
+						success: function(data){
+							if(data == "true"){
+								alert(UIT0201);
+								// 처리 완료시 페이지를 조회 페이지로 이동하여 등록 결과 목록을 확인 한다.
+								location.href = "/mngr/analysis/analysisPatternList";
+							}else{
+								alert(UIT0041);
+							}
+							
+						}, error:function() {
+			                alert(UIT0041);
+			                return;
+			           }
+					});
+					
+				}
+			}
+
+
+			function changeAnalsSe(){
+				$("#beginValue").val("");
+				$("#endValue").val("");
+				$("#beginDate").val("");
+				$("#endDate").val("");
+				$("#beginValue").attr("type",'text');
+				$("#endValue").attr("type",'text');
+				$("#beginDate").attr("type",'hidden');
+				$("#endDate").attr("type",'hidden');
+				if($("#analsSe").val() == "AG000603"){
+					$("#beginValue").attr("type",'hidden');
+					$("#endValue").attr("type",'hidden');
+					$("#beginDate").attr("type",'text');
+					$("#endDate").attr("type",'text');
+					$("#beginDate, #endDate").datepicker();
+				}
+			}
+
+			function onAnalsSe(){
+				if("${analsSe}" == "AG000603"){
+					$("#beginValue").attr("type",'hidden');
+					$("#endValue").attr("type",'hidden');
+					$("#beginDate").attr("type",'text');
+					$("#endDate").attr("type",'text');
+					$("#beginDate, #endDate").datepicker();
+				}
+			}
+
+			function isNumber(str){
+				var src = new String(str);
+				var tar = true;
+				var i;
+				var len = src.length;
+
+				for (i=0; i < len; i++) {
+					if((src.charAt(i) < '0') | (src.charAt(i) > '9')){
+						if(i==0) {
+							if(src.charAt(i) != '-') return false;
+						}
+						else {
+							if(src.charAt(i) != '.') return false;
+						}
+					}
+				}
+				return true;
+			}
+
+			TypeChecker = function(){
+				var number = /^-?[0-9]+,?[0-9]+\.?[0-9]+$/;
+				var email = /^(\w+)([-+.][\w]+)*@(\w[-\w]*\.){1,5}([A-Za-z]){2,4}$/;    
+				var url = /(((https?)|(ftp)):\/\/([\-\w]+\.)+\w{2,3}(\/[%\-\w]+(\.\w{2,})?)*(([\w\-\.\?\\\/+@&#;`~=%!]*)(\.\w{2,})?)*\/?)/i;    
+				var date = /^[0-9]{4}(-|\.)?[0-9]{2}(-|\.)?[0-3][0-9]$/;
+				var ipAddres = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+				var pw = /^[a-zA-Z0-9+]{6,12}$/;
+				var pwNum = /[0-9]/;
+				var pwEng = /[a-zA-Z]/;
+
+				return {
+					'required' : function(v){
+						return v.trim() != "";
+					},
+					'requiredText' : UIT0202,
+				
+					'email' : function(v){            
+						if(v.trim() == "") return true;
+						return email.test(v);        
+					},
+					'emailText' : UIT0205,
+					'emailMask' : /[a-z0-9_\.\-@]/i,        
+				
+					'url' : function(v){
+						if(v.trim() == "") return true;
+						return url.test(v);        
+					},        
+					'urlText' : UIT0206,        
+
+					'alpha' : function(v){            
+						if(v.trim() == "") return true;
+						return alpha.test(v);        
+					},
+					'alphaText' : UIT0207,     		
+					'alphaMask' : /[a-z_]/i,
+					
+					'alphanum' : function(v){            
+						if(v.trim() == "") return true;
+						return alphanum.test(v);        
+					},
+					'alphanumText'  :  UIT0208,     		
+					'alphanumMask' : /[a-z0-9_]/i,
+
+					'number' : function(v){            
+						if(v.trim() == "") return true;
+						return number.test(v);        
+					},
+					'numberText'  : UIT0209,     		
+					'numberMask' : /^-?[0-9]+,?[0-9]+\.?[0-9]+$/i ,
+
+					'date' : function(v){
+						if(v.trim() == "") return true;
+						return date.test(v);        
+					},
+					'dateText'  : UIT0210,
+					'dateMask' : /^[0-9]{4}(-|\.)?[0-9]{2}(-|\.)?[0-3][0-9]$/,
+
+					"ip":  function(v) {
+						if(v.trim() == "") return true;
+						return ipAddress.test(v);
+					},
+					"ipText": UIT0211,
+					"ipMask": /[\d\.]/i
+
+					,'pw': function(v) {
+						if(v.trim()=="") return true;
+						return (pw.test(v));
+					}
+					,'pwText' : UIT0212
+					
+					,'pwNum': function(v) {
+						if(v.trim()=="") return true;
+						return (pwNum.test(v));
+					}	
+					,'pwEng': function(v) {
+						if(v.trim()=="") return true;
+						return (pwEng.test(v));
+					}	
+					,'pwTextNumEng' : UIT0213
+						
+				}
+			}();
+
+			function goList(type){
+				/* location.href = "/mngr/analysis/analysisPatternList"; */
+				location.href = "/mngr/analysis/analysisPatternList?up=collapse0&sn=11";
+			}
+			
+		</script>
+	</div>
+</html>

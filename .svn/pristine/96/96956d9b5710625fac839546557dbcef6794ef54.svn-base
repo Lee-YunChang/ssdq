@@ -1,0 +1,48 @@
+@charset "utf-8";
+
+html,body {height:100%; overflow:auto; font-family: 'Noto Sans KR', sans-serif;}
+body {min-width: 1550px; background-color: #585858;}
+
+/* layout */
+#wrap {overflow:auto;}
+/* bg 각 페이지 별로 bg가 다름 */
+#wrap.bg01 {background: url('/img/common/login_bg.png') no-repeat #585858;}
+
+.container {overflow: hidden; height: 100%; position:relative;}
+
+/* 컨텐츠 공통 */
+#content {width: 1550px; margin: 200px auto 200px;}
+#content .content_area {position: relative; height: 565px; border-radius: 5px; background-color: #3b3b3b;}
+#content .content_area.bg_type01 {background: url('/img/common/login_sub_bg.png') no-repeat left 55px center #3b3b3b;}
+
+#content .content_location {overflow:hidden; color:#fff; margin-bottom: 30px;}
+#content .content_location ul {overflow: hidden; margin-bottom: 20px;}
+#content .content_location ul li {display: inline-block; position: relative; font-size: 12px;}
+#content .content_location ul li + li {margin-left: 30px;}
+#content .content_location ul li + li::before {position: absolute; content: ">"; width: 5px; height: 5px; left: 20px;}
+#content .content_location p {font-size: 24px; color: #feedc7;}
+
+.login_area {position: absolute; overflow: hidden; width: 446px; height: 274px; top: 120px; right: 210px; padding: 32px; border-radius: 5px; background-color: #313131;}
+.login_title strong {display: block; margin-bottom: 25px; font-size: 22px; color: #f8d88d; text-align: center;}
+
+.login_form {}
+.login_form > div {border-bottom: 1px solid #484848;}
+.login_form > div + div {margin-top: 20px;}
+.login_form > div label {display: inline-block; width: 36px; height: 35px; vertical-align: middle; text-indent: -9999px; }
+.login_form > div input {width: calc(100% - 40px); height: 35px; border: 0px; background-color: transparent; color: #fff !important; text-indent: 0px;}
+.login_form > div input:-webkit-autofill {
+   /* -webkit-box-shadow: 0 0 0 1000px #313131 inset; */
+   transition: background-color 5000s ease-in-out 0s;
+	-webkit-transition: background-color 9999s ease-out;
+    -webkit-box-shadow: 0 0 0px 1000px #313131 inset !important;
+    -webkit-text-fill-color: #fff !important;
+}
+.login_form > div input::placeholder {font-size: 16px; color: #707070; font-weight: bold; }
+.login_form > div input::-webkit-input-placeholder {font-size: 16px; color: #707070; font-weight: bold;}
+.login_form > div input:-ms-input-placeholder {font-size: 16px; color: #707070 !important; font-weight: bold !important;}
+.login_form > div.id_area label {background: url('/img/common/login_id.png') no-repeat center center;}
+.login_form > div.password_area label {background: url('/img/common/login_password.png') no-repeat center center;}
+
+button.login_btn {width: 100%; height: 40px; margin-top: 27px; line-height: 40px; border-radius: 5px; background-color: #2a88e5;}
+button.login_btn span {padding-left: 20px; color: #fff; font-size: 15px; font-weight: bold; background: url('/img/common/btn_arrow_bg.png') no-repeat left 1px;}
+

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+	
+		<!-- 상단 내비 / 타이틀 -->
+		<!-- <div class="d-sm-flex align-items-center justify-content-between">
+			<span class="mb-0 text-gray-600"><i class="fas fa-fw fa-home"></i> &gt; RULE &gt; <label th:text="#{UIT0065}">패턴/지표 관리</label></span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0065}">패턴/지표 관리</h1>
+		</div> -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>RULE</li>
+	            <li><label th:text="#{UIT0065}">패턴/지표 관리</label></li>
+            </ul>
+		</div>
+	
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<!-- <div class="card shadow mb-4"> -->
+				<div class="content_body">
+					<div class="table_area">
+						<table class="search fixed">
+							<caption th:text="#{UIT0065}">패턴/지표 목록을 구분명, 패턴/지표명으로 검색할 수 있는 기능.</caption>
+							<colgroup>
+								<col style="width:15%">
+								<col style="width:10%">
+								<col style="width:35%">
+								<col style="width:15%">
+								<col style="width:10%">
+								<col style="width:15%">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>
+										<label for="type2" th:text="#{UIT0078}">검색 조건</label>
+									</th>
+									<td>
+										<!-- <select name="searchType" id="searchType" th:title="#{UIT0078}" style="width: 140px;">
+											<option value="groupNm" th:text="#{UIT0323}">구분</option>
+											<option value="analsNm" th:text="#{UIT0358}">패턴/지표명</option>
+										</select> -->
+										<div class="selectbox in_w100">
+											<label for="la_searchType"></label> 
+                                            <select name="searchType" id="searchType" th:title="#{UIT0078}" style="width: 140px;">
+                                                <option selected value="groupNm" th:text="#{UIT0323}">구분</option>
+											 	<option value="analsNm" th:text="#{UIT0358}">패턴/지표명</option>
+                                            </select>
+                                        </div>
+									</td>
+									<td>
+										<input type="text" name="searchValue" id="searchValue" class="in_w100" th:title="#{UIT0082}" maxlength="50" th:placeholder="#{UIT0083}" style="width: 400px;">
+									</td>
+									<th>
+										<label for="type2">DBMS</label>
+									</th>
+									<td>
+										<!-- <select name="dbmsKnd" id="dbmsKnd" th:title="#{UIT0078}" style="width: 140px;" onchange="fn_changeDbms();">
+										</select> -->
+										<div class="selectbox in_w100">
+											<label for="la_dbmsKnd"></label>  
+                                           	<select name="dbmsKnd" id="dbmsKnd" th:title="#{UIT0078}" style="width: 140px;" onchange="fn_changeDbms();">
+                                           		
+                                            </select>
+                                        </div>
+									</td>
+									<!-- <td>
+									</td> -->
+									<td>
+									<!-- <button class='btn btn-primary wd_50' type='button' th:text="#{UIT0084}" onclick="fn_changSearch();" >조회</button> -->
+									<div class="button_area alignr">
+			                            <button class="btn btn-l gray in_wp70" type="button" th:text="#{UIT0084}" onclick="fn_changSearch();">조회</button>
+			                        </div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- 
+					<div style="text-align: center; padding: 10px;">
+						<button class='btn btn-primary wd_50' type='button' style="width:150px;" onclick="fn_changSearch();" >조회</button>
+					</div>
+					 -->
+				</div>
+				
+				<!-- 내용 -->
+				<div class="card shadow mb-4 margint10" >
+                   <div class="card-body">
+	                   <div class="content_body">
+		                  <input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+		                  <!-- <input type="button" class="btn btn-primary mgn_b20" id="saveBtn" value="저장" th:value ="#{UIT0088}" onclick="fn_saveAt(this)" style="width:76px; float: right;"> -->
+		                  <div class="button_area alignr marginb5">
+		                      <button class="btn btn-s blue in_wp100" type="button" th:text="#{UIT0088}" onclick="fn_saveAt(this);">저장</button>
+		                      <!-- <input type="button" class="btn btn-l blue in_wp70" id="saveBtn" value="저장" th:value ="#{UIT0088}" onclick="fn_saveAt(this)" > -->
+		                  </div>
+	                      <div id ="grid" class="tb_type99" style="clear: both;" ></div>
+	                      <div id="pagination" class="tui-pagination"></div>
+	                   </div>
+                   </div>
+	            </div>
+	            <div id="div_2" class="card shadow mb-4" >
+					<div class="card-body table_type100">
+	            		<table id="dataTable" class="table table-striped table-bordered"></table>
+	            	</div>
+	            </div>
+			</div>
+		</div>
+	
+		<!-- patten UDT 모달창-->
+		<div class="modal fade" id="pattenUDTModal" tabindex="-1" role="dialog" aria-labelledby="pattenUDTModal" aria-hidden="true">
+			<div class="modal-dialog" role="document" style="max-width: 800px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button class="close" type="button"  aria-label="Close" onclick="fn_modalClose();return false;">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+		        	
+		        	<div class="modal-body">
+		        		<div id="pattenUDTDiv" style="display: block;">
+							<form id="pattenUDTFrm">
+							<input type="hidden" id="analsId" name="analsId" />
+								<section class="l_box_type02">                                    
+			                         <div class="tb_type03">
+			                             <table>
+			                                 <tbody>
+			                                     <tr>
+			                                     	 <th><span class="str">*</span> FROM</th>
+			                                         <td><input type="text" id="beginValue" name="beginValue"></td>
+			                                         <th><span class="str">*</span> TO</th>
+			                                         <td><input type="text" id="endValue" name="endValue"></td>
+			                                     </tr>
+			                                     <tr>
+			                                     	 <th th:text="#{UIT0399}">규칙</th>
+			                                         <td colspan="3">
+		                                                 <textarea id="analsFrmla" name="analsFrmla" ></textarea>
+		                                             </td>
+			                                     </tr>
+			                                     <tr>
+			                                         <th th:text="#{UIT0044}">비고</th>
+			                                         <td><input type="text" id="rm" name="rm"></td>
+			                                         <th th:text="#{UIT0400}">활성여부</th>
+			                                         <td style="text-align: left;">
+			                                             <select id="ptUseAt" name="ptUseAt" style="width: 100px;">
+				                                             <option value="1" th:selected="${ptUseAt} == '1'">Y</option>
+															 <option value="0" th:selected="${ptUseAt} == '0'">N</option>
+		                                             	</select>
+		                                            </td>
+		                                         </tr>
+		                                     </tbody>
+		                                 </table>
+		                             </div>
+		                         </section>
+							</form>
+						</div>
+					</div>
+		        	
+					<div class="modal-footer">
+						<button class="btn btn-primary" type="button" th:text="#{UIT0088}" onclick="fn_savePatten(this);">저장</button>
+		        	</div>
+				</div>
+			</div>
+		</div>
+	
+		<script th:inline="javascript" class="code-js">
+		
+
+			/*<![CDATA[*/
+			var sessionCon = /*[[ ${sessionCon} ]]*/;
+			var sessionDbmsKnd = /*[[ ${conType} ]]*/;				
+			var fileName = /*[[ ${conFileName} ]]*/;
+			var UIT0044 = /*[[ #{UIT0044} ]]*/; //: 비고
+			var UIT0086 = /*[[ #{UIT0086} ]]*/; //: 사용여부
+			var UIT0092 = /*[[ #{UIT0092} ]]*/; //: 설명
+			var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+			var UIT0323 = /*[[ #{UIT0323} ]]*/; //: 구분
+			var UIT0357 = /*[[ #{UIT0357} ]]*/; //: 그룹
+			var UIT0358 = /*[[ #{UIT0358} ]]*/; //: 패턴/지표명
+			var UIT0399 = /*[[ #{UIT0399} ]]*/; //: 규칙
+			var UIT0400 = /*[[ #{UIT0400} ]]*/; //: 활성여부
+			var UIT0401 = /*[[ #{UIT0401} ]]*/; //: 수정이 되었습니다.
+			var UIT0402 = /*[[ #{UIT0402} ]]*/; //: 수정에 실패하였습니다.
+			var UIT0403 = /*[[ #{UIT0403} ]]*/; //: 저장되었습니다
+			var UIT0404 = /*[[ #{UIT0404} ]]*/; //: 수정된 내용이 없습니다.
+			var UIT0405 = /*[[ #{UIT0405} ]]*/; //: 저장에 실패하였습니다.
+			/*]]*/
+			
+			var dataList = {};
+			var aJsonArray = [];
+			var updateCnt = 0;
+			var dbmsKnd = "";
+			// 페이지 로드시 적용 설정
+			$(document).ready(function() {
+				//셀렉트박스 라벨초기값 지정
+				$("label[for='la_searchType']").text($("#searchType option:checked").text());
+				
+				//DBMS 설정이 안되있는 경우 디폴트 Oracle
+				if(sessionDbmsKnd == null){
+					$("label[for='la_dbmsKnd']").text('Oracle');
+				}else{
+					$("label[for='la_dbmsKnd']").text(sessionDbmsKnd);
+				}
+				
+				$("#detailDiv").hide();
+				if(sessionCon != '' && sessionCon != null){
+					$("#saveBtn").show();
+					dbmsKnd = sessionDbmsKnd;
+				}else{
+					$("#saveBtn").hide();
+				}
+				fn_selDbmsKindListBox(dbmsKnd);
+				fn_search();
+				
+			});
+			
+			
+			// dbms 변경
+			function fn_changeDbms(){
+				console.log("sessionDbmsKnd : "+sessionDbmsKnd);
+				console.log("dbmsKnd : "+dbmsKnd);
+				console.log("dbmsKnd_val : "+$('#dbmsKnd').val());
+			}
+
+			// db종류 조회
+			function fn_selDbmsKindListBox(dbmsKnd){
+				var params = {"tabType" : "all"};
+				$.ajax({
+					url: '/mngr/basicInfo/selDbmsKindList',
+					method : 'POST',
+					data: params,
+					success: function(data){
+						for(var i = 0; i < data.length; i++){
+							var selected = "";
+							if(dbmsKnd == data[i].dbmsKnd) {
+								selected = "selected=true";								
+							}else{
+								selected = "";
+							}
+							
+							var option  = $("<option value="+data[i].dbmsKnd+" "+selected+">"+data[i].dbmsKnd+"</option>");
+							$("#dbmsKnd").append(option);
+						}
+			        },
+			    });
+
+			}
+			
+			function fn_changSearch(){
+				$('#pageIndex').val('');
+				fn_search();
+			}
+			
+			// 목록 정보를 Ajax를 이용하여 가지고 온다.
+			function fn_search(){
+			
+				var insttData = null;
+				var pageIndex = $('#pageIndex').val();
+				var searchValue = $('#searchValue').val();
+				var searchType = $('#searchType').val();
+				var itemsPerPage = $("#itemsPerPage").val();
+				
+				if($('#dbmsKnd').val() != null){
+					dbmsKnd = $('#dbmsKnd').val();
+				}
+				if(dbmsKnd == '' || dbmsKnd == null){
+					dbmsKnd = "Oracle";
+				}
+								
+				if(dbmsKnd != sessionDbmsKnd){
+					$("#saveBtn").hide();
+				}else{
+					$("#saveBtn").show();
+				}
+				
+				var params = {
+					"searchValue" : searchValue,
+					"searchType" : searchType,
+					"dbmsKnd" : dbmsKnd,
+					"pageIndex" : pageIndex,
+					"itemsPerPage" : itemsPerPage
+				}
+			
+				$.ajax({
+					url: '/mngr/analysis/selectPattern',
+					data: params,
+					success: function(data){
+						var obj = JSON.parse(data);
+						
+						var dataList = obj.result;
+						var totalCnt = obj.totalCnt;
+						//dataTalbe(obj);
+						fn_setGrid(dataList);
+						
+						/* 페이징 function 호출 */
+						fn_pagination(totalCnt);
+					}
+				});
+			}
+			
+			// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+			function fn_setGrid(data){
+				$("#grid").empty();
+				// 조회 컬럼 목록
+				var columns = [
+					{header: UIT0323,name: 'groupNm', whiteSpace: 'pre-line', sortable: true,  width:120, align:'center' },
+					{header: UIT0357,name: 'pttrnSeNm', whiteSpace: 'pre-line', sortable: true,  width:100, align:'center' },
+					{header: UIT0358,name: 'analsNm', whiteSpace: 'pre-line', sortable: true,  width:170, align:'center' }, 	 
+					{header: UIT0399,name: 'viewFrmla', whiteSpace: 'pre-line', sortable: true, width:500, align:'left'},
+					{header: UIT0092,name: 'rm', whiteSpace: 'pre-line', sortable: true,  align:'left', resizable: false},
+					{header: UIT0086,name: 'useAt', whiteSpace: 'pre-line', width:100, align:'center', formatter : function(value, options){
+						
+						var html  = "";
+						if(value.value == 1)	{
+							html += "<label class='switch'><input type='checkbox' class='chkItem' data-name='chkItem' name='chkItem' data-value='UDT' checked/><span class='slider round'></span></label>";
+							
+						}else if(value.value == 0){
+							html += "<label class='switch'><input type='checkbox' class='chkItem' data-name='chkItem' name='chkItem' data-value='UDT'/><span class='slider round'></span></label>";
+						}		
+						
+						return html;
+						}
+					},
+					{header: UIT0044,name: 'groupCode', whiteSpace: 'pre-line', width:100, align:'center', formatter : function(value, options){
+						var html  = "";
+						var groupCode = value.value;
+						var groupId = groupCode.substring(0,6);
+						if(groupId == 'AG0004' || groupId == 'AG0005' || groupId == 'AG0006' ){
+							if($('#dbmsKnd').val() == sessionDbmsKnd)
+							html += "<input type='button' class='btn_select' data-value='UDT' data-backdrop='static' data-keyboard='false' value='"+UIT0095+"'/>";
+						}
+						return html;
+						}
+					}
+				];
+				
+				const grid = new tui.Grid({
+					el : document.getElementById("grid"),
+					data : data,
+					scrollX : false,
+					scrollY : false,
+					bodyHeight : 'auto',
+					rowHeight : 'auto',
+					minBodyHeight : 40,
+					header: {
+					  height: 40
+					},
+					columns : columns,
+					columnOptions: {
+					      resizable: true
+					    }
+				});
+				
+				const extOptions = {
+					cell: {
+						focused: {
+				            border: 0 // 선택 셀 강조 표시 x
+				        }
+					}
+				};
+				
+				tui.Grid.applyTheme('default', extOptions);
+				
+				grid.on('click', function(ev) {
+			  		var obj = ev.nativeEvent.target;
+			  		var mode = $(obj).data("value");
+			  		
+			  		if(ev.columnName === 'groupCode'){
+			  			var item = grid.getRow(ev.rowKey);
+			  			if(mode != undefined){
+			  	  	  		if(mode == 'UDT'){
+			  	  	  	  		// 수정
+			  	  	  			//fn_openPatternLayer(mode, item);
+			  	  	  			// 사용자 정의 패턴
+			  	  	  			if(item.groupCode == 'AG000401'){
+			  	  	  				location.href = "/mngr/ruleMng/ruleManagePatten.do?analsId="+item.analsId;
+			  	  	  			}
+			  	  	  			// 사용자 정의 SQL
+				  	  	  		if(item.groupCode == 'AG000402'){
+				  	  	  			location.href = "/mngr/ruleMng/ruleManageSql.do?analsId="+item.analsId;
+				  	  	  		}
+			  	  	  			// 범주
+			  	  	  			if(item.groupCode.substring(0,6) == 'AG0006'){
+			  	  	  				location.href = "/mngr/ruleMng/ruleManageLimit.do?analsId="+item.analsId;
+			  	  	  	  		}
+			  	  	  	  	}
+			  			}
+			  		}
+			  		if(ev.columnName === 'useAt'){
+			  			var item = grid.getRow(ev.rowKey);
+			  			var aJson = new Object();
+			  			
+			  			if(mode != undefined){
+				  			if (item.useAt == '1') {
+				  				item.useAt = "0";
+				  				aJson.useAt = item.useAt;
+				  				aJson.analsId = item.analsId;
+				  				
+				  			}
+				  			else {
+				  				item.useAt = "1";
+				  				aJson.useAt = item.useAt;
+				  				aJson.analsId = item.analsId;
+				  				
+				  			}
+				  			aJsonArray.push(aJson);
+			  			}
+			  		}
+			  		
+			  	});
+				
+				grid.resetData(data);
+			}
+			
+			function dataTalbe(obj){
+				
+				var analsList = obj.analsList;
+				var analsGroup = obj.analsGroup;
+		
+				// COLUMNS 리스트
+				var columnsArr = [
+					{ name: 'first', title: UIT0323},
+					{ name: 'second', title: UIT0357},
+			        { name: 'third', title: UIT0358},
+			        { title: UIT0399},
+			        { title: UIT0092},
+			        { title: UIT0086},
+			        { title: UIT0044}
+				];
+				
+				// DATA 리스트 
+				var dataListArr = [];
+				
+				// 체크박스 데이터
+				$.each(analsList, function(index, value2) {
+					var analsArr = [];
+					if(value2.pttrnSeNm == undefined){
+						value2.pttrnSeNm = '&nbsp;';
+					}
+					
+					analsArr.push(value2.groupNm);
+					analsArr.push(value2.pttrnSeNm);	// 그룹 명 추가
+					analsArr.push(value2.analsNm);
+					analsArr.push(value2.analsfrmla);
+					analsArr.push(value2.rm);
+					//analsArr.push(value2.useat);
+					if(value2.useat == 1)	{
+						analsArr.push("<label class='switch'><input type='checkbox' class='chkItem' data-name='chkItem' name='chkItem' data-value='UDT' checked/><span class='slider round'></span></label>");
+						
+					}else if(value2.useat == 0){
+						analsArr.push("<label class='switch'><input type='checkbox' class='chkItem' data-name='chkItem' name='chkItem' data-value='UDT'/><span class='slider round'></span></label>");
+					}
+					//analsArr.push(value2.groupcode);
+					var html  = "";
+					var groupCode = value2.groupcode;
+					var groupId = groupCode.substring(0,6);
+					if(groupId == 'AG0004' || groupId == 'AG0005' || groupId == 'AG0006' ){
+						if($('#dbmsKnd').val() == sessionDbmsKnd)
+							analsArr.push("<input type='button' class='btn_select' data-value='UDT' data-backdrop='static' data-keyboard='false' value='"+UIT0095+"'/>");
+					}
+					
+
+					dataListArr.push(analsArr);
+				})
+				
+				var data = dataListArr;
+				var columnDefsArr = [
+					{"targets": [0, 1, 2], "class" : "fixColums"}
+				];
+				
+				table = $('#dataTable').DataTable({
+					destroy : true,
+					retrieve : false,
+					columns: columnsArr,
+					data: data,
+					rowsGroup: [
+					  'first:name',
+					  'second:name',
+					  'third:name'
+					],
+		    		//pageLength: '20',
+					scrollY:        800,
+					scrollX:        true,
+					scrollCollapse: false,
+					searching: false,			// 검색 영역
+					paging:         false,	// 페이징 표시
+					info : false,				// 페이지 건수 표시 
+					ordering: false,			// 정렬 제거
+					orderCellsTop: false,
+					//autoWidth: false,
+					fixedColumns: {
+						leftColumns: 3
+					},
+					columnDefs : columnDefsArr
+				});
+				
+				// LEFT TD 선택 해당 row 전체선택
+				/*
+				var leftTable = $('.DTFC_LeftBodyLiner').children('table').find('tbody > tr');
+				
+				$(leftTable).on('click', 'td', function () {
+					var selectTr = $(this).parents().data('tr');
+					var targetTr = $('#dataTable').children('tbody').find('tr');
+					var thisTdSpan = Number($(this).attr('rowspan'));
+					
+					$.each(targetTr, function(index, value) {
+					
+						var trRowSn = $(value).data('tr');
+						var endTrSn = selectTr + thisTdSpan
+						
+						if(thisTdSpan == 1){
+							if($(value).data('tr') == selectTr){
+								var trChk = $(value).find('input:checkbox');
+								if(!$(trChk).is(":checked")){
+									$(trChk).prop("checked", true);
+								}else{
+									$(trChk).prop("checked", false);
+								}
+							}
+						} else {
+							if(trRowSn >= selectTr && trRowSn < endTrSn){
+								var trChk = $(value).find('input:checkbox');
+								
+								if(!$(trChk).is(":checked")){
+									$(trChk).prop("checked", true);
+								}else{
+									$(trChk).prop("checked", false);
+								}
+							}
+						}
+					});
+				});
+				*/
+			};
+			
+			function fn_openPatternLayer(mode, item){
+			    // 폼 초기화
+			    $("#pattenUDTFrm")[0].reset();
+			    
+			    $("#analsId").val(item.analsId);
+			    $("#groupNm").val(item.groupNm);
+			    $("#analsNm").val(item.analsNm);
+			    $("#beginValue").val(item.beginValue);
+			    $("#endValue").val(item.endValue);
+			    $("#analsFrmla").val(item.analsFrmla);
+			    $("#rm").val(item.rm);
+			
+			    var option  = "";
+			    $("#ptUseAt").empty();
+			    if("0" == item.useAt){
+			    	option  = $("<option value='1' >Y</option>");
+			    	$("#ptUseAt").append(option);
+			    	option  = $("<option value='0' selected=true >N</option>");
+			    	$("#ptUseAt").append(option);
+			    }else{
+			    	option  = $("<option value='1' selected=true >Y</option>");
+			    	$("#ptUseAt").append(option);
+			    	option  = $("<option value='0' >N</option>");
+			    	$("#ptUseAt").append(option);
+			    }
+			    
+			}
+			
+			function fn_savePatten(obj){
+				var frm = $("#pattenUDTFrm").serialize();
+				
+				$.ajax({
+					url: "/mngr/analysis/UDTPattern",
+					type: 'POST',
+					data: $("#pattenUDTFrm").serialize(),
+					success: function(data){
+						var result = JSON.parse(data);
+						
+						var resultCnt = result.resultCnt;
+			
+						if(resultCnt == 1){
+							alert(UIT0401);
+							fn_modalClose();
+							
+						}else if(resultCnt == 0){
+							alert(UIT0402);
+						}
+						location.reload(true);
+					}
+				});
+				
+			}
+			
+			function fn_saveAt(){
+				
+				$.ajax({
+					url: "/mngr/analysis/UDTPatternUseAt",
+					data: {"arrayList" : JSON.stringify(aJsonArray)},
+					success: function(data){
+						var obj = JSON.parse(data);
+						var result = obj.result;
+			
+						if(result > 0){
+							alert(UIT0403);
+						}else if(result == 0){
+							alert(UIT0404);
+						}else {
+							alert(UIT0405);
+						}
+					}
+				});
+				location.reload(true);
+			
+			}
+			
+		</script>	
+	
+
+	</div>
+	
+</html>

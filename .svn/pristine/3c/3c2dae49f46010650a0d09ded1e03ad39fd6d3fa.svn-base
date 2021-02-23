@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.UserMapper">
+
+	<select id="readUser" parameterType="String" resultType="com.webapp.dqsys.security.domain.Member">
+        SELECT 
+			INSTT_CODE AS insttCode 
+			, USER_ID AS userId
+			, USER_PASSWORD AS userPassword
+			, USER_NM AS userNm
+			<!-- , CHRG_DEPT AS chrgDept -->
+			, RECENT_CONECT_DT AS recentConectDt
+			, RECENT_CONECT_IP AS recentConectIp
+			, RM AS rm
+			, USE_AT AS useAt
+		FROM USER 
+		WHERE USER_ID = #{userId}
+		<!-- AND USE_AT = '1' -->
+    </select>
+    
+    <select id="readAuthority" parameterType="String" resultType="String">
+        SELECT SUBSTRING_INDEX(AUTHOR_CODE, "_", -1) FROM USER WHERE USER_ID = #{userId}
+    </select>
+
+</mapper>

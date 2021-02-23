@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	
+<head>
+	<style type="text/css">
+		input[type=checkbox] {display: inline; -webkit-appearance: checkbox;}
+		.tb_type99 .tui-grid-container .tui-grid-content-area .tui-grid-lside-area .tui-grid-body-area .tui-grid-body-container {width: 79px !important;}
+		#grid .tui-grid-container .tui-grid-content-area .tui-grid-rside-area {width: calc(100% - 81px) !important;}
+	</style>
+</head>	
+
+	<div layout:fragment="content">
+	
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	           <li class="home">home</li>
+	           <li>BASIC</li>
+	           <li>데이터 Lifecycle 관리</li>
+	           <li><label th:text="#{UIT0544}">Lifecycle 항목 관리</label></li>
+  	         </ul>
+		</div>
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="content_body">
+					<div class="table_area">
+						<table class="search fixed">
+							<caption th:text="#{UIT0077}"></caption>
+							<colgroup>
+								<col style="width:10%">
+								<col style="width:25%">
+								<col style="width:10%">
+								<col style="width:25%">
+								<col style="width:auto">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>
+										<label for="searchLifecycleCl" th:text="#{UIT0502}">분류</label>
+									</th>
+									<td>
+										<input type="text" name="searchLifecycleCl" id="searchLifecycleCl" class="in_w100" th:title="#{UIT0504}" maxlength="50" th:placeholder="#{UIT0504}">
+									</td>
+									<th>
+										<label for="searchLifecycleNm" th:text="#{UIT0555}">항목명</label>
+									</th>
+									<td>
+										<input type="text" name="searchLifecycleNm" id="searchLifecycleNm" class="in_w100" th:title="#{UIT0561}" maxlength="50" th:placeholder="#{UIT0561}">
+									</td>
+									<td>
+										<button class='btn btn-l gray in_wp70' type='button' th:text="#{UIT0084}" onclick="fn_selDataList();" >조회</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="card shadow mb-4">
+					<form id="frm">
+						<input type="hidden" id="ckBtn" name="ckBtn" value="" />
+						<input type="hidden" id="hAnalsTy" name="hAnalsTy" value="" />
+						<input type="hidden" id="hFieldNm" name="hFieldNm" value="" />
+						<input type="hidden" id="hPeriod" name="hPeriod" value="" />
+						<input type="hidden" id="hPeriodCl" name="hPeriodCl" value="" />
+						<input type="hidden" id="hRm" name="hRm" value="" />
+					</form>
+					<div class="content_body">
+						<section id="standardSection" class="pad100 txt_right">
+							<button class='btn btn-s blue in_wp100' type='button' th:text="#{UIT0085}" onclick="fn_openModalLayer('');">등록</button>
+							<button class='btn btn-s gray in_wp100' type='button' th:text="#{UIT0087}" onclick="fn_openModalLayer('DELETE');">삭제</button>
+							<button class='btn btn-s blue in_wp120' type='button' th:text="#{UIT0293}" onclick="fn_openModalLayer('CSV');">CSV 파일등록</button>
+						</section>
+						
+						<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+						<div id ="grid" class="tb_type99" style="clear: both; min-height: 440px;"></div>
+                        <div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- modal 창 -->
+		<!-- lifecycle 등록 팝업 open -->
+		<div id="lifecycleSaveLayer" class="layer_pop_wrap" >
+			<!-- <div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div> -->
+			<div class="layer_pop" style="height: 390px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0558}">지표 등록</p>
+				    <a href="javascript:fn_modalCloseLayer();" class="btn_close" ><img src="/img/icon/cancel_btn.png" th:alt="#{UIT0025}" style="width: 20px;"></a>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="lifecycleFrm">
+							<div class="layer_pop_backboder">
+		                        <div class="table_area">
+	                            	<table class="write fixed" style="background-color: white;">
+		                            	<colgroup>
+		                                    <col style="width: 25%;" />
+		                                    <col style="width: auto" />
+		                                </colgroup>
+										<tbody>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0502}">분류</label> </th>
+												<td>
+													<div class="selectbox in_w50" > 
+		                                                <label for="la_analsTy">YYYYMMDD</label>
+		                                                <select id="analsTy" class="chg">  
+		                                                    <option value="YYYYMMDD" selected>YYYYMMDD</option>
+		                                                    <option value="YYMMDD">YYMMDD</option>
+		                                                    <option value="YYYYMM">YYYYMM</option>
+		                                                </select>
+		                                            </div>
+												</td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0557}">기간</label> </th>
+												<td>
+													<input type="text" id="period" name="period" class="in_w50 chg" maxlength="2" oninput="maxLengthCheck(this)">
+													<div class="checks padl10">
+		                                                <input type="radio" id="periodMon" name="periodRa" class="chg" value="M" checked="checked"> 
+		                                                <label for="periodMon" class="marginr20">개월</label> 
+		                                                <input type="radio" id="periodYe" name="periodRa" class="chg" value="Y"> 
+		                                                <label for="periodYe">년</label> 
+		                                            </div>
+												</td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0555}">항목명</label></th>
+												<td><input type="text" id="fieldNm" name="fieldNm" class="in_w100"  maxlength="10" disabled="disabled"></td>
+											</tr>
+											<tr>
+												<th><label th:text="#{UIT0092}">설명</label></th>
+												<td>
+													<textarea id="rm" name="rm" class="area in_w100"></textarea>
+												</td>
+											</tr>
+										</tbody>
+	                                </table>
+	                            </div>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<div class="button_area alignc">
+	                            <button class="btn btn-s blue in_wp100" type="button" id="lifecycleSaveBtn" th:text="#{UIT0088}" onclick="fn_saveLifecycle();">저장</button>
+	                        </div>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		
+		
+		<div id="lifecycleCsvSaveLayer" class="layer_pop_wrap" >
+			<!-- <div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div> -->
+			<div class="layer_pop" style="height: 350px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0558}">지표 등록</p>
+				    <a href="javascript:fn_modalCloseLayer();" class="btn_close" ><img src="/img/icon/cancel_btn.png" th:alt="#{UIT0025}" style="width: 20px;"></a>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form name="lifecycleFileUploadFrm" id="lifecycleFileUploadFrm"  method="post" action="" enctype="multipart/form-data">
+							<div class="layer_pop_backboder">
+		                        <section class="l_box_type02">                                    
+		                            <div class="table_area">
+	                            		<table class="write fixed" style="background-color: white;">
+	                            			<colgroup>
+				                                <col style="width:25%">
+				                                <col style="width:75%">
+				                            </colgroup>
+		                                    <tbody>
+		                                        <tr>
+		                                            <th><span class="impo"></span> <label th:text="#{UIT0290}">파일 업로드</label></th>
+		                                            <td style="text-align: left; width:600px;">
+		                                                <div class="filebox bs3-primary" style="text-align: left; width:600px;">
+		                                                    <input id="lifecycleFileFullPath" name="lifecycleFileFullPath" class="upload-name in_box_type01 in_length400" value="파일선택" style="width: 410px;" disabled="disabled">
+		                                                    <label for="lifecycleFileName" class="btn btn-s blue in_wp100" style="width: 120px;" th:text="#{UIT0291}">파일 선택</label>
+		                                                    <input type="file" name="lifecycleFileName" id="lifecycleFileName" style="width: 100px;" class="upload-hidden" onchange="fn_setFileInfo(event);"> 
+		                                                </div>
+		                                            </td>
+		                                        </tr>                                                                                                   
+		                                    </tbody>
+		                                </table>
+		                                <br/>
+		                                <a class="btn btn-s gray in_wp140" style ="text-align:center" href="/sampleData/lifecycle_Sample.csv" download="lifecycle_Sample.csv">샘플데이터 다운로드</a>
+	                            	</div>
+	                       		</section>
+                       		</div>
+                    	</form>
+						
+						<div class="btn_modal_box">
+							<div class="button_area alignc">
+	                            <button class="btn btn-s blue in_wp100" type="button" id="lifecycleCsvSaveBtn" th:text="#{UIT0088}" onclick="fn_saveFileData();">저장</button>
+	                        </div>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- lifecycle 등록 팝업 close -->
+		
+		<!-- lifecycle 수정 팝업 open -->
+		<div id="lifecycleUpdateLayer" class="layer_pop_wrap" >
+			<!-- <div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div> -->
+			<div class="layer_pop" style="height: 390px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0525}">lifecycle 수정</p>
+				    <a href="javascript:fn_modalCloseLayer();" class="btn_close" ><img src="/img/icon/cancel_btn.png" th:alt="#{UIT0025}" style="width: 20px;"></a>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="lifecycleFrm">
+							<div class="layer_pop_backboder">
+		                        <div class="table_area">
+		                        	<input type="hidden" id="lcAnalsId" name="lcAnalsId" />
+		                        	<input type="hidden" id="lcInsttCode" name="lcInsttCode" />
+		                            <table class="write fixed" style="background-color: white;">
+		                           		<colgroup>
+		                                    <col style="width: 20%;" />
+		                                    <col style="width: auto" />
+		                                </colgroup>
+										<tbody>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0502}">분류</label> </th>
+												<td>
+													<div class="selectbox in_w50" > 
+		                                                <label for="la_lcAnalsTy">YYYYMMDD</label>
+		                                                <select id="lcAnalsTy" class="lcChg">  
+		                                                    <option value="YYYYMMDD">YYYYMMDD</option>
+		                                                    <option value="YYMMDD">YYMMDD</option>
+		                                                    <option value="YYYYMM">YYYYMM</option>
+		                                                </select>
+		                                            </div>
+												</td>
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0557}">기간</label> </th>
+ 												<td>
+ 													<input type="text" id="lcPeriod" name="lcPeriod" class="in_w50 lcChg" maxlength="20" oninput="maxLengthCheck(this)">
+ 													<div class="checks padl10">
+		                                                <input type="radio" id="lcPeriodMon" name="lcPeriodCl" class="lcChg" value="M"> 
+		                                                <label for="lcPeriodMon" class="marginr20">개월</label> 
+		                                                <input type="radio" id="lcPeriodYe" name="lcPeriodCl" class="lcChg" value="Y"> 
+		                                                <label for="lcPeriodYe">년</label> 
+		                                            </div>
+ 												</td> 
+											</tr>
+											<tr>
+												<th><span class="impo"></span> <label th:text="#{UIT0555}">항목명</label></th>
+												<td><input type="text" id="lcFieldNm" name="lcFieldNm" class="in_w100"  maxlength="40" disabled="disabled"></td>
+											</tr>
+											<tr>
+												<th><label th:text="#{UIT0092}">설명</label></th>
+												<td>
+													<textarea id="lcRm" name="lcRm" class="area in_w100"></textarea>
+												</td>
+											</tr>
+										</tbody>
+	                                </table>
+	                            </div>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<div class="button_area alignc">
+							    <button class="btn btn-s blue in_wp100" type="button" id="lifecycleUpdateBtn" th:text="#{UIT0095}" onclick="fn_updatelifecycle();">저장</button>
+							</div>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- lifecycle 수정 팝업 close -->
+		
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var chkTabId = /*[[${tabId}]]*/;
+		var sessionDbmsKnd = /*[[ ${conType} ]]*/;
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+		var fileName = /*[[ ${conFileName} ]]*/; //: 파일명
+		var Schema = /*[[ ${schema} ]]*/; //: 스키마명
+		var UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		var UIT0240 = /*[[ #{UIT0240} ]]*/; //: 컬럼명
+		var UIT0255 = /*[[ #{UIT0255} ]]*/; //: Data 타입
+		var UIT0256 = /*[[ #{UIT0256} ]]*/; //: Data 길이
+		var UIT0257 = /*[[ #{UIT0257} ]]*/; //: Data 정밀도
+		var UIT0258 = /*[[ #{UIT0258} ]]*/; //: Data 스케일
+		var UIT0259 = /*[[ #{UIT0259} ]]*/; //: 널허용
+		var UIT0260 = /*[[ #{UIT0260} ]]*/; //: 디폴트값
+		var UIT0269 = /*[[ #{UIT0269} ]]*/; //: 최소값
+		var UIT0270 = /*[[ #{UIT0270} ]]*/; //: 최대값
+		var UIT0261 = /*[[ #{UIT0261} ]]*/; //: 컬럼설명
+		var UIT0265 = /*[[ #{UIT0265} ]]*/; //: 선택해주세요
+		var UIT0307 = /*[[ #{UIT0307} ]]*/; //: 업로드할 파일을 선택해주세요
+		var UIT0308 = /*[[ #{UIT0308} ]]*/; //: 파일명은 영문자/숫자 조합만 가능 합니다.
+		var UIT0309 = /*[[ #{UIT0309} ]]*/; //: 확장자 명이 csv 파일만 등록 가능합니다.
+		var UIT0310 = /*[[ #{UIT0310} ]]*/; //: 저장하시겠습니까?
+		var UIT0314 = /*[[ #{UIT0314} ]]*/; //: 정상적으로 등록 되었습니다.
+		var UIT0315 = /*[[ #{UIT0315} ]]*/; //: 등록에 실패하였습니다. 다시 등록해 주시기 바랍니다.
+		var UIT0320 = /*[[ #{UIT0320} ]]*/; //: 해당 파일을 업로드 하시겠습니까?
+		var UIT0321 = /*[[ #{UIT0321} ]]*/; //: 정상적으로 업로드 되었습니다.
+		
+		var UIT0092 = /*[[ #{UIT0092} ]]*/; //: 설명
+		var UIT0500 = /*[[ #{UIT0500} ]]*/; //: 분류
+		var UIT0502 = /*[[ #{UIT0502} ]]*/; //: 분류
+		var UIT0503 = /*[[ #{UIT0503} ]]*/; //: 도메인명
+		var UIT0506 = /*[[ #{UIT0506} ]]*/; //: 표준용어명
+		var UIT0507 = /*[[ #{UIT0507} ]]*/; //: 표준용어영문명
+		var UIT0510 = /*[[ #{UIT0510} ]]*/; //: 데이터타입
+		var UIT0511 = /*[[ #{UIT0511} ]]*/; //: 데이터길이
+		var UIT0512 = /*[[ #{UIT0512} ]]*/; //: 영문약어
+		var UIT0513 = /*[[ #{UIT0513} ]]*/; //: 구분
+		var UIT0518 = /*[[ #{UIT0518} ]]*/; //: 분류를 입력해 주세요
+		var UIT0519 = /*[[ #{UIT0519} ]]*/; //: 도메인명을 입력해 주세요
+		var UIT0520 = /*[[ #{UIT0520} ]]*/; //: 데이터타입을 입력해 주세요
+		var UIT0521 = /*[[ #{UIT0521} ]]*/; //: 표준용어명을 입력해 주세요
+		var UIT0522 = /*[[ #{UIT0522} ]]*/; //: 구분을 선택해 주세요
+		var UIT0553 = /*[[ #{UIT0553} ]]*/; //: 도메인 ID
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var lifecycleChkArr = [];
+		var wordChkArr = [];
+		var domainChk;
+		var wordChk;
+		var dataList;
+		var totalCnt;
+		var analsTy;
+		var period;
+		var periodCl;
+		var lcAnalsTy;
+		var lcPeriod;
+		var lcPeriodCl;
+		
+		var UIT0529 = /*[[ #{UIT0529} ]]*/; //: DBMS
+		var UIT0530 = /*[[ #{UIT0530} ]]*/; //: DBMS를 선택해 주세요
+		var UIT0531 = /*[[ #{UIT0531} ]]*/; //: 표준용어영문명을 입력해 주세요
+		
+		var UIT0555 = /*[[ #{UIT0555} ]]*/; //: 항목명
+		var UIT0556 = /*[[ #{UIT0556} ]]*/; //: 분류
+		var UIT0557 = /*[[ #{UIT0557} ]]*/; //: 기간
+		var UIT0559 = /*[[ #{UIT0559} ]]*/; //: 항목명을 입력해 주세요
+		var UIT0560 = /*[[ #{UIT0560} ]]*/; //: 기간을 입력해 주세요
+		var UIT0565 = /*[[ #{UIT0565} ]]*/; //: 측정 데이터 형식
+		
+	/*]]*/
+	
+		// 페이지 로드시 적용 설정
+		$(document).ready(function() {
+			// 검색어 조회 키 입력 이벤트
+			$('.input_table').find('input').keydown(function(key) {
+                if (key.keyCode == 13) {
+                	fn_selDataList();
+                }
+            });
+			
+			//파일등록시 항목명 자동생성
+			$(".chg").on('change', function(){
+				var inputId = $(this).attr('id');
+				
+				analsTy = $("#analsTy option:selected").text();
+                period = $("#period").val();
+                periodCl = $('input[name="periodRa"]:checked').val();
+                
+                $("#fieldNm").val(analsTy+"_"+period+periodCl);
+            });
+			
+			//파일수정시 항목명 자동변경
+			$(".lcChg").on('change', function(){
+				var inputId = $(this).attr('id');
+				
+                lcAnalsTy = $("#lcAnalsTy option:selected").text();
+                lcPeriod = $("#lcPeriod").val();
+                lcPeriodCl = $('input[name="lcPeriodCl"]:checked').val();
+                
+                $("#lcFieldNm").val(lcAnalsTy+"_"+lcPeriod+lcPeriodCl);
+            });
+			
+			fn_selDataList();
+			
+		});
+		
+		var tabType = "";
+		
+		// 지표 등록
+		function fn_saveLifecycle(){
+			var frmChk = true;
+			var analsTy = $("#analsTy").val(); // 분류
+			var fieldNm = $("#fieldNm").val(); // 항목명
+			var period = $("#period").val(); // 기간
+			var periodCl = $('input[name="periodRa"]:checked').val(); // 기간 구분
+			var rm = $("#rm").val(); // 설명
+			
+			// validation 체크
+			if(analsTy.length == 0) {
+				alert(UIT0518);
+				frmChk = false;
+			}
+			else if(fieldNm.length == 0) {
+				alert(UIT0559);
+				frmChk = false;
+			}
+			else if(period.length == 0) {
+				alert(UIT0560);
+				frmChk = false;
+			}
+			
+			if(frmChk){
+				$.ajax({
+					url: '/mngr/lifecycle/ajaxSelChkFiledNm',
+					method : 'POST',
+					data: {fieldNm : fieldNm},
+					beforeSend: function() {
+						wrapWindowByMask();
+					},
+					success: function(data){
+				
+						if(data == 0){
+							var arr = [];
+							var obj = {};
+							obj.analsTy = analsTy;
+							obj.fieldNm = fieldNm;
+							obj.period = period;
+							obj.periodCl = periodCl;
+							obj.rm = rm;
+							
+							arr.push(obj);
+							
+							if(arr.length > 0){
+								$.ajax({
+									url: '/mngr/lifecycle/ajaxInsLifecycleManageList',
+									method : 'POST',
+									data: {insertList : JSON.stringify(arr)},
+									beforeSend: function() {
+										wrapWindowByMask();
+									},
+									success: function(data){
+										var obj = JSON.parse(data);
+										var isSuccess = obj.result;
+										
+										if( isSuccess ) {
+											fn_modalCloseLayer();
+										}
+										else {
+											alert(UIT0041);
+											return;
+										}
+							        },
+							        error:function() {
+										alert(UIT0041);
+										return;
+									},
+									complete: function() {
+										closeWindowByMask();
+										window.location.reload();//체크박스에 id값은 그리드를 만들때 넣어지기 때문에 페이지 초기화 처리
+									}
+							    });
+							}
+						} else {
+							alert("항목명이 중복되었습니다.");
+							closeWindowByMask();
+							return false;
+						}
+					},
+			        error:function() {
+						alert(UIT0041);
+						return;
+					}
+			    });
+			}
+		}
+
+		// lifecycle file 등록
+		function lifecycleFileUpload(){
+	        var form = $('#lifecycleFileUploadFrm')[0];
+	        var csvFile = new FormData(form);
+	        
+			$.ajax({
+				url: '/mngr/lifecycle/ajaxInsLifecycleFile',
+				method : 'POST',
+				enctype: 'multipart/form-data',
+				processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+				data: csvFile,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					var isSuccess = obj.result;
+					
+					if( isSuccess ) {
+						fn_modalCloseLayer();
+					}
+					else {
+						//alert(UIT0041);
+						alert("중복된 항목명이 존재합니다.");
+						return;
+					}
+		        },
+		        error:function() {
+		        	alert(UIT0041);
+					return;
+	            },
+				complete: function() {
+					closeWindowByMask();
+				}
+		    });
+		}
+		
+		
+		// file 저장 이벤트
+		function fn_saveFileData(){
+			var fileChk= true;
+			
+			var fileName = $("#lifecycleFileName").val();
+			
+			var fileNames = fileName.split("\\");
+			var len = fileNames.length -1;
+			var checkNms = fileNames[len].split(".");
+			
+			var checkNm = checkNms[0].trim();
+			var checkDns = checkNms[1].trim();		
+			
+			// 업로드 파일 확인
+			if(fileName == "") {
+				alert(UIT0307);
+				csvFileChk = false;
+				return false;
+			}
+			/* if ((new RegExp(/[^a-z0-9_]/gi)).test(checkNm)) {
+				alert(UIT0308);
+				csvFileChk = false;
+				return false;
+			} */
+			/* if ((new RegExp(/^csv/gi)).test(checkDns.toLowerCase())== false) {
+				alert(UIT0309);
+				fileChk = false;
+				return false;
+			} */
+
+			if(fileChk==true){
+				// csv 등록
+            	lifecycleFileUpload();
+			}
+		}
+		
+		// 선택된 파일 정보
+		function fn_setFileInfo(evt){
+			var files = evt.target.files;
+
+            var file = files[0];
+            var fileName = file.name;
+            var fileSize = file.size;
+           	$("#lifecycleFileFullPath").val(fileSize+ ' Byte'+' / '+fileName);
+		}
+		
+		// 등록  팝업
+		function fn_openModalLayer(mode){
+			
+			/*레이어 열기*/
+			var popSaveForm = {};
+			//chkTabId = $('a.active').attr('id');
+			
+			if( mode === 'CSV' ) {
+				$('#lifecycleCsvSaveLayer').addClass('on');
+			}
+			else if (mode === 'DELETE') {//삭제
+				if(confirm("정말 삭제하시겠습니까?")){
+					fn_deleteLifecycle();
+				}
+				else {
+					lifecycleChkArr = [];//삭제 버튼 취소시 배열 초기화
+					$("input[type=checkbox]").attr("checked", false);
+					return false;
+				}
+			}
+			else {//등록
+				analsTy = $("#analsTy option:selected").text();
+                period = "";
+                periodCl = $('input[name="periodRa"]:checked').val();
+				popSaveForm = $("#lifecycleFrm").serializeArray();
+				$('#lifecycleSaveLayer').addClass('on');
+				$("#fieldNm").val(analsTy+"_"+period+periodCl);
+			}
+			
+			// 폼 초기화
+			if( mode === 'CSV' ) {
+				if ( isBrowserMsie() ){
+				    $("#lifecycleFileName").replaceWith( $("#lifecycleFileName").clone(true) );
+				} else {
+				    $("#lifecycleFileName").val("");
+				}
+			    $("#lifecycleFileFullPath").val("");
+			}
+			else {
+				$.each(popSaveForm, function(i, v){
+					$('#'+v.name).val('');
+				});
+			}
+			
+		    $('.layer_pop_wrap').css("left","41%");
+		    $('.layer_pop_wrap').css("top","45%");
+			
+		    $('.tui-grid-container').css('z-index', 1); 
+		    $('.cover').show();
+		}
+		
+		// 페이지 이동시 사용
+		function fn_search(){
+			fn_selDataList();
+		}
+		
+		// 조회 목록 리스트를 그리드 형식으로 화면 구성 한다.
+		function fn_setDataListGrid(listData){
+			// 화면 초기화 처리
+			$("#grid").empty();
+			// 조회 컬럼 목록
+			
+			var columns = "";
+			
+			columns = [
+				{header : UIT0556, title : UIT0556, name : 'analsTy', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'},
+				{header : UIT0555, title : UIT0555, name : 'fieldNm', whiteSpace: 'normal', sortable: true,  width: 300, align: 'center'}, 
+				{header : UIT0557, title : UIT0557, name : 'addPeriod', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'}, 
+				{header : UIT0092, title : UIT0092, name : 'rm', whiteSpace: 'normal', sortable: true, align: 'center'},
+				{header : UIT0553, title : UIT0553, name : 'insttCode', hidden : true},
+				{header : UIT0553, title : UIT0553, name : 'analsId', hidden : true},
+				{header : UIT0557, title : UIT0557, name : 'period', hidden : true},
+				{header : UIT0557, title : UIT0557, name : 'periodCl', hidden : true},
+				{header : UIT0095, title : UIT0095, name : 'lifecycleAlter', whiteSpace: 'normal', sortable: true, width: 200, align: 'center', formatter : function(value, options){
+					var html  = "";
+					html += "<input type='button' class='btn btn-s gray in_wp70' name='lifecycleUdtBtn' data-value='"+listData.analsId+"' value='"+UIT0095+"' />&nbsp;&nbsp;";
+					return html;
+				}
+			}
+			];
+			
+			const dataListGrid = new tui.Grid({
+				el : document.getElementById("grid"),
+				data : listData,
+				/* rowHeaders: ['rowNum'], */
+				rowHeaders: [{type: 'rowNum'},{type: 'checkbox'}],
+				scrollX : false,
+				scrollY : false,
+				minBodyHeight : 40,
+				bodyHeight : 'auto',
+				rowHeight : 40,
+				header: {
+					height: 40
+				},
+				columns : columns
+			});
+			
+			const extOptions = {
+				cell: {
+					focused: {
+			            border: 1 // 선택 셀 강조 표시 x
+			        }
+				}
+			};
+			
+			tui.Grid.applyTheme('default', extOptions);
+		
+			dataListGrid.on('click', function (ev) {
+				$("input[name=lifecycleUdtBtn]").click(function(){
+					var insttCode = dataListGrid.getRow(ev.rowKey).insttCode;
+			  	 	var analsId  = dataListGrid.getRow(ev.rowKey).analsId;
+			  	 	var analsTy  = dataListGrid.getRow(ev.rowKey).analsTy;
+			  		var fieldNm  = dataListGrid.getRow(ev.rowKey).fieldNm;
+			  		var period  = dataListGrid.getRow(ev.rowKey).period;
+			  		var periodCl  = dataListGrid.getRow(ev.rowKey).periodCl;
+			  		var rm  = dataListGrid.getRow(ev.rowKey).rm;
+			  		
+			  		lcAnalsTy = $("#analsTy option:selected").text();
+			  		lcPeriod = $("#lcPeriod").val();
+			  		lcPeriodCl = $('input[name="periodRa"]:checked').val();
+			  		
+			  		$("#lifecycleUpdateLayer #lcInsttCode").val(insttCode); //기관코드
+			  		$("#lifecycleUpdateLayer #lcAnalsId").val(analsId); //lifecycle id
+					$("#lifecycleUpdateLayer #lcAnalsTy").val(analsTy); // 분류
+					$("label[for='la_lcAnalsTy']").text(analsTy);//분류 라벨
+					$("#lifecycleUpdateLayer #lcFieldNm").val(fieldNm); // 항목명
+					$("#lifecycleUpdateLayer #lcPeriod").val(period); // 기간
+					$("#lifecycleUpdateLayer input:radio[name='lcPeriodCl']:radio[value='"+periodCl+"']").prop('checked', true); // 기간구분
+					$("#lifecycleUpdateLayer #lcRm").val(rm); // 설명 
+					$('#lifecycleUpdateLayer').addClass('on');
+					$('.cover').show();
+		  		
+		  		});
+		  		
+			});			
+			
+		}
+		
+		// 목록 정보를 Ajax를 이용하여 가지고 온다.
+		function fn_selDataList(){
+			if('' == tabType){
+				tabType = 'domain';
+			}
+			
+			var params = {
+				"searchLifecycleCl" : $('#searchLifecycleCl').val(),
+				"searchLifecycleNm" : $('#searchLifecycleNm').val(),
+				"pageIndex" : $('#pageIndex').val(),
+				"itemsPerPage" : $("#itemsPerPage").val(),
+				"tabType" : tabType
+			}
+			
+			$.ajax({
+				url: '/mngr/lifecycle/ajaxSelLifecycleManageList',
+				data: params,
+				beforeSend: function() {
+					wrapWindowByMask();
+				},
+				success: function(data){
+					var obj = JSON.parse(data);
+					if( obj == null ) {
+						alert(UIT0041);
+						return;
+					}
+					else {
+						
+						dataList = obj.dataList;
+						totalCnt = obj.totalCnt;
+						
+						tabType = obj.tabType;
+						
+						fn_setDataListGrid(dataList);
+							
+						
+						/* 페이징 function 호출 */
+						fn_pagination(totalCnt);
+						
+						setTimeout(function(){
+							//도메인 탭 클릭시 체크박스에 id값 넣기 이벤트
+							$(".tui-grid-body-area input[type='checkbox']").each(function(idx,e){
+								var len = $(".tui-grid-body-area input[type='checkbox']").length;
+								
+								for(i=0; i<len; i++){
+									$(".tui-grid-body-area input[type='checkbox']").eq(i).val(dataList[i].analsId);
+								}
+							}); 	
+						},1000);
+						
+					}
+				},
+				error: function() {
+					alert(UIT0041);
+					return;
+				},
+				complete: function() {
+					closeWindowByMask();	
+				}
+			});
+		}
+		
+		// 지표 수정
+		function fn_updatelifecycle(){
+			var frmChk = true;
+			var insttCode = $("#lifecycleUpdateLayer #lcInsttCode").val(); //기관코드
+			var analsId = $("#lifecycleUpdateLayer #lcAnalsId").val(); // lifecycle id
+			var analsTy = $("#lcAnalsTy option:selected").text(); // 분류
+			var fieldNm = $("#lifecycleUpdateLayer #lcFieldNm").val(); // 항목명
+			var period = $("#lifecycleUpdateLayer #lcPeriod").val(); // 기간
+			var periodCl = $('input[name="lcPeriodCl"]:checked').val(); // 기간 구분
+			var rm = $("#lifecycleUpdateLayer #lcRm").val(); // 설명
+			
+			// validation 체크
+			if(analsTy.length == 0) {
+				alert(UIT0518);
+				frmChk = false;
+			}
+			else if(fieldNm.length == 0) {
+				alert(UIT0559);
+				frmChk = false;
+			}
+			else if(period.length == 0) {
+				alert(UIT0560);
+				frmChk = false;
+			}
+			
+			if(frmChk){
+				$.ajax({
+					url: '/mngr/lifecycle/ajaxSelChkFiledNm',
+					method : 'POST',
+					data: {fieldNm : fieldNm, analsId : analsId},
+					beforeSend: function() {
+						wrapWindowByMask();
+					},
+					success: function(data){
+					
+						console.log("data == ",data);
+						
+						if(data == 1){
+							var arr = [];
+							var obj = {};
+							
+							obj.insttCode = insttCode;
+							obj.analsId = analsId;
+							obj.analsTy = analsTy;
+							obj.fieldNm = fieldNm;
+							obj.period = period;
+							obj.periodCl = periodCl;
+							obj.rm = rm;
+							
+							arr.push(obj);
+							
+							if(arr.length > 0){
+								$.ajax({
+									url: '/mngr/lifecycle/ajaxUdtLifecycleManageList',
+									method : 'POST',
+									data: {insertList : JSON.stringify(arr)},
+									beforeSend: function() {
+										wrapWindowByMask();
+									},
+									success: function(data){
+										var obj = JSON.parse(data);
+										var isSuccess = obj.result;
+										
+										if( isSuccess ) {
+											fn_modalCloseLayer();
+										}
+										else {
+											alert(UIT0041);
+											return;
+										}
+							        },
+							        error:function() {
+										alert(UIT0041);
+										return;
+									},
+									complete: function() {
+										closeWindowByMask();
+										window.location.reload();
+									}
+							    });
+							}
+						} else {
+							alert("항목명이 중복되었습니다.");
+							closeWindowByMask();
+							return false;
+						}
+					},
+			        error:function() {
+						alert(UIT0041);
+						return;
+					}
+			    });
+			}
+		}
+		
+		//항목 삭제
+		function fn_deleteLifecycle(){
+				
+			var chkLen =  $(".tui-grid-body-area input[type='checkbox']:checked").length;
+			
+			if(chkLen > 0){
+				
+				$(".tui-grid-body-area input[type='checkbox']:checked").each(function(idx, ele){
+					lifecycleChkArr.push($(ele).val());
+					
+				});
+				
+				$.ajax({
+					url: '/mngr/lifecycle/ajaxDelLifecycleManageList',
+					method : 'POST',
+					data: "jsonData=" + lifecycleChkArr,
+					beforeSend: function() {
+						wrapWindowByMask();
+					},
+					success: function(data){
+						var obj = JSON.parse(data);
+						var isSuccess = obj.result;
+						
+						if( isSuccess ) {
+							fn_modalCloseLayer();
+						}
+						else {
+							alert(UIT0041);
+							return;
+						}
+			        },
+			        error:function() {
+						alert(UIT0041);
+						return;
+					},
+					complete: function() {
+						closeWindowByMask();
+						window.location.reload();
+					}
+			    });
+			}
+			else{
+				alert("삭제할 내용을 먼저 체크해주십시오");
+				window.location.reload();//화면이 검은색이 되서 리로드처리
+			}	
+		}
+		
+		</script>
+	</div>
+</html>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Tibero.DiagnosisMapper">
+
+	<select id="selectTableList" resultType="string">
+		SELECT 
+			TABLE_NAME
+		FROM 
+			ALL_TABLES
+		WHERE
+			OWNER = UPPER(#{schemaName})
+	</select>
+
+	<select id="selectColumnList" resultType="map">
+		SELECT
+			COLUMN_NAME,
+			DATA_TYPE,
+			DATA_LENGTH
+		FROM
+			ALL_TAB_COLUMNS
+		WHERE
+			TABLE_NAME = #{tableName}
+		AND OWNER = UPPER(#{schemaName})
+		AND NOT DATA_TYPE IN ('CLOB','BLOB')
+		ORDER BY
+			COLUMN_ID
+	</select>
+
+	<select id="selectSelColumnList" resultType="map">
+		SELECT
+			COLUMN_NAME,
+			DATA_TYPE,
+			DATA_LENGTH
+		FROM
+			ALL_TAB_COLUMNS
+		WHERE
+			TABLE_NAME = #{tableName}
+			AND OWNER = UPPER(#{schemaName})
+			AND NOT DATA_TYPE IN ('CLOB','BLOB')
+			AND COLUMN_NAME IN
+			(
+				<foreach item="columnName" separator="," collection="columnList">#{columnName}</foreach>
+			)
+		ORDER BY
+			COLUMN_ID
+	</select>
+
+	<select id="selectColumnComment" resultType="string">
+		SELECT
+			COMMENTS AS COLUMN_COMMENT
+		FROM
+			ALL_TAB_COLUMNS A
+			JOIN ALL_COL_COMMENTS B
+				ON A.TABLE_NAME = B.TABLE_NAME
+				AND A.COLUMN_NAME = B.COLUMN_NAME
+		WHERE
+			A.TABLE_NAME = #{tableName}
+			AND A.OWNER = UPPER(#{schemaName})
+			AND A.COLUMN_NAME = #{columnName}
+	</select>
+
+	<select id="selectDataList" resultType="map">
+		SELECT
+			*
+		FROM
+			${schemaName}.${tableName}
+		WHERE
+			ROWNUM &lt; #{rowCount}
+	</select>
+
+	<select id="selectSelDataList" resultType="map">
+		SELECT
+			<foreach item="columnName" separator="," collection="columnList">${columnName}</foreach>
+		FROM
+			${schemaName}.${tableName}
+		WHERE
+			ROWNUM &lt; #{rowCount}
+	</select>
+
+	<select id="selectRowCount" resultType="int">
+		SELECT COUNT(*) FROM ${schemaNm}.${tableNm}
+	</select>
+
+	<select id="selectSQLCount" resultType="int">
+		${value}
+	</select>
+	
+	<select id="selectNumberCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${database}.${tableNm}
+		WHERE
+			REGEXP_INSTR(${columnNm}, '[^0-9]') = 0
+	</select>
+
+	<select id="selectPatternCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${database}.${tableNm}
+		WHERE
+			REGEXP_LIKE(${columnNm}, #{analsFrmla})
+	</select>
+	
+	<select id="selectPatternList" resultType="map">
+		SELECT
+			${columnNm}
+		FROM
+			${database}.${tableNm}
+		WHERE
+			${columnNm} IS NOT NULL
+		<if test="startInt != null and endInt != null">
+		AND ROWNUM bETWEEN #{startInt} AND #{endInt}
+		</if>
+	</select>
+	
+	<select id="selectDownLoadList" resultType="map">
+		SELECT
+			${columnNm}
+			, ROWNUM AS DWINDEX
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${database}.${tableNm}
+	</select>
+
+	<select id="selectRangeCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			${database}.${tableNm}
+		WHERE
+		<choose>
+			<when test="analsSe.equals('AG000603')">
+			${columnNm} BETWEEN TO_DATE(#{beginValue},'YYYY-MM-DD') AND TO_DATE(#{endValue},'YYYY-MM-DD')
+			</when>
+			<when test="analsSe.equals('AG000602')">
+			${columnNm} LIKE CONCAT(#{beginValue},'%') AND ${columnNm} LIKE CONCAT('%',#{endValue})
+			</when>
+			<otherwise>
+			${columnNm} BETWEEN ${beginValue} AND ${endValue}
+			</otherwise>
+		</choose>
+		AND ${columnNm} IS NOT NULL
+	</select>
+
+	<select id="selectFrqAnalCountList" resultType="sangsmap">
+		SELECT
+			ROWNUM AS SN,
+			R.*
+		FROM
+		(
+			SELECT
+				${columnNm} AS DATA_VALUE,
+				COUNT(*) AS DATA_CO
+			FROM
+				${tableNm}
+			GROUP BY
+				${columnNm}
+			ORDER BY
+				DATA_CO DESC
+		) R
+		WHERE
+			ROWNUM &lt;= 10
+	</select>
+
+	<select id="selectPKList" resultType="string">
+		SELECT
+			B.COLUMN_NAME
+		FROM
+			ALL_CONSTRAINTS A
+			JOIN ALL_CONS_COLUMNS B
+				ON A.OWNER = B.OWNER
+				AND A.CONSTRAINT_NAME = B.CONSTRAINT_NAME
+		WHERE
+			A.CONSTRAINT_TYPE = 'P'
+			AND A.TABLE_NAME = #{tableNm}
+		ORDER BY
+			B.POSITION
+	</select>
+
+	<select id="selectPatternNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${tableNm}
+		WHERE
+			<choose>
+				<when test="matchMm.equals('mis')">
+					(
+						NOT REGEXP_LIKE(${columnNm}, #{analsFrmla})
+						OR ${columnNm} IS NULL
+					)
+				</when>
+				<otherwise>
+					(
+						REGEXP_LIKE(${columnNm}, #{analsFrmla})
+						AND ${columnNm} IS NOT NULL
+					)
+				</otherwise>
+			</choose>
+			AND ROWNUM &lt;= #{limit}
+
+	</select>
+	
+	<select id="selectSqlNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${tableNm}
+		WHERE
+			<choose>
+				<when test="matchMm.equals('mis')">
+					(
+						${columnNm} NOT IN(${analsFrmla})
+						OR ${columnNm} IS NULL
+					)
+				</when>
+				<otherwise>
+					(
+						${columnNm} IN(${analsFrmla})
+						AND ${columnNm} IS NOT NULL
+					)
+				</otherwise>
+			</choose>
+			AND ROWNUM &lt;= #{limit}
+
+	</select>
+
+	<select id="selectRangeNotMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${tableNm}
+		WHERE
+		<choose>
+			<when test="analsSe.equals('AG000603')">
+				(
+					${columnNm} NOT BETWEEN TO_DATE(#{beginValue},'YYYY-MM-DD') AND TO_DATE(#{endValue},'YYYY-MM-DD')
+					OR ${columnNm} IS NULL
+				)
+			</when>
+			<when test="analsSe.equals('AG000602')">
+				(
+					${columnNm} NOT LIKE CONCAT(#{beginValue},'%') OR ${columnNm} NOT LIKE CONCAT('%',#{endValue})
+					OR ${columnNm} IS NULL
+				)
+			</when>
+			<when test="analsSe.equals('AG000601')">
+				(
+					${columnNm} NOT BETWEEN #{beginValue} AND #{endValue}
+					OR ${columnNm} IS NULL
+				)
+			</when>
+			<otherwise>
+					(
+						${columnNm} BETWEEN #{beginValue} AND #{endValue}
+						AND ${columnNm} IS NOT NULL
+					)
+				</otherwise>
+		</choose>
+			AND ROWNUM &lt;= #{limit}
+	</select>
+	
+	<select id="selectRangeMatchList" resultType="map">
+		SELECT
+			${columnNm}
+			<foreach item="pkName" open="," separator="," collection="pkList">${pkName}</foreach>
+		FROM
+			${tableNm}
+		WHERE
+		<choose>
+			<when test="analsSe.equals('AG000603')">
+					(
+						${columnNm} BETWEEN TO_DATE(#{beginValue},'YYYY-MM-DD') AND TO_DATE(#{endValue},'YYYY-MM-DD')
+					)
+				</when>
+				<when test="analsSe.equals('AG000602')">
+					(
+						${columnNm} LIKE CONCAT(#{beginValue},'%') AND ${columnNm} LIKE CONCAT('%',#{endValue})
+					)
+				</when>
+				<when test="analsSe.equals('AG000601')">
+					(
+						${columnNm} BETWEEN #{beginValue} AND #{endValue}
+					)
+				</when>
+			<otherwise>
+					(
+						${columnNm} BETWEEN #{beginValue} AND #{endValue}
+						AND ${columnNm} IS NOT NULL
+					)
+				</otherwise>
+		</choose>
+			AND ROWNUM &lt;= #{limit}
+	</select>
+
+</mapper>

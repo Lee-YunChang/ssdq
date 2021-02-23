@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+	<div layout:fragment="content">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>PROFILING</li>
+	            <li><label th:text="#{UIT0068}">스키마 구조 분석 </label></li>
+	            <li><label th:text="#{UIT0271}">테이블 구조 분석 </label></li>
+            </ul>
+		</div>
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mgn_b0">
+			<span class="col_gray01 font_14 mgn_b0"><i class="fas fa-fw fa-home"></i> &gt; PROFILING &gt; <label th:text="#{UIT0068}">스키마 구조 분석 </label> &gt; <label th:text="#{UIT0271}">테이블 구조 분석 </label></span>
+		</div>
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0271}"> 테이블 구조 분석</h1>
+		</div> -->
+  
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="content_body">
+					<!-- <div class="input_table" style="border: none;">
+						<table> -->
+					<div class="table_area">
+						<table class="search fixed">
+                            <colgroup>
+                                <col style="width:20%">
+                                <col style="width:25%">
+                                <col style="width:10%">
+                                <col style="width:25%">
+                                <col style="width:20%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        <span class="impo"></span><label for="data" th:text="#{UIT0264}">스키마명</label>
+                                    </th>
+                                    <td>
+                                        <!-- <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+                                        	<option value="" th:text="#{UIT0265}">선택해주세요</option>
+                                        </select> -->
+                                        <div class="selectbox" style="width: 230px;">
+											<label for="la_tableSchema"></label>  
+                                            <select name="tableSchema" id="tableSchema" onchange="fn_changeSchema()">
+                                            	<option value="" th:text="#{UIT0265}">선택해주세요</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <th>
+                                        <label for="name" th:text="#{UIT0272}">테이블 수</label>
+                                    </th>
+                                    <td>
+                                        <input id="tableCnt" name="tableCnt" type="text" value="" readonly="readonly" >
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+						</table>
+					</div>
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="content_body margint10">
+					<div class="card-body">
+						<input type="hidden" id="itemsPerPage" name="itemsPerPage" value="10"/>
+						<div id="tableGrid" class="tb_type99" style="clear: both; min-height: 440px;width:100%;"></div>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+					
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var sessionCon = /*[[ ${sessionCon} ]]*/;
+		var Schema = /*[[ ${schema} ]]*/; //: 스키마명
+		var UIT0267 = /*[[ #{UIT0267} ]]*/; //: 검색결과가 없습니다.
+		var UIT0273 = /*[[ #{UIT0273} ]]*/; //: 테이블 명
+		var UIT0274 = /*[[ #{UIT0274} ]]*/; //: Row 수
+		var UIT0275 = /*[[ #{UIT0275} ]]*/; //: Row 평균길이
+		var UIT0276 = /*[[ #{UIT0276} ]]*/; //: Index 수
+		var UIT0277 = /*[[ #{UIT0277} ]]*/; //: PK 컬럼수
+		var UIT0278 = /*[[ #{UIT0278} ]]*/; //: 테이블 설명
+		/*]]*/
+		
+		$(document).ready(function() { 
+			//셀렉트박스 라벨초기값 지정
+			$("label[for='la_tableSchema']").text(Schema);
+			
+			$("#showCnt").hide();
+			// sessionCon 체크
+			isSessionConChk(sessionCon);
+			isCsvFileCheck(sessionCon);
+			
+			/* chosen Select Box 관련 추가  */
+			/* 2019-07-29 최보람 */
+			/* $("#tableSchema").chosen({
+				search_contains : true,
+				width : 230,
+				no_results_text : UIT0267+" : "
+			}); */
+			
+			fn_selectTableSchema();
+			fn_changeSchema();
+		});
+		
+		// 스키마정보 조회
+		
+		// 스키마 정보 설정		
+		function fn_selectTableSchema(){
+			var option = "";
+			//var Schema = /*[[ ${schema} ]]*/;
+
+			$.ajax({
+				url: "/mngr/analysis/selectTableAnalysis",
+				success: function(data){
+					var obj = JSON.parse(data);
+					var jsonData = obj.result;
+					for(var i = 0; i < jsonData.length; i++){
+						var selected = "";
+						if(Schema.trim().toUpperCase() == jsonData[i].OWNER.toUpperCase()) {
+							selected = "selected=true";
+						}else{
+							if(jsonData.length == 1){
+								//selected = "selected=true";
+								//selDbmsTableListBox();
+							}else{
+								selected = "";
+							}
+						}
+						var option  = $("<option value="+jsonData[i].OWNER+" "+selected+">"+jsonData[i].OWNER+"</option>");
+						$("#tableSchema").append(option);
+													
+						/* 데이터 연결 후 option 생성 시 마다 update를 해 주어야 chosen이 작동함 */
+						$("#tableSchema").trigger("chosen:updated");
+					}
+				}
+			});
+		}
+				
+		function fn_changeSchema(){
+			$('#pageIndex').val('');
+			fn_search();
+		}
+				
+		function fn_search(){
+			var tableSchema = $("#tableSchema").val();
+			var pageIndex = $('#pageIndex').val();
+			var searchValue = $('#searchValue').val();
+			var itemsPerPage = $("#itemsPerPage").val();
+			if(tableSchema ==""){
+				tableSchema =/*[[ ${schema} ]]*/;
+			}
+			
+			var data = {
+					"tableSchema":tableSchema,
+					"searchValue" : searchValue,
+					"pageIndex" : pageIndex,
+					"itemsPerPage" : itemsPerPage
+			};
+			$.ajax({
+				url: "/mngr/analysis/selectTableAnalysis",
+				data : data,
+				success: function(data){
+					
+					var obj = JSON.parse(data);
+					var jsonData = obj.result;
+					var totalCnt = obj.totalCnt;
+					
+					$("#tableCnt").val(totalCnt);
+					$("#showCnt").show();
+					$("#tableSchema").val($("#tableSchema").val());
+					
+					fn_setGrid(jsonData);
+					
+					 /* 페이징 function 호출 */
+					fn_pagination(totalCnt);
+				} 
+			});
+		}
+				
+		function fn_setGrid(jsonData){
+			$("#tableGrid").empty();
+			
+			var columns = [
+				{header: UIT0273,name: 'tableName', whiteSpace: 'normal', sortable: true,   width: 300,align:'center'}, 	 
+				{header: UIT0274,name: 'numRows', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0275,name: 'avgRowLen', whiteSpace: 'normal', sortable: true,  width: 140,align:'right'},
+				{header: UIT0276,name: 'pkCnt', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0277,name: 'indexCnt', whiteSpace: 'normal', sortable: true,  width: 120,align:'right'},
+				{header: UIT0278, name: 'comments', whiteSpace: 'normal', sortable: true, align:'left'}
+			];
+			
+			const tableGrid = new tui.Grid({
+		           el : document.getElementById("tableGrid"),
+		           data : jsonData,
+		           scrollX : false,
+		           scrollY : false,
+		           //rowHeight : 40,
+		           minBodyHeight : 40,
+		           header: {
+		             height: 40
+		           },
+		           columns : columns
+		     });
+		     
+		     const extOptions = {
+		           cell: {
+		                focused: {
+		                 border: 0 // 선택 셀 강조 표시 x
+		             }
+		           }
+		     };
+		     
+		     tui.Grid.applyTheme('default', extOptions);
+		   
+		     tableGrid.resetData(jsonData);
+		     
+		     //tableGrid.refreshLayout();
+		     
+		}
+
+		</script>
+	</div>   
+</html>

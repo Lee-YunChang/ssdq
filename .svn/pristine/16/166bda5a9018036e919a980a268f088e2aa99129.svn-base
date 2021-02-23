@@ -1,0 +1,140 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<c:import url="/common/pageLink.do?link=/mngr/cmmn/inc/header_inc" />
+	  	<script type="text/javascript">
+	  
+		$(document).ready(function(){
+			girdView();
+		});
+
+		function girdView(){
+			var columns = [
+		<c:forEach var="item" items="${columnList}" varStatus="i">
+				{
+					header: '${item.title}',
+					name: '${item.column}',
+					childNames: ['${item.column}'],
+					align: 'center',
+				}<c:if test="${not i.last}">,</c:if>
+		</c:forEach>
+			];
+
+
+			var data = [
+		<c:forEach var="row" items="${dataList}" varStatus="r">
+				{
+			<c:forEach var="col" items="${columnList}" varStatus="c">
+					${col.column}: '${fn:trim(row[col.column])}'<c:if test="${not c.last}">,</c:if>
+			</c:forEach>
+				}<c:if test="${not r.last}">,</c:if>
+		</c:forEach>
+			];
+
+		     const grid = new tui.Grid({
+		           el : document.getElementById("grid"),
+		           data : data,
+		           scrollX : false,
+		           scrollY : true,
+		           rowHeight : 35,
+		           minBodyHeight : 80,
+		           bodyWidth : 650,
+		           header: {
+		             height: 40
+		           },
+		           columns : columns
+		     });
+
+		     const extOptions = {
+	   			cell: {
+	   				focused: {
+	   		            border: 0 // 선택 셀 강조 표시 x
+	   		        }
+	   			}
+	   		};
+	   		
+	   		tui.Grid.applyTheme('default', extOptions);
+			
+			//grid.refreshLayout();
+
+			//$('.tui-grid-scrollbar-head').hide();
+			//$('.tui-grid-scrollbar-border').hide();
+			//$('.tui-grid-scrollbar-right-bottom').hide();
+			//$('.tui-grid-scrollbar-left-bottom').hide();
+		}
+
+		function goForm2(obj) {
+			//var frm = $('#frm');
+			//if(confirm("선택하신 DBMS로 접속 설정을 하시겠습니까?")){
+			//	frm.submit();
+			//}
+			saveFileToDb(obj);
+			//self.close();
+		}
+
+		// 선택된 지정 DB 접속 정보를 세션에 등록한다.
+		function saveFileToDb(obj){
+			$('#submitBtn').prop('disabled', true);
+			var fileName = '${fileName}';
+			var culLineCnt = '${culLineCnt}';
+			var delimiter = '${delimiter}';
+			var attFilePath = '${attFilePath}';
+			
+			if(confirm("해당 정보를 DB로 등록 하시겠습니까?")){
+				
+				$.ajax({
+					url: "/mngr/basicInfo/cvsFileDataAdd.do",
+					data: {fileName : fileName, culLineCnt : culLineCnt, delimiter : delimiter, attFilePath : attFilePath},
+					success: function(data){
+						var result = JSON.parse(data);
+						if(result.result){
+							alert("정상적으로 등록되었습니다.");
+							// 처리 완료시 페이지를 조회 페이지로 이동하여 등록 결과 목록을 확인 한다.
+							parent.location.href = "/mngr/basicInfo/dgnssDbmsList";
+						}else{
+							alert("처리중 에러가 발생하였습니다");
+						}
+						self.close();
+					}, error:function() {
+		                alert("처리중 에러가 발생하였습니다");
+		                return;
+		           }
+				});
+				
+			}else{
+				$('#submitBtn').prop('disabled', false);
+			}
+		}
+		
+	  </script>
+	  <script type="text/javascript" src="/resources/js/common.js"></script>
+
+	</head>
+	<body>
+	
+	<form id="frm" name="frm" action="" method="get">
+		<div class="card shadow mb-4">
+			<div class="card-body" style="max-width: 650px;">
+				<div>
+					<label>
+					업로드 파일명 : ${fileName}
+					<input type="hidden" id="fileName" name="fileName" class="textStyle" value="${fileName}" >
+					<input type="hidden" id="path" name="path" class="textStyle" value="${attFileOutputFullPath}" >
+					<input type="hidden" id="columnList" name="columnList" class="textStyle" value="${columnList}" >
+					<input type="hidden" id="dataList" name="dataList" class="textStyle" value="${dataList}" >
+					</label>
+				</div>
+				<div id="grid" class="tb_type99"></div>
+				<div style="text-align: center; padding: 10px;" >
+					<button class='btn btn-primary mgn_b20' type='button' id="submitBtn" name="submitBtn" data-toggle='modal' data-target='#codeModal' data-backdrop='static' data-keyboard='false' onclick="saveFileToDb(this);" style='width:76px; float: right;'>등록</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	</body>
+	
+</html>

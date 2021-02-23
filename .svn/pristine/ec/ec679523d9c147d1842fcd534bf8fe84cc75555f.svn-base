@@ -1,0 +1,521 @@
+UIT0001: 디비 생성 페이지 배경이미지
+UIT0002: 집 아이콘
+UIT0003: 환경정보 관리  >  공통정보 관리  >  초기화면 (관리자생성)
+UIT0004: DB 생성
+UIT0005: DB 생성 정보
+UIT0006: 기관 코드
+UIT0007: 예시) A000001
+UIT0008: 찾기
+UIT0009: 기관 명
+UIT0010: 예시) A기관
+UIT0011: 관리자 정보
+UIT0012: 관리자 명
+UIT0013: 관리자 명을 입력 해주세요
+UIT0014: 아이디
+UIT0015: 아이디를 입력 해주세요
+UIT0016: 중복체크
+UIT0017: 비밀번호
+UIT0018: 비밀번호를 입력 해주세요
+UIT0019: 비밀번호확인
+UIT0020: 비밀번호를 재입력 해주세요
+UIT0021: 이전
+UIT0022: 다음
+UIT0023: 완료
+UIT0024: 로그인
+UIT0025: 닫기 버튼
+UIT0026: 기관 검색
+UIT0027: 기관명
+UIT0028: 초기 설정 화면 - 초기 DB 생성 작업을 수행하세요
+UIT0029: 초기 설정 화면 - 최초 관리자 생성 작업을 수행하세요
+UIT0030: 기관 코드를 검색하여 선택  > 선택된 기관 코드를 기준으로 DB가 생성
+UIT0031: 최초 관리자 로그인 정보를 생성 > 최고 관리자 계정이며 모든 메뉴에 대한 권한을 갖는다.
+UIT0032: 기관을 선택 해주세요.
+UIT0033: 관리자 아이디 중복 여부를 확인해 주세요.
+UIT0034: 관리자 명을 입력해 주십시오
+UIT0035: 아이디를 입력해 주십시오
+UIT0036: 비밀번호 또는 비밀번호확인을 입력해 주십시오
+UIT0037: 비밀번호가 서로 다릅니다.
+UIT0038: 체크 아이콘
+UIT0039: 초기 DB가 생성되었습니다.
+UIT0040: 초기 관리자가 생성되었습니다.
+UIT0041: 처리중 에러가 발생하였습니다
+UIT0042: 기관코드
+UIT0043: 기관대표
+UIT0044: 비고
+UIT0045: 선택
+UIT0046: 관리자 아이디를 입력해 주세요.
+UIT0047: 아이디(중복)
+UIT0048: 아이디(사용가능)
+UIT0049: 아이디를 입력해 주세요.
+UIT0050: 비밀번호를 입력해 주세요.
+UIT0051: 로그아웃
+UIT0052: 현재 세션을 종료하시겠습니까?
+UIT0053: 와이파이 아이콘
+UIT0054: 연결 CSV파일
+UIT0055: 접속 DBMS
+UIT0056: 님 반갑습니다.
+UIT0057: :: 상상스토리_CN ::
+UIT0058: 에러메세지
+UIT0059: 그래프 이미지
+UIT0060: 상상스토리의 데이터 품질관리 솔루션(SS-DQ)은 교육시스템(LMS)에 <br>최적화 되어 있습니다. <br>교육이력 데이터를 대상으로 품질지표 설정, 품질 측정 및 결과 분석 등의  <br>프로세스를 통해 효율적인 데이터 분석 결과를 제공함으로써 데이터의 <br>품질을 향상시킵니다.
+UIT0061: 데이터연결 관리 아이콘
+UIT0062: 데이터연결 관리
+UIT0063: 진단 대상 DBMS에 대한<br>기본적인 접속 정보를 <br>관리하는 기능입니다.
+UIT0064: 기본정보 관리 아이콘
+UIT0065: 패턴/지표 관리
+UIT0066: 패턴 및 지표 등 업무<br>규칙에 관련된 항목을 <br>관리하는 기능입니다.
+UIT0067: 업무규칙 관리 아이콘
+UIT0068: 스키마 구조 분석
+UIT0069: 진단대상 데이터베이스의<br>스키마와 테이블 구조  <br>정보를 확인하는 기능입니다.
+UIT0070: 프로파일링 관리 아이콘
+UIT0071: 프로파일링 분석
+UIT0072: 데이터에 대한 진단을<br>업무규칙을 적용하여 <br>분석 할 수 있는 기능입니다.
+UIT0073: 프로파일링 결과
+UIT0074: 데이터에 대한 진단<br>결과를 확인 할 수 있는 <br>기능입니다.
+UIT0075: &gt; PROPERTIES  &gt; 공통정보 &gt; 공통코드관리
+UIT0076: 공통코드관리
+UIT0077: 대분류 관리를 위해 정책분야명, 정책영역명, 정책대기능코드, 정책대기능코드를 검색할 수 있는 표입니다.
+UIT0078: 검색 조건
+UIT0079: 정책대기능명 선택
+UIT0080: 그룹코드
+UIT0081: 그룹코드 명
+UIT0082: 검색어 입력
+UIT0083: 입력
+UIT0084: 조회
+UIT0085: 등록
+UIT0086: 사용여부
+UIT0087: 삭제
+UIT0088: 저장
+UIT0089: 상세코드
+UIT0090: 20자리 코드 입력
+UIT0091: 상세코드 명
+UIT0092: 설명
+UIT0093: 순번
+UIT0094: 그룹코드명
+UIT0095: 수정
+UIT0096: 그룹코드를 입력하세요.
+UIT0097: 그룹코드 명을 입력하세요.
+UIT0098: 하위코드가 존재할 시 전부 삭제됩니다. 진행하시겠습니까?
+UIT0099: 그룹코드가 등록 되었습니다.
+UIT0100: 그룹코드가 수정 되었습니다.
+UIT0101: 그룹코드/하위코드가 삭제 되었습니다.
+UIT0102: 상세코드명
+UIT0103: 상세코드를 입력하세요.
+UIT0104: 상세코드 명을 입력하세요.
+UIT0105: 상세코드가 등록 되었습니다.
+UIT0106: 상세코드가 수정 되었습니다.
+UIT0107: 상세코드가 삭제 되었습니다.
+UIT0108: 운영정보
+UIT0109: 운영정보관리
+UIT0110: 사용자 정보
+UIT0111: 고객사 정보
+UIT0112: 사용자 등록
+UIT0113: 고객사
+UIT0114: 고객사 코드
+UIT0115: 사업 시작일
+UIT0116: 사업 종료일
+UIT0117: 대표전화번호
+UIT0118: 홈페이지
+UIT0119: 담당자 명
+UIT0120: 담당자 이메일
+UIT0121: 담당자 전화번호
+UIT0122: 담당자 휴대번호
+UIT0123: 사용자 아이디
+UIT0124: 패스워드
+UIT0125: 사용자 명
+UIT0126: 사용자 권한
+UIT0127: 사용자 상세정보
+UIT0128: 생성일자
+UIT0129: 사용자권한
+UIT0130: 사용자아이디
+UIT0131: 사용자명
+UIT0132: 사용유무
+UIT0133: 담당부서를 입력하세요.
+UIT0134: 사용자 명을 입력하세요.
+UIT0135: 비밀번호를 입력하세요.
+UIT0136: 사용자정보가 등록 되었습니다.
+UIT0137: 사용자정보가 수정 되었습니다.
+UIT0138: 사업 시작일을 선택하세요.
+UIT0139: 사업 종료일을 선택하세요.
+UIT0140: 사업 시작일이 종료일 보다 클 수 없습니다.
+UIT0141: 대표전화번호를 정확히 입력해 주세요.
+UIT0142: 담당자 명을 입력해 주세요.
+UIT0143: 담당자 전화번호를 정확히 입력해 주세요.
+UIT0144: 기관정보가 등록 되었습니다.
+UIT0145: 기관정보가 수정 되었습니다.
+UIT0146: 기관정보가 삭제 되었습니다.
+UIT0147: 사용자 아이디(중복)
+UIT0148: 사용자 아이디(사용가능)
+UIT0149: 사용자 아이디 중복 여부를 확인해 주세요.
+UIT0150: 사용자 명을 입력해 주십시오
+UIT0151: 사용자 아이디를 입력해 주십시오
+UIT0152: 패스워드를 입력해 주십시오
+UIT0153: 공통정보
+UIT0154: 메뉴권한관리
+UIT0155: 권한목록
+UIT0156: 권한코드
+UIT0157: 권한 명
+UIT0158: 권한 저장
+UIT0159: 메뉴 권한 리스트
+UIT0160: 권한여부
+UIT0161: 메뉴 명
+UIT0162: 전체 선택
+UIT0163: 권한 코드를 선택해 주세요.
+UIT0164: 변경된 내용이 없습니다.
+UIT0165: 메뉴 권한을 변경하시겠습니까?
+UIT0166: 저장 되었습니다.
+UIT0167: 메뉴관리
+UIT0168: 그룹생성
+UIT0169: 하위생성
+UIT0170: 그룹메뉴 명
+UIT0171: ex) 그룹명
+UIT0172: ex) 기본페이지
+UIT0173: 메뉴 URL
+UIT0174: 메뉴 아이콘<br>(class명)
+UIT0175: ex) fa-아이콘 명
+UIT0176: 미리보기
+UIT0177: 메뉴 순서
+UIT0178: 메뉴그룹 혹은 상위메뉴를 선택해 하세요.
+UIT0179: 더 이상 하위메뉴를 생성할 수 없습니다.
+UIT0180: 그룹메뉴 명을 반드시 입력해 주세요.
+UIT0181: 상위메뉴가 선택되지 않았습니다.
+UIT0182: 메뉴명을 반드시 입력해 주세요.
+UIT0183: 메뉴 URL을 반드시 입력해 주세요.
+UIT0184: 메뉴 순서를 반드시 입력해 주세요.
+UIT0185: 삭제할 그룹 또는 메뉴를 선택해 주세요.
+UIT0186: 상위메뉴 선택 시 하위 메뉴 까지 삭제 됩니다. 진행 하시겠습니까?
+UIT0187: 삭제 되었습니다.
+UIT0188: 업무규칙 관리
+UIT0189: 허용 값 범위 설정
+UIT0190: 목록보기
+UIT0191: 허용 값 이름
+UIT0192: 허용 값 종류
+UIT0193: 허용 값 이름을 반드시 입력해 주세요.
+UIT0194: 허용 값 종류를 반드시 선택해 주세요.
+UIT0195: FORM를 반드시 입력해 주세요.
+UIT0196: TO를  반드시 입력해 주세요.
+UIT0197: FORM 값은 숫자만 가능합니다.
+UIT0198: TO 값은 숫자만 가능합니다.
+UIT0199: TO 값은 FROM 값보다 작을 수 없습니다.
+UIT0200: 해당 정보를 등록 하시겠습니까?
+UIT0201: 정상적으로 등록되었습니다.
+UIT0202: 반드시 입력해야 합니다.
+UIT0203: FORM 값은 
+UIT0204: TO 값은
+UIT0205: Email 형식만 가능합니다. 예)user@example.com
+UIT0206: URL 형식만 가능합니다. 예)http: //www.example.com
+UIT0207: 알파벳만 가능합니다.
+UIT0208: 알파벳과 숫자만 가능합니다.
+UIT0209: 숫자만 가능합니다.
+UIT0210: 날짜만 가능합니다. 예)20090101
+UIT0211: IP주소만 가능합니다.
+UIT0212: 비밀번호는 6~12자리의 영문자와 숫자를 혼용해서 사용해야 합니다.
+UIT0213: 비밀번호는 영문자와 숫자를 혼용해서 사용해야 합니다.
+UIT0214: 사용자 정의(정규식)
+UIT0215: 사용설명서
+UIT0216: 유효성체크
+UIT0217: 정규식 이름
+UIT0218: 정규식
+UIT0219: 사용자 정의(정규식) 유효성 체크
+UIT0220: 입력 값
+UIT0221: 확인
+UIT0222: 사용자 정의(정규식) 정규식 사용설명서
+UIT0223: 문법
+UIT0224: 정규 표현식의 패턴은 대상 문자열과 일치시킨다. 이 패턴은 일련의 원자로 구성된다. 하나의 원자는 정규 표현식 패턴 안의 하나의 점이며, 대상 문자열과 일치시키기 위해 존재한다. 가장 단순한 형태의 원자는 리터럴(literal)이지만 원자를 일치시키기 위해 패턴을 묶을 때에는 메타문자로서 ( )를 사용해야 한다. 메타문자는 원자 외에도 얼마나 많은 원자가 있는지를 가리키는 수량자(quantifier), 선택적인 대안을 가리키는 논리적 OR 문자, 그리고 원자의 존재를 부정하는 NOT 문자, 그리고 전에 일치된 원자를 참조할 수 있게 하는 역참조(backreference)를 만드는 것을 도와준다.
+UIT0225: 정규식 이름을 반드시 입력해 주세요.
+UIT0226: 정규식을 반드시 입력해 주세요.
+UIT0227: 유효성체크를 해주세요.
+UIT0228: 유효성체크 할 입력 값을 입력해 주세요.
+UIT0229: 입력값에 유효한 정규식 입니다.
+UIT0230: 입력값에 유효한 정규식이 아닙니다.
+UIT0231: 사용자 정의(SQL)
+UIT0232: 테이블 정보
+UIT0233: 파일 정보
+UIT0234: SQL명
+UIT0235: 데이터베이스 선택
+UIT0236: 테이블 선택
+UIT0237: 파일명
+UIT0238: where 절
+UIT0239: WHERE 제외 입력  &#13;&#10;ex) 컬럼 명 = '비교값' 
+UIT0240: 컬럼명
+UIT0241: 파일정보
+UIT0242: SQL명을 반드시 입력해 주세요.
+UIT0243: 스키마를 선택해 주세요.
+UIT0244: 테이블을 선택해 주세요.
+UIT0245: where 절를  반드시 입력해 주세요.
+UIT0246: 유효성체크버튼을 클릭해 주세요.
+UIT0247: 정상적인 SQL 문입니다.
+UIT0248: WHERE 절 문에 오류가 있습니다.
+UIT0249: 기업 코드를 자동 생성  > 기업 코드를 기준으로 DB가 생성
+UIT0250: 기업 코드
+UIT0251: 기업 명
+UIT0252: 기업 명을 입력해주세요.
+UIT0253: 데이터베이스를  반드시 선택해 주세요.
+UIT0254: 테이블을  반드시 선택해 주세요.
+UIT0255: Data 타입
+UIT0256: Data 길이
+UIT0257: Data 정밀도
+UIT0258: Data 스케일
+UIT0259: 널허용
+UIT0260: 디폴트값
+UIT0261: 컬럼설명
+UIT0262: 물리컬럼명
+UIT0263: 컬럼 구조 분석
+UIT0264: 스키마명
+UIT0265: 선택해주세요
+UIT0266: 테이블명
+UIT0267: 검색결과가 없습니다. 
+UIT0268: 기본값
+UIT0269: 최소값
+UIT0270: 최대값
+UIT0271: 테이블 구조 분석
+UIT0272: 테이블 수
+UIT0273: 테이블 명
+UIT0274: Row 수
+UIT0275: Row 평균길이
+UIT0276: Index 수
+UIT0277: PK 컬럼수
+UIT0278: 테이블 설명
+UIT0279: 기본정보
+UIT0280: 연결테스트
+UIT0281: DB종류
+UIT0282: 서버 IP
+UIT0283: 서버 Port
+UIT0284: 로그인 ID
+UIT0285: Password
+UIT0286: 추가 적용 변수
+UIT0287: 진단대상 데이터베이스명
+UIT0288: ※ CSV 파일만 등록 가능합니다. 파일명은 영문/숫자만으로 되어 있어야 등록이 가능합니다. 파일 내용의 컬럼은 250개 이하로 작성해야 등록이 가능 합니다.
+UIT0289: 파일등록
+UIT0290: 파일 업로드
+UIT0291: 파일 선택
+UIT0292: 연결 테스트
+UIT0293: CSV 파일등록
+UIT0294: 업로드 파일명
+UIT0295: 컬럼구분자
+UIT0296: 헤더유무
+UIT0297: 세션정보 확인
+UIT0298: 서버IP를  반드시 입력해 주세요.
+UIT0299: 서버Port를  반드시 입력해 주세요.
+UIT0300: SID를  반드시 입력해 주세요.
+UIT0301: Database를  반드시 입력해 주세요.
+UIT0302: 로그인ID를 반드시 입력해 주세요.
+UIT0303: Password를 반드시 입력해 주세요.
+UIT0304: 진단대상 데이터베이스명을  반드시 입력해 주세요.
+UIT0305: 연결 성공
+UIT0306: 연결 실패
+UIT0307: 업로드할 파일을 선택해주세요
+UIT0308: 파일명은 영문자/숫자 조합만 가능 합니다.
+UIT0309: 확장자 명이 csv 파일만 등록 가능합니다.
+UIT0310: 저장하시겠습니까?
+UIT0311: DB종류를 선택해 주세요.
+UIT0312: 진단대상데이터베이스명을  반드시 입력해 주세요.
+UIT0313: 연결테스트 버튼을 클릭해 주세요.
+UIT0314: 정상적으로 등록 되었습니다.
+UIT0315: 등록에 실패하였습니다. 다시 등록해 주시기 바랍니다.
+UIT0316: 컬럼 구분자를 반드시 입력해 주세요.
+UIT0317: 헤더 유무를 선택해 주세요.
+UIT0318: 헤더 라인수를 입력해 주세요.
+UIT0319: 다음으로 진행 하시겠습니까?
+UIT0320: 해당 파일을 업로드 하시겠습니까?
+UIT0321: 정상적으로 업로드 되었습니다.
+UIT0322: 데이터연결
+UIT0323: 구분
+UIT0324: 진단대상데이터베이스명
+UIT0325: 서버IP
+UIT0326: 서버PORT
+UIT0327: 접속계정
+UIT0328: 접속
+UIT0329: 상세
+UIT0330: CSV 파일 명
+UIT0331: 선택하신 DBMS로 접속 설정을 하시겠습니까?
+UIT0332: 선택하신 CSV 파일로 접속 설정을 하시겠습니까?
+UIT0333: 선택한 DBMS 연결 중 오류가 발생하였습니다.
+UIT0334: WHERE 제외 입력  &#13;&#10;ex) 컬럼 명 = '비교값'
+UIT0335: 스키마 선택
+UIT0336: 컬럼 선택
+UIT0337: 분석 시작
+UIT0338: 샘플데이터 보기
+UIT0339: 분석설정등록
+UIT0340: 분석명
+UIT0341: 닫기
+UIT0343: 일요일
+UIT0344: 월요일
+UIT0345: 화요일
+UIT0346: 수요일
+UIT0347: 목요일
+UIT0348: 금요일
+UIT0349: 토요일
+UIT0350: 오전
+UIT0351: 오후
+UIT0352: 해당 테이블의 정보가 없습니다. 테이블명을 확인해주세요.
+UIT0353: 컬럼타입
+UIT0354: 데이터 없음
+UIT0355: 전체선택
+UIT0356: 분석할 컬럼을 선택해 주세요.
+UIT0357: 그룹
+UIT0358: 패턴/지표명
+UIT0359: 분석_
+UIT0360: 분석할 항목을 선택해 주세요.
+UIT0361: 분석설정 저장 목록
+UIT0362: 등록일시
+UIT0363: 설정보기
+UIT0364: 데이터 내보내기
+UIT0365: 진단 오류 내역
+UIT0366: 시작시간
+UIT0367: 작업명
+UIT0368: 작업상태
+UIT0369: 수행시간
+UIT0370: 결과보기
+UIT0371: 오류확인
+UIT0372: 작업중
+UIT0373: 작업완료
+UIT0374: 작업실패
+UIT0375: 분석결과 데이터 내보내기가 실행 됩니다. \n\n zip 파일 다운로드를 확인 해주세요.
+UIT0376: 분석 개요
+UIT0377: 보고서 다운로드
+UIT0378: 분석 결과
+UIT0379: 불일치 정보 다운로드
+UIT0380: 다운로드 형식을 선택하세요.
+UIT0381: 데이터베이스
+UIT0382: 작업 시작 시간
+UIT0383: 테이블
+UIT0384: 작업 수행 시간
+UIT0385: 접속 파일명
+UIT0386: 일치 정보 다운로드
+UIT0387: 패턴
+UIT0388: 사용자정의
+UIT0389: 항목
+UIT0390: 기본패턴
+UIT0391: 다운로드 대상 분석 정보가 없습니다.
+UIT0392: 분석 아이디
+UIT0393: 오류명
+UIT0394: 오류내용
+UIT0395: 상상스토리 서울본사 : 우) 08390 서울특별시 구로구 디지털로 288 대륭포스트타워1차 2006호
+UIT0396: MAIN PAGE
+UIT0397: 사용자정보가 삭제 되었습니다.
+UIT0398: 패턴/지표 목록을 구분명, 패턴/지표명으로 검색할 수 있는 기능.
+UIT0399: 규칙
+UIT0400: 활성여부
+UIT0401: 수정이 되었습니다.
+UIT0402: 수정에 실패하였습니다.
+UIT0403: 저장되었습니다
+UIT0404: 수정된 내용이 없습니다.
+UIT0405: 저장에 실패하였습니다.
+UIT0406: 표준
+UIT0407: POSIX 기본 및 확장 표준 문법
+UIT0408: 문자 클래스, "["와 "]" 사이에 포함된 문자 집합 외부에서는 12개의 문자가, 내부에서는 오직 4개의 문자("\", "^", "-", "]", 자바와 닷넷은 "["를 포함)만 특수문자를 의미한다.[7] 아래는 POSIX 기본 및 확장 표준의 문법이다.
+UIT0409: 메타문자
+UIT0410: 기능
+UIT0411: 1개의 문자와 일치한다. 단일행 모드에서는 새줄 문자를 제외한다.
+UIT0412: 문자 클래스
+UIT0413: ["과 "]" 사이의 문자 중 하나를 선택한다. "¦"를 여러 개 쓴 것과 같은 의미이다. 예를 들면 [abc]d는 ad, bd, cd를 뜻한다. 또한, "-" 기호와 함께 쓰면 범위를 지정할 수 있다. "[a-z]"는 a부터 z까지 중 하나, "[1-9]"는 1부터 9까지 중의 하나를 의미한다.
+UIT0414: 부정
+UIT0415: 문자 클래스 안의 문자를 제외한 나머지를 선택한다. 예를 들면 [^abc]d는 ad, bd, cd는 포함하지 않고 ed, fd 등을 포함한다. [^a-z]는 알파벳 소문자로 시작하지 않는 모든 문자를 의미한다.
+UIT0416: 처음
+UIT0417: 문자열이나 행의 처음을 의미한다.
+UIT0418: 끝
+UIT0419: 문자열이나 행의 끝을 의미한다.
+UIT0420: 하위식
+UIT0421: 여러 식을 하나로 묶을 수 있다. "abc¦adc"와 "a(b¦d)c"는 같은 의미를 가진다.
+UIT0422: 일치하는 n번째 패턴
+UIT0423: 일치하는 패턴들 중 n번째를 선택하며, 여기에서 n은 1에서 9 중 하나가 올 수 있다.
+UIT0424: 0회 이상
+UIT0425: 0개 이상의 문자를 포함한다. "a*b"는 "b", "ab", "aab", "aaab"를 포함한다.
+UIT0426: m회 이상 n회 이하
+UIT0427: a{1,3}b는 "ab", "aab", "aaab"를 포함하지만, "b"나 "aaaab"는 포함하지 않는다.
+UIT0428: POSIX 확장 문법
+UIT0429: 0 또는 1회
+UIT0430: a?b는 "b", "ab"를 포함한다.
+UIT0431: 1회 이상
+UIT0432: a+b는 "ab", "aab", "aaab"를 포함하지만 "b"는 포함하지 않는다.
+UIT0433: 여러 식 중에서 하나를 선택한다. 예를 들어, "abc¦adc"는 abc와 adc 문자열을 모두 포함한다.
+UIT0434: 문자 클래스문자 클래스는 문자열 일치 다음으로 가장 기본적인 정규 표현식 개념이다. 이는 하나의 작은 일련의 문자열들을 더 큰 집합의 문자열들과 일치시키도록 한다. 이를테면, [A-Z]는 알파벳을 대표하며 \d는 임의의 숫자를 의미할 수 있다. 문자 클래스는 POSIX 수준에 적용한다.<br>[a-Z]와 같은 특정 범위의 문자들을 지정할 때 컴퓨터의 로캘 설정들은 문자 인코딩의 수치적 나열에 따라 내용을 결정한다. 그러한 나열에 따라 수치들을 저장할 수 있으며 그 순서는 abc...zABC...Z, aAbBcC...zZ와 같이 될 수 있다. 그러므로 POSIX 표준은 문자 클래스를 정의하며 이는 설치된 정규 표현식 처리기가 인지한다. 이러한 정의들은 다음의 표를 따른다:
+UIT0435: 비표준
+UIT0436: 펄/Tcl
+UIT0437: 영숫자
+UIT0438: 영숫자 + "_"
+UIT0439: 낱말이 아닌 문자
+UIT0440: 알파벳 문자
+UIT0441: 공백과 탭
+UIT0442: 낱말 경계
+UIT0443: 제어 문자
+UIT0444: 숫자
+UIT0445: 숫자가 아닌 문자
+UIT0446: 보이는 문자
+UIT0447: 소문자
+UIT0448: 보이는 문자 및 공백 문자
+UIT0449: 구두점
+UIT0450: (단순히 줄 끝에 추가)
+UIT0451: 공백 문자
+UIT0452: 공백이 아닌 모든 문자
+UIT0453: 대문자
+UIT0454: 16진수
+UIT0455: 예제
+UIT0456: 정규 표현식들은 예제 없이 설명과 이해를 동시에 하는 것은 어려울 수 있다. 아래에는 정규 표현식의 속성 중 일부의 기본적인 설명을 제시한다.
+UIT0457: 일반적으로 새 줄을 제외한 모든 어떠한 문자열과도 일치한다.
+UIT0458: <pre>$string1 = "Hello World\n";<br>if($string1 =~ m/...../) {<br> print "$string1 has length &gt;= 5\n";<br>}<br><b>출력:</b><br>Hello World<br> has length &gt;= 5</pre>
+UIT0459: 일련의 패턴 요소들을 하나의 요소로 묶는다. <br>괄호 안의 패턴을 일치시킬 때 <code>$1</code>, <code>$2</code>, ... 중 하나를 사용할 수 있다.
+UIT0460: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(H..).(o..)/</span><span class="p">)</span> <span class="p">{</span><br>  <span class="k">print</span> <span class="s">"We matched '$1' and '$2'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>We matched 'Hel' and 'o W'</pre>
+UIT0461: 1번 이상 발생하는 패턴과 일치시킨다.
+UIT0462: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/l+/</span><span class="p">)</span> <span class="p">{</span><br>  <span class="k">print</span> <span class="s">"There are one or more consecutive\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" letter \"l\"'s in $string1\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There are one or more consecutive<br> letter "l"'s in Hello World</pre>
+UIT0463: 0~1번 발생하는 패턴과 일치시킨다.
+UIT0464: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/H.?e/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is an 'H' and a 'e' separated by \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"0-1 characters (Ex: He Hoe)\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is an 'H' and a 'e' separated by<br> 0-1 characters (Ex: He Hoe)</pre>
+UIT0465: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(l.+?o)/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"The non-greedy match with 'l' followed by one or\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"more characters is 'llo' rather than 'llo Wo'.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>The non-greedy match with 'l' followed by one or<br> more characters is 'llo' rather than 'llo Wo'.</pre>
+UIT0466: 0번 이상 발생하는 패턴과 일치시킨다.
+UIT0467: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/el*o/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is an 'e' followed by zero to many\n "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"'l' followed by 'o' (eo, elo, ello, elllo)\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is an 'e' followed by zero to many<br> 'l' followed by 'o' (eo, elo, ello, elllo)</pre>
+UIT0468: 최소 M번, 최대 N번 발생되는 패턴과 일치시킨다.
+UIT0469: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/l{1,2}/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There exists a substring with at least 1 \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"and at most 2 l's in $string1\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There exists a substring with at least 1<br> and at most 2 l's in Hello World</pre>
+UIT0470: 가능한 문자열의 집합과 일치시킨다.
+UIT0471: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/[aeiou]+/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 contains one or more vowels.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> contains one or more vowels.</pre>
+UIT0472: 가능성 있는 항목들을 구별하여 선택한다.
+UIT0473: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(Hello|Hi|Pogo)/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"At least one of Hello, Hi, or Pogo is \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"contained in $string1.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>At least one of Hello, Hi, or Pogo is<br> contained in Hello World.</pre>
+UIT0474: <td style="text-align:left;"><pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/llo\b/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is a word that ends with 'llo'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is a word that ends with 'llo'</pre>
+UIT0475: _를 포함한 영숫자를 일치시킨다.
+UIT0476: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\w/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is at least one alphanumeric \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"character in $string1 (A-Z, a-z, 0-9, _)\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is at least one alphanumeric<br> character in Hello World<br> (A-Z, a-z, 0-9, _) </pre>
+UIT0477: _를 제외하여 영숫자가 아닌 문자열들과 일치시킨다.
+UIT0478: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\W/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"The space between Hello and \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"World is not alphanumeric\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>The space between Hello and<br> World is not alphanumeric</pre>
+UIT0479: 공백 문자와 일치시킨다.
+UIT0480: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\s.*\s/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There are TWO whitespace characters, which may\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" be separated by other characters, in $string1"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There are TWO whitespace characters, which may<br> be separated by other characters, in Hello World</pre>
+UIT0481: 공백을 제외한 어떠한 것이든 일치시킨다.
+UIT0482: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\S.*\S/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There are TWO non-whitespace characters, which\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" may be separated by other characters, in $string1"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There are TWO non-whitespace characters, which<br> may be separated by other characters, in Hello World</pre>
+UIT0483: 숫자를 일치시킨다.
+UIT0484: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"99 bottles of beer on the wall."</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(\d+)/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$1 is the first number in '$string1'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>99 is the first number in<br> '99 bottles of beer on the wall.'</pre>
+UIT0485: 숫자가 아닌 항목을 일치시킨다.
+UIT0486: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\D/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is at least one character in $string1"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" that is not a digit.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is at least one character in Hello World<br> that is not a digit.</pre>
+UIT0487: 줄이나 문자열의 시작점과 일치시킨다.
+UIT0488: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/^He/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 starts with the characters 'He'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> starts with the characters 'He'</pre>
+UIT0489: 줄이나 문자열의 끝과 일치시킨다.
+UIT0490: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/rld$/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 is a line or string "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"that ends with 'rld'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> is a line or string that ends with 'rld'</pre>
+UIT0491: 문자열의 시작점과 일치시킨다. (내부 줄이 아닌)
+UIT0492: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello\nWorld\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\AH/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 is a string "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"that starts with 'H'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello<br>World<br> is a string that starts with 'H'</pre>
+UIT0493: 문자열의 끝과 일치시킨다. (내부 줄이 아닌)
+UIT0494: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello\nWorld\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/d\n\z/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 is a string "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"that ends with 'd\\n'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello<br>World<br> is a string that ends with 'd\n'</pre>
+UIT0495: 괄호 안의 항목을 제외한 모든 문자열과 일치시킨다.
+UIT0496: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/[^abc]/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 contains a character other than "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"a, b, and c\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> contains a character other than a, b, and c</pre>
+UIT0497: 예시
+UIT0498: 데이터 표준화 관리
+UIT0499: 표준화 항목 관리
+UIT0500: 도메인
+UIT0501: 표준 용어
+UIT0502: 분류
+UIT0503: 도메인명
+UIT0504: 분류 입력
+UIT0505: 도메인명 입력
+UIT0506: 표준용어명
+UIT0507: 표준용어영문명
+UIT0508: 표준용어명 입력
+UIT0509: 표준용어영문명 입력
+UIT0510: 데이터타입
+UIT0511: 데이터길이
+UIT0512: 영문약어
+UIT0513: 구분
+UIT0514: 표준화 분석
+UIT0515: 표준화 분석 결과
+UIT0516: 도메인 등록
+UIT0517: 표준 용어 등록
+UIT0518: 분류를 입력해 주세요.
+UIT0519: 도메인명을 입력해 주세요.
+UIT0520: 데이터타입을 입력해 주세요.
+UIT0521: 표준용어명을 입력해 주세요.
+UIT0522: 구분을 선택해 주세요.

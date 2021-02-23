@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+<head>
+	<style type="text/css">
+		.tb_type99 .tui-grid-container .tui-grid-content-area .tui-grid-rside-area .tui-grid-header-area  {width: initial !important;}
+		table.list thead th {padding: 10px 0px;}
+	</style>
+</head>
+	<div layout:fragment="content" style="min-width: 800px;">
+		<!-- 상단 내비 / 타이틀 -->
+		<div class="location">
+			<ul>
+	            <li class="home">home</li>
+	            <li>PROPERTIES</li>
+	            <li>공통정보</li>
+	            <li><label th:text="#{UIT0076}">공통코드관리</label></li>
+            </ul>
+		</div>
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0076}"></h1>
+		</div> -->
+   
+		<!-- 영역 -->
+		<div class="row">
+			<div class="col-lg mb-4">
+				<!-- 조회 영역 -->
+				<div class="content_body">
+					<div class="table_area">
+						<table class="search fixed">
+							<caption th:text="#{UIT0077}"></caption>
+							<colgroup>
+								<col style="width: 10%;" />
+                                <col style="width: 15%;" />
+                                <col style="width: 30%;" />
+                                <col style="width: 10%;" />
+                                <col style="width: 120px;" />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>
+										<label for="ex_select" th:text="#{UIT0078}">검색 조건</label>
+									</th>
+									<td>
+									 	<div class="selectbox in_w100"> 
+									 		<label for="la_searchType">셀렉트박스</label>
+											<select name="searchType" id="searchType" th:title="#{UIT0079}">
+												<option value="groupCode" th:text="#{UIT0080}" >그룹코드</option>
+												<option value="groupCodeNm" th:text="#{UIT0081}">그룹코드 명</option>
+											</select>
+										</div>
+									</td>
+									<td>
+										<input type="text" name="searchValue" id="searchValue" class="in_w100" th:title="#{UIT0082}" maxlength="50" th:placeholder="#{UIT0083}">
+									</td>
+									<td class="alignr">
+										<button class='btn btn-l gray in_wp100' type='button' th:text="#{UIT0084}" onclick="fn_searchGroupList();" >조회</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+  
+				<!-- 내용 -->
+                                        
+				<div class="card shadow mb-4 margint10 float_left" style="min-height: 650px; width: 49.5%;">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">그룹코드목록</h6>
+					</div>
+					<input type="hidden" id="ckBtn" name="ckBtn" value="" />
+					<div>
+						<div class="card-body">
+							<!-- <button class='btn btn-primary mgn_b20' type='button' th:text="#{UIT0085}" onclick="fn_openCodeLayer('INS', '');" style='width:76px; float: right;'>등록</button> -->
+							<div class="button_area alignr">
+	                            <button class="btn btn-s blue in_wp100" type="button" th:text="#{UIT0085}"  onclick="fn_openCodeLayer('INS', '');" style='width:76px; float: right;'></button>
+	                        </div>
+							<div id ="grid" class="tb_type99 in_w100" style="min-height:240px; clear: both; padding-top: 10px;"></div>
+	                                                                         
+						</div>
+						
+						<!-- <div class="card-body">
+							<div class="line_type02"></div>
+						</div> -->
+						
+						<!-- <div id="detailDiv" class="card-body in_w50 float_left">
+							<button class='btn btn-primary mgn_b20' type='button' th:text="#{UIT0085}" onclick="fn_openDetailCodeLayer('INS', '');" style='width:76px; float: right;'>등록</button>
+							<div class="button_area alignr marginb5" style="margin-right: 18px;">
+	                            <button class="btn btn-s blue in_wp100" type="button" th:text="#{UIT0085}"  onclick="fn_openDetailCodeLayer('INS', '');" style='width:76px; float: right;'></button>
+	                        </div>
+							<div id ="detailGrid" class="tb_type99 in_w100" style="min-height:200px; clear: both;"></div>
+							
+						</div> -->
+					</div>
+				</div>
+				<div class="card shadow mb-4 margint10 float_left" style="width: 1%; border: none;">
+					<!-- <div class="line_type02"></div> -->
+				</div>
+				<div class="card shadow mb-4 margint10 float_left" style="min-height: 650px; width: 49.5%;">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">상세코드목록</h6>
+					</div>
+					<input type="hidden" id="ckBtn" name="ckBtn" value="" />
+					<div>
+						<div id="detailDiv" class="card-body">
+							<!-- <button class='btn btn-primary mgn_b20' type='button' th:text="#{UIT0085}" onclick="fn_openDetailCodeLayer('INS', '');" style='width:76px; float: right;'>등록</button> -->
+							<div class="button_area alignr marginb5" style="margin-right: 18px;">
+	                            <button class="btn btn-s blue in_wp100" type="button" th:text="#{UIT0085}"  onclick="fn_openDetailCodeLayer('INS', '');" style='width:76px; float: right;'></button>
+	                        </div>
+							<div id ="detailGrid" class="tb_type99 in_w100" style="min-height:200px; clear: both; padding-top: 10px;"></div>
+						</div>
+						<div id="DGTable" style="padding: 60px 20px;">
+							<table class="list fixed" width="100%" cellspacing="0">
+								<colgroup>
+									<col style="width: 30%;" />
+									<col style="width: 40%;" />
+									<col style="width: 12%;" />
+									<col style="width: 18%;" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th th:text="#{UIT0089}">상세코드</th>
+										<th th:text="#{UIT0102}">상세코드명</th>
+										<th th:text="#{UIT0086}">사용여부</th>
+										<th th:text="#{UIT0044}">비고</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+				
+				
+			</div>
+		</div>
+		
+		
+		<!-- modal 창 -->
+		<!-- 그룹코드 관리 팝업 open -->
+		<div id="groupCodeLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 350px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0080}">그룹코드</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="groupCodeFrm">
+							<div class="layer_pop_backboder">
+								<input type="hidden" id="mode" name="mode" value="" >
+								<input type="hidden" id="groupCodeVdi" name="groupCodeVdi" value="" >
+		                        
+		                        <div class="tb_type03">
+		                        	<div class="table_area">
+			                            <table class="write fixed">
+			                            	<colgroup>
+			                                    <col style="width: 20%;" />
+			                                    <col style="width: auto" />
+			                                </colgroup>
+											<tbody>
+												<tr>
+													<th><span class="impo"></span> <label th:text="#{UIT0080}">그룹코드</label> </th>
+													<td><input type="text" id="groupCode" name="groupCode" maxlength="20" oninput="inputCheck(this)"></td>
+												</tr>
+												<tr>
+													<th><span class="impo"></span> <label th:text="#{UIT0081}">그룹코드 명</label></th>
+													<td><input type="text" id="groupCodeNm" name="groupCodeNm"  maxlength="50"></td>
+												</tr>
+												<tr>
+													<th th:text="#{UIT0086}">사용여부</th>
+													<td style="text-align: left; ">
+														<div class="selectbox in_wp100"> 
+			                                                <label for="la_insUseAt">선택</label>
+			                                                <select id="insUseAt" name="useAt">
+			                                                    <option>선택</option>
+			                                                    <option value="Y">Y</option>
+																<option value="N">N</option>	
+			                                                </select>
+			                                            </div>
+													</td>
+												</tr>
+											</tbody>
+		                                </table>
+	                                </div>
+	                            </div>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<!-- <p class="l_box_type02_p">
+								<span><button class="btn btn-secondary" type="button" id="groupCodeDelBtn"  data-delYn='Y' th:text="#{UIT0087}" onclick="fn_saveCode(this);">삭제</button></span>
+								<span><button class="btn btn-primary" type="button" id="groupCodeSaveBtn" th:text="#{UIT0088}" onclick="fn_saveCode(this);">저장</button></span>
+							</p> -->
+							<div class="button_area alignc marginb5">
+	                            <button class="btn btn-l gray in_wp100" type="button" id="groupCodeDelBtn" data-delYn='Y' th:text="#{UIT0087}"  onclick="fn_saveCode(this);"></button>
+	                            <button class="btn btn-l blue in_wp100" type="button" id="groupCodeSaveBtn" th:text="#{UIT0088}"  onclick="fn_saveCode(this);"></button>
+	                        </div>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 그룹코드 관리 팝업 close -->		
+		
+		<!-- 상세코드 관리 팝업 open -->
+		<div id="detailCodeLayer" class="layer_pop_wrap" >
+			<div class="txt_right mgn_b10">
+			    <a href="javascript:fn_modalCloseLayer();" class="btn_close"><img src="/img/icon/icon_close.png" th:alt="#{UIT0025}"></a>
+			</div>
+			<div class="layer_pop" style="height: 510px;">
+				<div class="layer_header">
+				    <p th:text="#{UIT0089}">상세코드</p>
+				</div>
+				<section class="l_box_type02">
+					<div style="width: 860px;">
+						<form id="detailCodeFrm">
+							<div class="layer_pop_backboder">
+								<input type="hidden" id="detailMode" name="detailMode" value="">
+								<input type="hidden" id="detailCodeVdi" name="detailCodeVdi" value="" >
+								
+		                        <div class="tb_type03">
+			                        <div class="table_area">
+			                            <table class="write fixed">
+			                                <colgroup>
+			                                    <col style="width: 20%;" />
+			                                    <col style="width: auto" />
+			                                </colgroup>
+			                                <tbody>
+			                                    <tr>
+			                                        <th th:text="#{UIT0080}">그룹코드</th>
+			                                        <td><input type="text" id="detailGroupCode" name="detailGroupCode" readonly="readonly"></td>
+			                                        <th><span class="impo"></span> <label th:text="#{UIT0089}">상세코드</label> </th>
+			                                        <td><input type="text" id="detailCmmnCode" name="detailCmmnCode" maxlength="20" th:placeholder="#{UIT0090}" oninput="inputCheck(this)"></td>
+			                                    </tr>
+			                                    <tr>
+			                                    	 <th><span class="impo"></span> <label th:text="#{UIT0091}">상세코드 명</label></th>
+			                                        <td colspan="3"><input type="text" id="detailCmmnCodeNm" name="detailCmmnCodeNm" maxlength="50"></td>
+			                                    </tr>
+			                                    <tr>
+			                                    	 <th th:text="#{UIT0092}">설명</th>
+			                                        <td colspan="3"><!-- 텍스트 입력  -->
+			                                        <textarea rows="2" id="detailCmmnCodeDc" name="detailCmmnCodeDc"></textarea>
+			                                        </td>
+			                                    </tr>
+			                                    <tr>
+			                                        <th th:text="#{UIT0093}">순번</th>
+			                                        <td><input type="text" id="inqireOrdr" name="inqireOrdr" min="0" maxlength="4" oninput="maxLengthCheck(this)"></td>
+			                                        <th th:text="#{UIT0086}">사용여부</th>
+			                                        <td style="text-align: left;">
+			                                            <!-- <select id="detailUseAt" name="useAt" style="width: 100px;">
+				                                            <option value="Y">Y</option>
+														 <option value="N">N</option>
+			                                            </select> -->
+			                                            <div class="selectbox in_wp100"> 
+			                                                <label for="la_detailUseAt">선택</label>
+			                                                <select id="detailUseAt" name="useAt">
+			                                                    <option>선택</option>
+			                                                    <option value="Y">Y</option>
+																<option value="N">N</option>	
+			                                                </select>
+			                                            </div>
+		                                           </td>
+		                                        </tr>
+		                                    </tbody>
+		                                </table>
+	                                </div>
+	                            </div>
+                            </div>
+						</form>
+						
+						<div class="btn_modal_box">
+							<!-- <p class="l_box_type02_p">
+								<span><button class="btn btn-secondary" type="button" id="detailCodeDelBtn"  data-delYn='Y' th:text="#{UIT0087}" onclick="fn_saveDetailCode(this);">삭제</button></span>
+								<span><button class="btn btn-primary" type="button" id="detailCodeSaveBtn" th:text="#{UIT0088}" onclick="fn_saveDetailCode(this);">저장</button></span>
+				        	</p> -->
+				        	<div class="button_area alignc marginb5">
+	                            <button class="btn btn-l gray in_wp100" type="button" id="detailCodeDelBtn" data-delYn='Y' th:text="#{UIT0087}"  onclick="fn_saveDetailCode(this);"></button>
+	                            <button class="btn btn-l blue in_wp100" type="button" id="detailCodeSaveBtn" th:text="#{UIT0088}"  onclick="fn_saveDetailCode(this);"></button>
+	                        </div>
+			        	</div>
+					</div>
+				</section>
+           	</div>
+		</div>
+		<!-- 상세코드 관리 팝업 close -->		
+
+		<script th:inline="javascript" class="code-js">
+		
+		/*<![CDATA[*/
+		var	UIT0041 = /*[[ #{UIT0041} ]]*/; //: 처리중 에러가 발생하였습니다
+		var UIT0044 = /*[[ #{UIT0044} ]]*/; //: 비고
+		var UIT0080 = /*[[ #{UIT0080} ]]*/; //: 그룹코드
+		var UIT0086 = /*[[ #{UIT0086} ]]*/; //: 사용여부
+		var UIT0088 = /*[[ #{UIT0088} ]]*/; //: 저장
+		var UIT0089 = /*[[ #{UIT0089} ]]*/; //: 상세코드
+		var UIT0094 = /*[[ #{UIT0094} ]]*/; //: 그룹코드명
+		var UIT0095 = /*[[ #{UIT0095} ]]*/; //: 수정
+		var UIT0096 = /*[[ #{UIT0096} ]]*/; //: 그룹코드를 입력하세요.
+		var UIT0097 = /*[[ #{UIT0097} ]]*/; //: 그룹코드 명을 입력하세요.
+		var UIT0098 = /*[[ #{UIT0098} ]]*/; //: 하위코드가 존재할 시 전부 삭제됩니다. 진행하시겠습니까?
+		var UIT0099 = /*[[ #{UIT0099} ]]*/; //: 그룹코드가 등록 되었습니다.
+		var UIT0100 = /*[[ #{UIT0100} ]]*/; //: 그룹코드가 수정 되었습니다.
+		var UIT0101 = /*[[ #{UIT0101} ]]*/; //: 그룹코드/하위코드가 삭제 되었습니다.
+		var UIT0102 = /*[[ #{UIT0102} ]]*/; //: 상세코드명
+		var UIT0103 = /*[[ #{UIT0103} ]]*/; //: 상세코드를 입력하세요.
+		var UIT0104 = /*[[ #{UIT0104} ]]*/; //: 상세코드 명을 입력하세요.
+		var UIT0105 = /*[[ #{UIT0105} ]]*/; //: 상세코드가 등록 되었습니다.
+		var UIT0106 = /*[[ #{UIT0106} ]]*/; //: 상세코드가 수정 되었습니다.
+		var UIT0107 = /*[[ #{UIT0107} ]]*/; //: 상세코드가 삭제 되었습니다.
+		/*]]*/
+		
+		$(document).ready(function() {
+			
+			$("label[for='la_searchType']").text($("#searchType option:checked").text()); 
+			
+			$("#detailDiv").hide();
+		     fn_searchGroupList();
+		});
+		var detailData = "";
+		var detailGrid = "";
+		var selectGroupCode ="";
+		
+		function fn_searchGroupList(){
+		     
+		     $("#grid").empty();
+		     var groupData = "";
+		     var searchType = $("#searchType").val();
+		     var searchValue = $("#searchValue").val();
+		     
+		     var columns = null;
+		     var data = {"searchType" : searchType, "searchValue" : searchValue};
+		     
+		     $.ajax({
+		           url: '/mngr/cmmnMng/selectCommonCode',
+		           data: data,
+		           success: function(data){
+		                groupData = JSON.parse(data);
+		                fn_setGroupGrid(groupData);
+		           }
+		     });
+		}
+		function fn_setGroupGrid(groupData){
+			var columns = [
+			      {header : UIT0080, name : 'groupCode', whiteSpace: 'normal', sortable: true, width: 200, align: 'center'},
+			      {header : UIT0094, name : 'groupCodeNm', whiteSpace: 'normal', sortable: true},
+			      {header : UIT0086, name : 'useAt', whiteSpace: 'normal', sortable: true, width: 80, align: 'center'},
+			      {header : UIT0044, name : 'release', whiteSpace: 'normal', width: 120, align: 'center', formatter : function(value, options){
+			                var html  = "";
+			                /* html += "<input type='button' class='btn_select' data-value='UDT' data-toggle='modal' data-target='#codeModal' data-backdrop='static' data-keyboard='false' value='"+UIT0095+"'/>"; */
+			                html += "<button class='btn btn-s gray in_wp70' type='button' data-value='UDT' data-toggle='modal' data-target='#codeModal' data-backdrop='static' data-keyboard='false'>"+UIT0095+"</button>";
+			                return html;
+			           }
+			      }
+			];
+		     
+			const groupGrid = new tui.Grid({
+				el : document.getElementById("grid"),
+				data : groupData,
+				scrollX : false,
+				scrollY : false,
+				rowHeight : 40,
+				minBodyHeight : 40,
+				//bodyHeight : 349,
+				header: {
+				  height: 40
+				},
+				columns : columns
+			});
+			     
+			const extOptions = {
+				cell: {
+				     focused: {
+				      border: 0 // 선택 셀 강조 표시 x
+				  }
+				}
+			};
+		     
+			tui.Grid.applyTheme('default', extOptions);
+		     
+			groupGrid.on('click', function(ev) {
+				var inText = ev.nativeEvent.target.innerText;
+				var obj = ev.nativeEvent.target;
+				var mode = $(obj).data("value");
+				
+				if(ev.columnName === 'release'){
+					var item = groupGrid.getRow(ev.rowKey);
+					
+					if(mode != undefined){
+						fn_openCodeLayer(mode, item);
+					}
+				          
+				} else if(ev.columnName === 'groupCode') {
+					var rowData = groupGrid.getData();
+					selectGroupCode = $.trim(inText);
+					$.each(rowData, function(index, value) {
+						var evKey = groupGrid.getElement(value.rowKey, 'groupCode');
+						
+						if(value.rowKey == ev.rowKey){
+							$(evKey).css({'color': '#2e59d9'});		
+						}else{
+							$(evKey).css({'color': '#8e909d'});
+						}
+					})
+					fn_searchDetailList(inText);
+				}
+			});
+		     
+			groupGrid.resetData(groupData);
+		}
+		
+		function fn_openCodeLayer(mode, item){
+			/*레이어 열기*/
+		    $('#groupCodeLayer').addClass('on');
+		    
+		    $('.layer_pop_wrap').css("left","40%");
+		    $('.layer_pop_wrap').css("top","55%");
+			
+		    $('.tui-grid-container').css('z-index', 1);			// 
+		    $('.cover').show();
+			
+		     // 폼 초기화
+		     $("#groupCodeFrm")[0].reset();
+		     $("#groupCodeChk").text("");
+		     $("#detailCodeChk").text("");
+		     
+		     $("#mode").val(mode);
+		     
+		     if(mode == "INS"){
+		    	   $("#groupCodeSaveBtn").text(UIT0088);
+		           // 수정불가 해제
+		           $("#groupCode").attr("readonly", false);
+		           $("#groupCodeDelBtn").hide();
+		     }else{
+		           $("#groupCodeDelBtn").show();
+		     }
+		     
+		     if(mode == 'UDT'){
+		    	   $("#groupCodeSaveBtn").text(UIT0095);
+		           // 수정불가
+		           $("#groupCode").attr("readonly",true);
+		           
+		           $("#groupCode").val(item.groupCode);
+		           $("#groupCodeNm").val(item.groupCodeNm);
+		           /* $("#groupUseAt").val(item.useAt); */
+		           $("label[for='la_insUseAt']").text(item.useAt);
+		     }
+		     
+		}
+		function fn_saveCode(obj){
+		     
+		     var submitChk = $("#groupCodeVdi").val();
+		     var delYn = $(obj).data("delyn");
+		     var groupCode = $("#groupCode").val();
+		     var groupCodeNm = $("#groupCodeNm").val();
+		     
+		     if(groupCode == ""){
+		           alert(UIT0096);
+		           return false;
+		     }
+		     
+		     if(groupCodeNm == ""){
+		           alert(UIT0097);
+		           return false;
+		     }
+		     
+		     if("Y" == delYn){
+		           
+		           if(confirm(UIT0098)) {
+		                submitChk = true;
+		                $("#mode").val('DEL');
+		           }else{
+		        	   return false;
+		           }
+		     }    
+		     
+		     var frm = $("#groupCodeFrm").serialize();
+		     
+		     if(submitChk != 'false'){
+		           
+				$.ajax({
+					url: "/mngr/cmmnMng/saveCommonCode",
+					data: frm,
+					success: function(data){
+						var result = JSON.parse(data);
+						
+						fn_searchGroupList();
+						
+						if("INS" == result){
+							alert(UIT0099);   
+						}else if("UDT" == result){
+							alert(UIT0100);
+						}else{
+							alert(UIT0101);
+							$("#detailGrid").empty();
+							$("#detailDiv").hide();
+						}
+						
+						fn_modalCloseLayer();
+					}
+				});
+		     }
+		}
+		function fn_searchDetailList(groupCode){
+		     $("#detailGrid").empty();
+		     $("#detailDiv").show();
+		     $("#DGTable").hide();
+		     
+		     // 그룹코드 값 push
+		     $("#detailGroupCode").val(groupCode);
+		     
+		     var detailData = null;
+		     
+		     $.ajax({
+		           url : '/mngr/cmmnMng/selectDetailCommonCode',
+		           data : {"groupCode" : groupCode},
+		           success : function(data){
+		                detailData = JSON.parse(data);
+		                fn_setDetailGrid(detailData);
+		           }, error:function() {
+		                alert(UIT0041);
+		                return;
+		           }
+		           
+		     });
+		}
+		function fn_setDetailGrid(detailData){
+		     
+		     var columns = [
+		           {header : UIT0089, name : 'cmmnCode', whiteSpace: 'normal', sortable: true, align: 'center', width: 200},
+		           {header : UIT0102, name : 'cmmnCodeNm', whiteSpace: 'normal', sortable: true},
+		           {header : UIT0086, name : 'useAt', whiteSpace: 'normal', sortable: true, width: 80, align: 'center'},
+		           {header : UIT0044, name : 'release', whiteSpace: 'normal', width: 120, align: 'center', formatter: function(value, options){
+		                var html  = "";
+		                /* html += "<input type='button' class='btn_select' data-value='UDT' data-toggle='modal' data-target='#codeDetailModal' data-backdrop='static' data-keyboard='false' value='"+UIT0095+"'/>"; */
+		                html += "<button class='btn btn-s gray in_wp70' type='button' data-value='UDT' data-toggle='modal' data-target='#codeDetailModal' data-backdrop='static' data-keyboard='false'>"+UIT0095+"</button>";
+		                return html;
+		           }}
+		     ];
+		     
+		     const detailGrid = new tui.Grid({
+		           el : document.getElementById("detailGrid"),
+		           data : detailData,
+		           scrollX : false,
+		           scrollY : 'auto',
+		           rowHeight : 40,
+		           minBodyHeight : 40,
+		           bodyHeight : 490,
+		           header: {
+		             height: 40
+		           },
+		           columns : columns
+		     });
+		     
+		     const extOptions = {
+		           cell: {
+		                focused: {
+		                 border: 0 // 선택 셀 강조 표시 x
+		             }
+		           }
+		     };
+		     
+		     tui.Grid.applyTheme('default', extOptions);
+		     
+		     
+		     detailGrid.on('click', function(ev) {
+		           
+		           var inText = ev.nativeEvent.target.innerText;
+		           var obj = ev.nativeEvent.target;
+		           var mode = $(obj).data("value");
+		           if(ev.columnName === 'release' && mode != undefined){
+		                var item = detailGrid.getRow(ev.rowKey);
+		                fn_openDetailCodeLayer(mode, item);
+		           }
+		           
+		     });
+		     
+		     detailGrid.resetData(detailData);
+		}
+		
+		function fn_openDetailCodeLayer(mode, item){
+		     
+			/*레이어 열기*/
+		    $('#detailCodeLayer').addClass('on');
+
+		    $('.layer_pop_wrap').css("left","30%");
+		    $('.layer_pop_wrap').css("top","65%");
+			
+		    $('.tui-grid-container').css('z-index', 1);			// 
+		    $('.cover').show();
+			
+		     // 폼 초기화
+		     $("#detailCodeFrm")[0].reset();
+		     $("#detailCodeChk").text("");
+		     $("#detailCmmnCode").val("");
+		     $("#detailCmmnCodeNm").val("");
+		     $("#detailCmmnCodeDc").val("");
+		     $("#detailCmmnUpperCode").val("");
+		     $("#inqireOrdr").val("");
+		     $("#detailMode").val(mode);
+		     
+		     if("INS" == mode){
+		           // 수정불가 해제
+		           $("#detailGroupCode").val(selectGroupCode);
+		           $("#detailCmmnCode").attr("readonly", false);
+		           $("#detailCodeDelBtn").hide();
+		     }else{
+		           $("#detailCodeDelBtn").show();
+		     }
+		     
+		     if("UDT" == mode){
+		    	   $("#detailCodeSaveBtn").text(UIT0095);
+		    	   // 수정불가
+		           $("#detailGroupCode").attr("readonly", true);
+		           $("#detailCmmnCode").attr("readonly", true);
+		           
+		           $("#detailGroupCode").val(item.groupCode);
+		           $("#detailCmmnCode").val(item.cmmnCode);
+		           $("#detailCmmnCodeNm").val(item.cmmnCodeNm);
+		           $("#detailCmmnCodeDc").val(item.cmmnCodeDc);
+		           $("#inqireOrdr").val(item.inqireOrdr);          
+		           /* $("#detailUseAt").val(item.useAt); */
+		           $("label[for='la_detailUseAt']").text(item.useAt);
+		     }
+		     
+		}
+		function fn_saveDetailCode(obj){
+		     
+		     var submitChk = $("#detailCodeVdi").val();
+		     var delYn = $(obj).data("delyn");
+		     var detailCmmnCode = $("#detailCmmnCode").val();
+		     var detailCmmnCodeNm = $("#detailCmmnCodeNm").val();
+		     
+		     if(detailCmmnCode == ""){
+		           alert(UIT0103);
+		           return false;
+		     }
+		     
+		     if(detailCmmnCodeNm == ""){
+		         alert(UIT0104);
+		         return false;
+		  	 }
+		     if("Y" == delYn){
+		           
+		           if(confirm(UIT0098)) {
+		                submitChk = true;
+		                $("#detailMode").val('DEL');
+		           }else{
+		        	   return false;
+		           }
+		     }    
+		     var frm = $("#detailCodeFrm").serialize();
+		     
+		     if(submitChk != 'false'){
+		           
+				$.ajax({
+					url: "/mngr/cmmnMng/saveDetailCommonCode",
+					data: frm,
+					success: function(data){
+						var result = JSON.parse(data);
+		                       
+						var groupCode = $("#detailGroupCode").val();
+						fn_searchDetailList(groupCode);
+						
+						if("INS" == result){
+						     alert(UIT0105);   
+						}else if("UDT" == result){
+						     alert(UIT0106);
+						}else{
+						     alert(UIT0107);
+						}
+						fn_modalCloseLayer();
+		            }
+				});
+				
+		     }
+		}
+		
+		
+		
+		// 증복체크
+		document.getElementById("groupCode").addEventListener("blur", function(){
+		     var str = $("#groupCode").val();
+		     fn_codeStrTest(str, "G","groupCodeChk", "groupCodeVdi");
+		});
+		document.getElementById("detailCmmnCode").addEventListener("blur", function(){
+		     var str = $("#detailCmmnCode").val();
+		     fn_codeStrTest(str, "D", "detailCodeChk", "detailCodeVdi");
+		});
+		</script>
+	</div>
+</html>

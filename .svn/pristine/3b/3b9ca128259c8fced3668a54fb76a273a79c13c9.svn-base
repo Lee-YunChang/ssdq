@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/mainLayout">
+<head>
+<style type="text/css">
+.tb_wrap {position:relative; padding-top:58px;}
+.tb_box {max-height:600px; overflow-y:auto; /* border-bottom:1px solid #dedede; */}
+.tb {/* border-collapse:collapse; border-spacing:0; */ width:100%;}
+.fixed_top {display:inline-table; position:absolute; top:0; width: 100%; /* background:#eef7ff; */}
+/* .fixed_top th {border-top:1px solid #dedede; border-bottom:1px solid #dedede;} */
+.tb tr.end {/* color:#999; */}
+</style>
+</head>
+	<div layout:fragment="content">
+		      <!-- 상단 내비 / 타이틀 -->
+			<div class="location">
+				<ul>
+		            <li class="home">home</li>
+		            <li>PROPERTIES</li>
+		            <li>공통정보</li>
+		            <li><label th:text="#{UIT0154}">메뉴권한관리</label></li>
+	            </ul>
+			</div>
+		<!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="col_grey font_23" th:text="#{UIT0154}"> 메뉴권한관리</h1>
+		</div> -->
+
+		<!-- 영역 -->
+		<div class="row">
+			<!-- <div class="col-lg-3 mb-4"> -->
+			<div class="col mb-4" style="max-width: 25%;">
+				<!-- 조회 영역 -->
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary" th:text="#{UIT0155}">권한목록</h6>
+					</div>
+					<div class="card-body">
+						<div id ="div1" class="table_area marginb40">
+							<table class="list fixed" id="dataTable" width="100%" cellspacing="0">
+								<thead>
+									<tr class="tr_titles">
+										<th th:text="#{UIT0156}">권한코드</th>
+										<th th:text="#{UIT0157}">권한 명</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="author : ${authorList}">
+										<td class="tdLink" th:onclick="javascript:fn_authListToObj(this)" th:text="${author.authorCode }" ></td>
+										<td th:text="${author.authorCodeNm }" ></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<div class="tb_type98" style="margin-top: 20px; width: 300px;">
+							<div class="col-sm-4 text-center" style="float: left;">
+								<button class="btn btn-success btn-block float_left" type="button" onclick="fn_saveAuth();" style="width: 100px;" th:text="#{UIT0158}">권한 저장</button>
+							</div>
+						</div>
+				
+					</div>
+				</div>
+			</div>
+			
+			<div class="col mb-4">
+				<!-- 조회 영역 -->
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary"><span id="authNm"></span>_<label th:text="#{UIT0159}">메뉴 권한 리스트</label></h6>
+					</div>
+					<div class="card-body">
+						<div id ="div1" class="tb_wrap">
+							<div class="tb_box">
+								<table class="list fixed" id="dataTable" width="100%" cellspacing="0">
+									<colgroup>
+										<col style="width: 15%;" />
+										<col style="width: 85%;" />
+									</colgroup>
+									<thead>
+										<tr class="fixed_top">
+											<th style="width: 14.8%;"  th:text="#{UIT0160}">권한여부</th>
+											<th style="width: 85.2%;"  th:text="#{UIT0161}">메뉴 명</th>
+										</tr>
+									</thead>
+									<tbody id="authList">
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript"  class="code-js" th:inline="javascript">
+		
+		/*<![CDATA[*/
+		var UIT0162 = /*[[ #{UIT0162} ]]*/; //: 전체 선택
+		var UIT0163 = /*[[ #{UIT0163} ]]*/; //: 권한 코드를 선택해 주세요.
+		var UIT0164 = /*[[ #{UIT0164} ]]*/; //: 변경된 내용이 없습니다.
+		var UIT0165 = /*[[ #{UIT0165} ]]*/; //: 메뉴 권한을 변경하시겠습니까?
+		var UIT0166 = /*[[ #{UIT0166} ]]*/; //: 저장 되었습니다.
+		/*]]*/
+		
+		
+		
+		var authChk = false;
+		/* 
+		$(document).on("change",".btn-switch",function(event){
+		
+			$('.btn-switch input').prop('checked',false);
+				 console.log(this);
+				 var text = $(this).children().children('.switch_txt').text();
+				 if(text == 'ON'){
+					 $(this).children('i.slide-object').removeClass('ON').addClass('OFF');
+					 $(this).children().children('.switch_txt').text('OFF').css('color','#d85050');
+				 }else if(text == 'OFF') {
+					$(this).children('i.slide-object').removeClass('OFF').addClass('ON');
+					$(this).children().children('.switch_txt').text('ON').css('color','#509dd8');
+				 }
+		
+		})
+					 */
+		
+
+		$(document).ready(function(){
+			
+			$('#authList').on('click','input', function(e){
+				
+				authChk = true;
+				
+				if($(this).attr("data-lv") == "1") {
+					// 1뎁스 선택시 하위 모두 선택 처리
+					var menuGroupSn = $(this).attr("data-menuGroupSn");
+					var selectd = $('#authList').children('tr').children('td').children('label.switch').children('.chkItem[data-menuGroupSn='+menuGroupSn+']');
+					
+					if($(this).is(":checked")) {
+						selectd.prop("checked", true);
+					} else {
+						selectd.prop("checked", false);
+					}
+				}
+				
+				if($(this).attr("data-lv") == "2") {
+					// 2뎁스 선택시 하위 모두 선택 처리
+					var menuGroupSn = $(this).attr("data-menuGroupSn");
+					var menuSn = $(this).attr("data-menuSn");
+					var menulv = $(this).attr("data-lv");					
+					var selectd = $('#authList').children('tr').children('td').children('label.switch').children('.chkItem[data-upperMenuSn='+menuSn+']');
+					var parent = $('#authList').children('tr').children('td').children('label.switch').children('.chkItem[data-menuGroupSn='+menuGroupSn+'][data-lv='+parseInt(menulv-1)+']'); //전체선택 체크박스
+				
+					if($(this).is(":checked")) {
+						selectd.prop("checked", true);
+						parent.prop("checked", true);											
+					} else {
+						selectd.prop("checked", false);
+					}																												 
+				}
+			 	 if($(this).attr("data-lv") == "3") {
+				
+					//  3뎁스 개별 선택시 하나라도 체크되어 있을경우 2뎁스가 체크 되어 메뉴창에 나오기 위해 처리
+					var menuSn = $(this).attr("data-upperMenuSn");
+					var menuGroupSn = $(this).attr("data-menuGroupSn");
+					var parent = $('#authList').children('tr').children('td').children('label.switch').children('.chkItem[data-menuSn='+menuSn+']');
+				 		parent.prop("checked", false);
+				 		
+				 		
+				 	$('.chkItem[data-upperMenuSn='+menuSn+']').each(function(index){
+				 		if(this.checked==true){
+				 			parent.prop("checked", true);
+				 		}
+				 		
+				 	})
+				 	
+				} 
+			});
+			
+		});
+
+		function fn_authListToObj(obj){
+			var authCode = $(obj).text();
+			fn_authList(authCode);
+		}
+
+		function fn_authList(authCode){
+						
+			$("#authNm").text(authCode);
+			
+			$.ajax({
+				url : "/mngr/menuMng/selectUserAuthMenuList",
+				method : "POST",
+				data : {"authCode" : authCode},
+				success : function(data) {
+					if (data) {
+						var obj = JSON.parse(data);
+						var item = obj.result;
+						
+						$("#authList").empty();
+						
+						var html = "";
+						var groupBy = 1;
+						
+						$.each(item, function(index, value) {
+							
+							if(groupBy == value.menuGroupSn){
+								
+								html += "<tr>";
+								if(value.authAt != 'Y'){
+									html += "<td  class='authTd'>";
+									html += "<label class='switch'>";
+									if(value.menuGroupSn != 1){
+										html += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-lv='1'><span class='slider round'></span>";
+									}else{
+										if(authCode == 'ROLE_ADMIN'){
+											html += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-lv='1' disabled><span class='slider round'></span>";	
+										}else{
+											html += "";
+										}
+									}
+									html += "</label>";
+									html += "</td>";
+								}else{
+									html += "<td  class='authTd'>";
+									html += "<label class='switch'>";
+									if(value.menuGroupSn != 1){
+										html += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-lv='1' checked><span class='slider round'></span>";
+									}else{
+										if(authCode == 'ROLE_ADMIN'){
+											html += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-lv='1' checked disabled><span class='slider round'></span>";	
+										}else{
+											html += "";
+										}
+									}
+									html += "</label>";
+									html += "</td>";	
+								}
+								
+								html += "	<td style='text-align:left'>"+value.menuGroupNm+" ("+UIT0162+")</td>";
+								html += "</tr>";
+								html += fn_trList(item, value.menuGroupSn, authCode);
+								groupBy++;
+							}
+						
+						});
+						
+						$("#authList").append(html);
+					}
+				}
+			});
+			
+		}
+
+		function fn_trList(item, menuGroupSn, authCode){
+			var cHtml = "";
+
+			$.each(item, function(index, value) {
+			
+				if(menuGroupSn == value.menuGroupSn && value.upperMenuSn == 0){
+					
+					cHtml += "<tr>";
+					
+					if(value.authAt != 'Y'){
+						cHtml += "<td  class='authTd'>";
+						cHtml += "<label class='switch'>";
+							if(value.menuGroupSn != 1){
+								cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-lv='2'><span class='slider round'></span>";
+							}else{
+								if(authCode == 'ROLE_ADMIN'){
+									cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-lv='2' disabled><span class='slider round'></span>";	
+								}else{
+									cHtml += "";
+								}
+							}
+						cHtml += "</label>";
+						cHtml += "</td>";
+					}else{
+						cHtml += "<td  class='authTd'>";
+						cHtml += "<label class='switch'>";
+							if(value.menuGroupSn != 1){
+								cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-lv='2' checked><span class='slider round'></span>";
+							}else{
+								if(authCode == 'ROLE_ADMIN'){
+									cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-lv='2' checked disabled><span class='slider round'></span>";	
+								}else{
+									cHtml += "";
+								}
+							}
+						cHtml += "</label>";
+						cHtml += "</td>";
+					}
+					cHtml += "	<td style='text-align:left'>&nbsp;&nbsp;<i class='fas fa-fw fa-angle-right'></i>"+value.menuGroupNm+" > "+value.menuNm+"</td>";
+				
+					if(value.isLast == 'N'){
+						cHtml += fn_trList2(item, value.menuSn, authCode);
+					}
+
+					cHtml += "</tr>";
+				}
+			
+			});
+			
+			return cHtml;
+		}
+
+
+		function fn_trList2(item, menuSn, authCode){
+			
+			var cHtml = "";
+			
+			$.each(item, function(index, value) {
+				
+				if(menuSn == value.upperMenuSn){
+					
+					cHtml += "<tr>";
+					
+					if(value.authAt != 'Y'){
+						
+						cHtml += "<td  class='authTd'>";
+						cHtml += "<label class='switch'>";
+							if(value.menuGroupSn != 1){
+								cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-upperMenuSn="+value.upperMenuSn+" data-lv='3'><span class='slider round'></span>";
+							}else{
+								if(authCode == 'ROLE_ADMIN'){
+									cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-upperMenuSn="+value.upperMenuSn+" data-lv='3' disabled><span class='slider round'></span>";	
+								}else{
+									cHtml += "";
+								}
+							}
+						cHtml += "</label>";
+						cHtml += "</td>";
+					}else{
+						cHtml += "<td  class='authTd'>";
+						cHtml += "<label class='switch'>";
+							if(value.menuGroupSn != 1){
+								cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-upperMenuSn="+value.upperMenuSn+" data-lv='3' checked><span class='slider round'></span>";
+							}else{
+								if(authCode == 'ROLE_ADMIN'){
+									cHtml += " 	<input type='checkbox' class='chkItem' data-menuGroupSn="+value.menuGroupSn+" data-menuSn="+value.menuSn+" data-upperMenuSn="+value.upperMenuSn+" data-lv='3' checked disabled><span class='slider round'></span>";	
+								}else{
+									cHtml += "";
+								}
+							}
+						cHtml += "</label>";
+						cHtml += "</td>";
+					}
+					cHtml += "	<td style='text-align:left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class='fas fa-fw fa-angle-double-right'></i>"+ value.menuGroupNm +" > "+ value.upperMenuNm +" > " + value.menuNm +"</td>";
+					
+					
+					cHtml += "</tr>";
+				}
+			});
+			
+			return cHtml;
+
+		}
+
+		function fn_saveAuth(){
+			
+			var arr = [];
+			var authCode = $("#authNm").text();
+			var selectd = $('#authList').children('tr').children('td').children('label.switch').children('.chkItem');
+			var nowAuthAtCnt = 0;
+			
+			selectd.each(function() {
+				var obj = {};
+				
+				if($(this).attr("data-menuSn") != undefined){
+					
+					if($(this).is(":checked")){
+						obj.menuSn = $(this).attr("data-menuSn");
+						obj.useAt = 'Y';
+						arr.push(obj);
+					}else{
+						obj.menuSn = $(this).attr("data-menuSn");
+						obj.useAt = 'N';
+						arr.push(obj);
+					}
+				}
+				
+			});
+			
+			
+			if(arr == ""){
+				alert(UIT0163);
+				return false;
+			}
+			
+			if(!authChk){
+				alert(UIT0164);
+				return false;
+			}
+			
+			if(confirm(UIT0165)) {
+				$.ajax({
+					url : "/mngr/menuMng/saveAuthMenuList",
+					method : "POST",
+					data : {"authCode" : authCode, "updateArray" : JSON.stringify(arr)},
+					success : function(data) {
+						alert(UIT0166);
+						//location.reload(true);
+						fn_authList(authCode);
+					}
+				});	
+			}
+		}
+
+
+		</script>
+	</div>
+</html>

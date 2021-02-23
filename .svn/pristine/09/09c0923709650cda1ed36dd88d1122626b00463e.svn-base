@@ -1,0 +1,53 @@
+<%--
+	Description : 
+	 
+	Modification Information
+	수정일		수정자			수정내용
+	-------		-----------------------------------
+	2015.04.01 	SANGS			최초작성
+
+--%>
+
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>:: 한국정보기술단 ::</title>
+ 
+<!-- 폰트 -->
+<link href="/resources/vendor/fontawesome-free/css/all.css" rel="stylesheet" type="text/css">
+<!-- 스타일시트 -->
+<link href="/resources/css/sb-admin-3.css" rel="stylesheet">
+<link href="/resources/css/tui/tui-grid.css" rel="stylesheet" type="text/css"/>
+<link href="/resources/css/tui/tui-pagination.css" rel="stylesheet" type="text/css"/>
+<link href="/resources/css/sub.css" rel="stylesheet">
+<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+<link href="/resources/css/chosen.css" rel="stylesheet">
+
+<!-- 스크립트 -->
+<script type="text/javascript" src="/resources/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/resources/js/tui/underscore.js"></script>
+<script type="text/javascript" src="/resources/js/tui/backbone.js"></script>
+<script type="text/javascript" src="/resources/js/tui/tui-code-snippet.js"></script>
+<script type="text/javascript" src="/resources/js/tui/tui-pagination.js"></script>
+<script type="text/javascript" src="/resources/js/tui/tui-grid.js"></script>
+<script type="text/javascript" src="/resources/js/chosen.jquery.js"></script>
+
+<input type="hidden" id="pageIndex" name="pageIndex" value=""/>
+<input type="hidden" id="totalCnt" name="totalCnt" value=""/>
+<input type="hidden" id="searchCnt" name="searchCnt" value=""/>
+
+<script type="text/javascript">
+	jQuery.browser = {};
+	(function () {
+	    jQuery.browser.msie = false;
+	    jQuery.browser.version = 0;
+	    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+	        jQuery.browser.msie = true;
+	        jQuery.browser.version = RegExp.$1;
+	    }
+	})();
+</script>
+

@@ -1,0 +1,552 @@
+UIT0001: Divide creation page wallpaper
+UIT0002: House icon
+UIT0003: Environmental Information Management> Common Information Management> Initial Screen (Create Administrator)
+UIT0004: DB creation
+UIT0005: DB creation information
+UIT0006: Agency code
+UIT0007: ex) A000001
+UIT0008: find
+UIT0009: Institution name
+UIT0010: ex) A Agency
+UIT0011: Administrator Information
+UIT0012: administrator name
+UIT0013: Please enter the administrator name
+UIT0014: ID
+UIT0015: Please enter your ID
+UIT0016: Duplicate Check
+UIT0017: PASSWORD
+UIT0018: Please enter a password
+UIT0019: Confirm Password
+UIT0020: Please re-enter your password
+UIT0021: Previous
+UIT0022: Next
+UIT0023: next
+UIT0024: LOGIN
+UIT0025: Close button
+UIT0026: Agency search
+UIT0027: Agency name
+UIT0028: Initial Setup Screen-Perform initial DB creation
+UIT0029: Initial Setup Screen-Create Initial Administrator
+UIT0030: Search and select the institution code> DB is created based on the selected institution code
+UIT0031: Create initial administrator login information> super administrator account and have access to all menus.
+UIT0032: Please select your institution.
+UIT0033: Please check the administrator ID for duplicates.
+UIT0034: Please enter administrator name
+UIT0035: Please enter your ID
+UIT0036: Please enter a password or confirmation
+UIT0037: Passwords are different.
+UIT0038: Check icon
+UIT0039: Initial DB has been created.
+UIT0040: The initial manager has been created.
+UIT0041: An error occurred during processing
+UIT0042: Agency code
+UIT0043: Agency
+UIT0044: Remarks
+UIT0045: Selection
+UIT0046: Please enter an administrator ID.
+UIT0047: ID (duplicate)
+UIT0048: ID (available)
+UIT0049: Please enter your ID.
+UIT0050: Please enter a password.
+UIT0051: LOGOUT
+UIT0052: Do you want to end the current session?
+UIT0053: Wifi icon
+UIT0054: Link CSV file
+UIT0055: Connection DBMS
+UIT0056: Nice to meet you.
+UIT0057: :: SANGSANG Story ::
+UIT0058: Error message
+UIT0059: Graph image
+UIT0060: Sangsang Story's data quality management solution (SS-DQ) is optimized for education system (LMS). We improve the quality of data by providing efficient data analysis results through the process of setting quality indicators, measuring quality and analyzing results for training history data.
+UIT0061: Data Connection Management Icon
+UIT0062: Data connection management
+UIT0063: This is a function to manage basic connection information on the target DBMS.
+UIT0064: Basic Information Management Icon
+UIT0065: Pattern / Indicator Management
+UIT0066: This is a function to manage items related to business rules such as patterns and indicators.
+UIT0067: Business Rule Management Icon
+UIT0068: Schema Structure Analysis
+UIT0069: This function checks schema and table structure information of the database to be diagnosed.
+UIT0070: Profiling Management icon
+UIT0071: Profiling Analysis
+UIT0072: It is a function to analyze the diagnosis of data by applying business rules.
+UIT0073: Profiling Results
+UIT0074: This function is to check the diagnosis result about data.
+UIT0075: &gt; PROPERTIES  &gt; Common information &gt; Common Code Management
+UIT0076: Common Code Management
+UIT0077: This table is used to search policy field name, policy field name, policy function code, and policy function code for large category management.
+UIT0078: search requirementroffj
+UIT0079: Select policy name function
+UIT0080: Group code
+UIT0081: Code name
+UIT0082: Enter search term
+UIT0083: input
+UIT0084: Search
+UIT0085: Add
+UIT0086: Use
+UIT0087: Delete
+UIT0088: Save
+UIT0089: Detail code
+UIT0090: Enter 20 digit code
+UIT0091: Detail Name
+UIT0092: Explanation
+UIT0093: NO
+UIT0094: Group code name
+UIT0095: Modify
+UIT0096: Please enter a group code.
+UIT0097: Please enter a group code name.
+UIT0098: If a subcode exists, it is deleted. Do you want to proceed?
+UIT0099: The group code is registered.
+UIT0100: The group code has been modified.
+UIT0101: The group code / sub code has been deleted.
+UIT0102: Detailed Code Name
+UIT0103: Please enter a detailed code.
+UIT0104: Please enter a detailed code name.
+UIT0105: The detailed code has been registered.
+UIT0106: The detail code has been modified.
+UIT0107: The detail code has been deleted.
+UIT0108: Operational Information
+UIT0109: Operational Information Management
+UIT0110: User Info
+UIT0111: Client Info
+UIT0112: Add User
+UIT0113: Client
+UIT0114: Client code
+UIT0115: Start Date
+UIT0116: End Date
+UIT0117: Phone Number
+UIT0118: home page
+UIT0119: Contact person
+UIT0120: Contact email
+UIT0121: Contact Phone
+UIT0122: Contact Mobile
+UIT0123: User id
+UIT0124: password
+UIT0125: User name
+UIT0126: User rights
+UIT0127: User Details
+UIT0128: Creation date
+UIT0129: User rights
+UIT0130: User ID
+UIT0131: Username
+UIT0132: Use or not
+UIT0133: Please enter your department.
+UIT0134: Please enter a username.
+UIT0135: Please enter a password.
+UIT0136: User information is registered.
+UIT0137: User information has been modified.
+UIT0138: Please select a start date for your business
+UIT0139: Please select an end date for your business.
+UIT0140: Business start date cannot be greater than end date.
+UIT0141: Please enter your primary phone number correctly.
+UIT0142: Please enter a contact name.
+UIT0143: Please enter a valid contact phone number.
+UIT0144: Institution information is registered.
+UIT0145: Agency information has been modified.
+UIT0146: Institution information has been deleted.
+UIT0147: User ID (duplicate)
+UIT0148: User ID (available)
+UIT0149: Please check your user ID for duplicates.
+UIT0150: Please enter a username
+UIT0151: Please enter your username
+UIT0152: Please enter password
+UIT0153: Common information
+UIT0154: Menu permission management
+UIT0155: Permission List
+UIT0156: Permission Code
+UIT0157: Permission Name
+UIT0158: Save
+UIT0159: Menu permission list
+UIT0160: Authority
+UIT0161: Menu name
+UIT0162: Select All
+UIT0163: Please select an authorization code.
+UIT0164: There are no changes.
+UIT0165: Do you want to change menu permissions?
+UIT0166: Saved
+UIT0167: Menu management
+UIT0168: Catalog
+UIT0169: Submenu
+UIT0170: Catalog Name
+UIT0171: ex) Group name
+UIT0172: ex) Main page
+UIT0173: Menu URL
+UIT0174: Menu icon <br>(class name)
+UIT0175: ex) fa-icon name
+UIT0176: Preview
+UIT0177: Menu order
+UIT0178: Select menu group or upper menu.
+UIT0179: You can no longer create submenus.
+UIT0180: Please enter the group menu name.
+UIT0181: The upper menu is not selected.
+UIT0182: Please enter a menu name.
+UIT0183: Please enter a menu URL.
+UIT0184: Please enter the menu order.
+UIT0185: Please select a group or menu to delete.
+UIT0186: When selecting the upper menu, the lower menu is deleted. Do you want to proceed?
+UIT0187: Has been deleted.
+UIT0188: Business rule management
+UIT0189: Set allowable value range
+UIT0190: List view
+UIT0191: Value Name
+UIT0192: Value Type
+UIT0193: Please enter an acceptable value name.
+UIT0194: Please be sure to select an acceptable value type.
+UIT0195: Please enter a FORM.
+UIT0196: Please enter TO.
+UIT0197: The FORM value can only be a number.
+UIT0198: The TO value can only be a number.
+UIT0199: The TO value cannot be less than the FROM value.
+UIT0200: Do you want to register this information?
+UIT0201: You have successfully registered.
+UIT0202: You must enter it.
+UIT0203: FORM value is
+UIT0204: TO value is
+UIT0205: Only Email format is possible. E.g. user@example.com
+UIT0206: Only URL format is possible. E.g. http: //www.example.com
+UIT0207: Only alphabets are possible.
+UIT0208: Only letters and numbers are allowed.
+UIT0209: Only numbers are possible.
+UIT0210: Only dates are possible. Ex) 20090101
+UIT0211: Only IP address is possible.
+UIT0212: The password must be a mixture of 6 to 12 alphanumeric characters.
+UIT0213: Passwords must be a mix of alphanumeric characters.
+UIT0214: Custom (regex)
+UIT0215: User's Guide
+UIT0216: Validation check
+UIT0217: Regex Name
+UIT0218: Regex
+UIT0219: Custom (regex) validation
+UIT0220: Input value
+UIT0221: Result
+UIT0222: Custom (Regular) Regular Expression User Guide
+UIT0223: grammar
+UIT0224: The pattern of the regular expression matches the target string. This pattern consists of a series of atoms. An atom is a point in the regular expression pattern that exists to match the target string. The simplest form of an atom is a literal, but you must use () as a metacharacter when enclosing a pattern to match an atom. The metacharacter is a quantifier that indicates how many atoms are in addition to the atom, a logical OR character that indicates an optional alternative, a NOT character that negates the existence of an atom, and a backreference that allows you to refer to a previously matched atom ( backreference).
+UIT0225: Please be sure to enter a regular expression name.
+UIT0226: Please enter a regular expression.
+UIT0227: Please check the validity.
+UIT0228: Please enter an input value to validate.
+UIT0229: Regular expression valid for input.
+UIT0230: The input is not a valid regular expression.
+UIT0231: User-defined (SQL)
+UIT0232: Table information
+UIT0233: File information
+UIT0234: SQL name
+UIT0235: Database selection
+UIT0236: Select table
+UIT0237: Filename
+UIT0238: where clause
+UIT0239: Exclude WHERE & # 13; & # 10; ex) Column Name = 'AGE' 
+UIT0240: Column name
+UIT0241: File Information
+UIT0242: You must enter a SQL name.
+UIT0243: Please select a schema.
+UIT0244: Please select a table.
+UIT0245: You must enter a where clause.
+UIT0246: Click the Validate button.
+UIT0247: This is a normal SQL statement.
+UIT0248: There is an error in the WHERE clause statement.
+UIT0249: Automatic generation of company code> DB generated based on company code
+UIT0250: Corporate code
+UIT0251: Company name
+UIT0252: Please enter your company name.
+UIT0253: Please be sure to select a database.
+UIT0254: Please be sure to select a table.
+UIT0255: Data type
+UIT0256: Data length
+UIT0257: Data precision
+UIT0258: Data scale
+UIT0259: Allow NULL
+UIT0260: Default value
+UIT0261: Column description
+UIT0262: Physical column name
+UIT0263: Column structure analysis
+UIT0264: Schema name
+UIT0265: please select
+UIT0266: Table name
+UIT0267: No results were found for your search.
+UIT0268: Default value
+UIT0269: Minimum value
+UIT0270: Maximum Value
+UIT0271: Table structure analysis
+UIT0272: Number of tables
+UIT0273: Table name
+UIT0274: Row length
+UIT0275: Row average length
+UIT0276: Index length
+UIT0277: PK column count
+UIT0278: Table description
+UIT0279: Basic Information
+UIT0280: Connection test
+UIT0281: DB Type
+UIT0282: Server IP
+UIT0283: Server Port
+UIT0284: Login ID
+UIT0285: Password
+UIT0286: Additional Variable
+UIT0287: Database Name
+UIT0288: ※ Only CSV file can be registered. File name must be English / numeric only to register. You can register up to 250 columns or less of file contents.
+UIT0289: Add File
+UIT0290: File upload
+UIT0291: Select file
+UIT0292: Connection test
+UIT0293: CSV file registration
+UIT0294: Upload file name
+UIT0295: Column separator
+UIT0296: Header presence
+UIT0297: Check session information
+UIT0298: Please enter a server IP.
+UIT0299: Please be sure to enter the server port.
+UIT0300: Please enter a SID.
+UIT0301: Please enter a Database.
+UIT0302: Please enter your login ID.
+UIT0303: Please enter your Password.
+UIT0304: Please enter the database name.
+UIT0305: Connection success
+UIT0306: Connection failed
+UIT0307: Please select a file to upload
+UIT0308: The file name can only contain alphanumeric characters.
+UIT0309: Only csv files with the extension name can be registered.
+UIT0310: Do you want to save?
+UIT0311: Please select a DB type.
+UIT0312: Be sure to enter the database name of the diagnosis target.
+UIT0313: Click the Test Connection button.
+UIT0314: You have successfully registered.
+UIT0315: Registration failed. Please register again.
+UIT0316: You must enter a column separator.
+UIT0317: Please select a header
+UIT0318: Please enter a number of header lines.
+UIT0319: Do you want to proceed to the next?
+UIT0320: Do you want to upload that file?
+UIT0321: Uploaded successfully
+UIT0322: Data connection
+UIT0323: division
+UIT0324: Database name for diagnosis
+UIT0325: Server IP
+UIT0326: Server PORT
+UIT0327: Access Account
+UIT0328: connect
+UIT0329: Detail
+UIT0330: CSV file name
+UIT0331: Do you want to set up connection to the selected DBMS?
+UIT0332: Do you want to set up the connection with the selected CSV file?
+UIT0333: An error occurred while connecting to the selected DBMS.
+UIT0334: Exclude WHERE & # 13; & # 10; ex) Column Name = AGE'
+UIT0335: Schema Selection
+UIT0336: Select Column
+UIT0337: Start Analysis
+UIT0338: View sample data
+UIT0339: Analysis setting registration
+UIT0340: Analysis name
+UIT0341: close
+UIT0343: Sunday
+UIT0344: Monday
+UIT0345: Tuesday
+UIT0346: Wednesday
+UIT0347: Thursday
+UIT0348: Friday
+UIT0349: Saturday
+UIT0350: morning
+UIT0351: afternoon
+UIT0352: There is no information in that table. Please check the table name.
+UIT0353: Column type
+UIT0354: no data
+UIT0355: Select All
+UIT0356: Please select a column to analyze.
+UIT0357: group
+UIT0358: Pattern / Index Name
+UIT0359: analysis_
+UIT0360: Please select an item to analyze.
+UIT0361: Save As Analysis List
+UIT0362: Registration date
+UIT0363: View Settings
+UIT0364: Export Data
+UIT0365: Diagnostic error history
+UIT0366: Start time
+UIT0367: Job name
+UIT0368: Working status
+UIT0369: Execution time
+UIT0370: View results
+UIT0371: Check
+UIT0372: Working
+UIT0373: Complete
+UIT0374: failure
+UIT0375: The analysis result data export is executed. \ n \ n Please check your zip file download.
+UIT0376: Analysis overview
+UIT0377: Download report
+UIT0378: Analysis results
+UIT0379: Download Mismatch Information
+UIT0380: Please select a download format
+UIT0381: Database
+UIT0382: Job start time
+UIT0383: table
+UIT0384: Job execution time
+UIT0385: Connection file name
+UIT0386: Download match information
+UIT0387: pattern
+UIT0388: Custom
+UIT0389: Item
+UIT0390: Basic pattern
+UIT0391: There is no download target analysis information.
+UIT0392: Analytics ID
+UIT0393: Error name
+UIT0394: Error Content
+UIT0395: Rm 2006, 288, Digital-ro, Guro-gu, Seoul, Republic of Korea
+UIT0396: MAIN PAGE
+UIT0397: User information has been deleted.
+UIT0398: Ability to search pattern / index list by section name and pattern / index name.
+UIT0399: rule
+UIT0400: Active
+UIT0401: Modified.
+UIT0402: The modification failed.
+UIT0403: Saved
+UIT0404: No modifications have been made.
+UIT0405: Save failed
+UIT0406: 표준
+UIT0407: POSIX 기본 및 확장 표준 문법
+UIT0408: 문자 클래스, "["와 "]" 사이에 포함된 문자 집합 외부에서는 12개의 문자가, 내부에서는 오직 4개의 문자("\", "^", "-", "]", 자바와 닷넷은 "["를 포함)만 특수문자를 의미한다.[7] 아래는 POSIX 기본 및 확장 표준의 문법이다.
+UIT0409: 메타문자
+UIT0410: 기능
+UIT0411: 1개의 문자와 일치한다. 단일행 모드에서는 새줄 문자를 제외한다.
+UIT0412: 문자 클래스
+UIT0413: ["과 "]" 사이의 문자 중 하나를 선택한다. "¦"를 여러 개 쓴 것과 같은 의미이다. 예를 들면 [abc]d는 ad, bd, cd를 뜻한다. 또한, "-" 기호와 함께 쓰면 범위를 지정할 수 있다. "[a-z]"는 a부터 z까지 중 하나, "[1-9]"는 1부터 9까지 중의 하나를 의미한다.
+UIT0414: 부정
+UIT0415: 문자 클래스 안의 문자를 제외한 나머지를 선택한다. 예를 들면 [^abc]d는 ad, bd, cd는 포함하지 않고 ed, fd 등을 포함한다. [^a-z]는 알파벳 소문자로 시작하지 않는 모든 문자를 의미한다.
+UIT0416: 처음
+UIT0417: 문자열이나 행의 처음을 의미한다.
+UIT0418: 끝
+UIT0419: 문자열이나 행의 끝을 의미한다.
+UIT0420: 하위식
+UIT0421: 여러 식을 하나로 묶을 수 있다. "abc¦adc"와 "a(b¦d)c"는 같은 의미를 가진다.
+UIT0422: 일치하는 n번째 패턴
+UIT0423: 일치하는 패턴들 중 n번째를 선택하며, 여기에서 n은 1에서 9 중 하나가 올 수 있다.
+UIT0424: 0회 이상
+UIT0425: 0개 이상의 문자를 포함한다. "a*b"는 "b", "ab", "aab", "aaab"를 포함한다.
+UIT0426: m회 이상 n회 이하
+UIT0427: a{1,3}b는 "ab", "aab", "aaab"를 포함하지만, "b"나 "aaaab"는 포함하지 않는다.
+UIT0428: POSIX 확장 문법
+UIT0429: 0 또는 1회
+UIT0430: a?b는 "b", "ab"를 포함한다.
+UIT0431: 1회 이상
+UIT0432: a+b는 "ab", "aab", "aaab"를 포함하지만 "b"는 포함하지 않는다.
+UIT0433: 여러 식 중에서 하나를 선택한다. 예를 들어, "abc¦adc"는 abc와 adc 문자열을 모두 포함한다.
+UIT0434: 문자 클래스문자 클래스는 문자열 일치 다음으로 가장 기본적인 정규 표현식 개념이다. 이는 하나의 작은 일련의 문자열들을 더 큰 집합의 문자열들과 일치시키도록 한다. 이를테면, [A-Z]는 알파벳을 대표하며 \d는 임의의 숫자를 의미할 수 있다. 문자 클래스는 POSIX 수준에 적용한다.<br>[a-Z]와 같은 특정 범위의 문자들을 지정할 때 컴퓨터의 로캘 설정들은 문자 인코딩의 수치적 나열에 따라 내용을 결정한다. 그러한 나열에 따라 수치들을 저장할 수 있으며 그 순서는 abc...zABC...Z, aAbBcC...zZ와 같이 될 수 있다. 그러므로 POSIX 표준은 문자 클래스를 정의하며 이는 설치된 정규 표현식 처리기가 인지한다. 이러한 정의들은 다음의 표를 따른다:
+UIT0435: 비표준
+UIT0436: 펄/Tcl
+UIT0437: 영숫자
+UIT0438: 영숫자 + "_"
+UIT0439: 낱말이 아닌 문자
+UIT0440: 알파벳 문자
+UIT0441: 공백과 탭
+UIT0442: 낱말 경계
+UIT0443: 제어 문자
+UIT0444: 숫자
+UIT0445: 숫자가 아닌 문자
+UIT0446: 보이는 문자
+UIT0447: 소문자
+UIT0448: 보이는 문자 및 공백 문자
+UIT0449: 구두점
+UIT0450: (단순히 줄 끝에 추가)
+UIT0451: 공백 문자
+UIT0452: 공백이 아닌 모든 문자
+UIT0453: 대문자
+UIT0454: 16진수
+UIT0455: 예제
+UIT0456: 정규 표현식들은 예제 없이 설명과 이해를 동시에 하는 것은 어려울 수 있다. 아래에는 정규 표현식의 속성 중 일부의 기본적인 설명을 제시한다.
+UIT0457: 일반적으로 새 줄을 제외한 모든 어떠한 문자열과도 일치한다.
+UIT0458: <pre>$string1 = "Hello World\n";<br>if($string1 =~ m/...../) {<br> print "$string1 has length &gt;= 5\n";<br>}<br><b>출력:</b><br>Hello World<br> has length &gt;= 5</pre>
+UIT0459: 일련의 패턴 요소들을 하나의 요소로 묶는다. <br>괄호 안의 패턴을 일치시킬 때 <code>$1</code>, <code>$2</code>, ... 중 하나를 사용할 수 있다.
+UIT0460: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(H..).(o..)/</span><span class="p">)</span> <span class="p">{</span><br>  <span class="k">print</span> <span class="s">"We matched '$1' and '$2'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>We matched 'Hel' and 'o W'</pre>
+UIT0461: 1번 이상 발생하는 패턴과 일치시킨다.
+UIT0462: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/l+/</span><span class="p">)</span> <span class="p">{</span><br>  <span class="k">print</span> <span class="s">"There are one or more consecutive\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" letter \"l\"'s in $string1\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There are one or more consecutive<br> letter "l"'s in Hello World</pre>
+UIT0463: 0~1번 발생하는 패턴과 일치시킨다.
+UIT0464: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/H.?e/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is an 'H' and a 'e' separated by \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"0-1 characters (Ex: He Hoe)\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is an 'H' and a 'e' separated by<br> 0-1 characters (Ex: He Hoe)</pre>
+UIT0465: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(l.+?o)/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"The non-greedy match with 'l' followed by one or\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"more characters is 'llo' rather than 'llo Wo'.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>The non-greedy match with 'l' followed by one or<br> more characters is 'llo' rather than 'llo Wo'.</pre>
+UIT0466: 0번 이상 발생하는 패턴과 일치시킨다.
+UIT0467: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/el*o/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is an 'e' followed by zero to many\n "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"'l' followed by 'o' (eo, elo, ello, elllo)\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is an 'e' followed by zero to many<br> 'l' followed by 'o' (eo, elo, ello, elllo)</pre>
+UIT0468: 최소 M번, 최대 N번 발생되는 패턴과 일치시킨다.
+UIT0469: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/l{1,2}/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There exists a substring with at least 1 \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"and at most 2 l's in $string1\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There exists a substring with at least 1<br> and at most 2 l's in Hello World</pre>
+UIT0470: 가능한 문자열의 집합과 일치시킨다.
+UIT0471: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/[aeiou]+/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 contains one or more vowels.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> contains one or more vowels.</pre>
+UIT0472: 가능성 있는 항목들을 구별하여 선택한다.
+UIT0473: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(Hello|Hi|Pogo)/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"At least one of Hello, Hi, or Pogo is \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"contained in $string1.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>At least one of Hello, Hi, or Pogo is<br> contained in Hello World.</pre>
+UIT0474: <td style="text-align:left;"><pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/llo\b/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is a word that ends with 'llo'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is a word that ends with 'llo'</pre>
+UIT0475: _를 포함한 영숫자를 일치시킨다.
+UIT0476: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\w/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is at least one alphanumeric \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"character in $string1 (A-Z, a-z, 0-9, _)\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is at least one alphanumeric<br> character in Hello World<br> (A-Z, a-z, 0-9, _) </pre>
+UIT0477: _를 제외하여 영숫자가 아닌 문자열들과 일치시킨다.
+UIT0478: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\W/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"The space between Hello and \n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"World is not alphanumeric\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>The space between Hello and<br> World is not alphanumeric</pre>
+UIT0479: 공백 문자와 일치시킨다.
+UIT0480: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\s.*\s/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There are TWO whitespace characters, which may\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" be separated by other characters, in $string1"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There are TWO whitespace characters, which may<br> be separated by other characters, in Hello World</pre>
+UIT0481: 공백을 제외한 어떠한 것이든 일치시킨다.
+UIT0482: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\S.*\S/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There are TWO non-whitespace characters, which\n"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" may be separated by other characters, in $string1"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There are TWO non-whitespace characters, which<br> may be separated by other characters, in Hello World</pre>
+UIT0483: 숫자를 일치시킨다.
+UIT0484: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"99 bottles of beer on the wall."</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/(\d+)/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$1 is the first number in '$string1'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>99 is the first number in<br> '99 bottles of beer on the wall.'</pre>
+UIT0485: 숫자가 아닌 항목을 일치시킨다.
+UIT0486: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\D/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"There is at least one character in $string1"</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">" that is not a digit.\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>There is at least one character in Hello World<br> that is not a digit.</pre>
+UIT0487: 줄이나 문자열의 시작점과 일치시킨다.
+UIT0488: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/^He/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 starts with the characters 'He'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> starts with the characters 'He'</pre>
+UIT0489: 줄이나 문자열의 끝과 일치시킨다.
+UIT0490: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/rld$/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 is a line or string "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"that ends with 'rld'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> is a line or string that ends with 'rld'</pre>
+UIT0491: 문자열의 시작점과 일치시킨다. (내부 줄이 아닌)
+UIT0492: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello\nWorld\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/\AH/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 is a string "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"that starts with 'H'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello<br>World<br> is a string that starts with 'H'</pre>
+UIT0493: 문자열의 끝과 일치시킨다. (내부 줄이 아닌)
+UIT0494: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello\nWorld\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/d\n\z/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 is a string "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"that ends with 'd\\n'\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello<br>World<br> is a string that ends with 'd\n'</pre>
+UIT0495: 괄호 안의 항목을 제외한 모든 문자열과 일치시킨다.
+UIT0496: <pre><span class="nv">$string1</span> <span class="o">=</span> <span class="s">"Hello World\n"</span><span class="p">;</span><br><span class="k">if</span> <span class="p">(</span><span class="nv">$string1</span> <span class="o">=~</span> <span class="sr">m/[^abc]/</span><span class="p">)</span> <span class="p">{</span><br> <span class="k">print</span> <span class="s">"$string1 contains a character other than "</span><span class="p">;</span><br> <span class="k">print</span> <span class="s">"a, b, and c\n"</span><span class="p">;</span><br><span class="p">}</span><br><b>출력:</b><br>Hello World<br> contains a character other than a, b, and c</pre>
+UIT0497: 예시
+UIT0498: 데이터 표준화 관리
+UIT0499: 표준화 항목 관리
+UIT0500: 도메인
+UIT0501: 표준 용어
+UIT0502: 분류
+UIT0503: 도메인명
+UIT0504: 분류 입력
+UIT0505: 도메인명 입력
+UIT0506: 표준용어명
+UIT0507: 표준용어영문명
+UIT0508: 표준용어명 입력
+UIT0509: 표준용어영문명 입력
+UIT0510: 데이터타입
+UIT0511: 데이터길이
+UIT0512: 영문약어
+UIT0513: 구분
+UIT0514: 표준화 분석
+UIT0515: 표준화 분석 결과
+UIT0516: 도메인 등록
+UIT0517: 표준 용어 등록
+UIT0518: 분류를 입력해 주세요.
+UIT0519: 도메인명을 입력해 주세요.
+UIT0520: 데이터타입을 입력해 주세요.
+UIT0521: 표준용어명을 입력해 주세요.
+UIT0522: 구분을 선택해 주세요.
+UIT0523: Cancle
+UIT0524: 분석예약
+UIT0525: 도메인 수정
+UIT0526: 도메인 삭제
+UIT0527: 표준 용어 수정
+UIT0528: 표준 용어 삭제
+UIT0529: DBMS
+UIT0530: DBMS를 선택해 주세요.
+UIT0531: 표준용어영문명을 입력해 주세요.
+UIT0532: 레프트메뉴 바로가기
+UIT0533: 본문내용 바로가기
+UIT0534: 시스템 현황
+UIT0535: 단위
+UIT0536: 건
+UIT0537: DMBS 연결 설정
+UIT0538: 연결가능 DMBS
+UIT0539: 연결불가 DMBS
+UIT0540: 파일 데이터
+UIT0541: 진단 항목 현황
+UIT0542: 기본 분석 항목
+UIT0543: 기본 패턴 항목
+UIT0544: 사용자 정의 항목
+UIT0545: 진단 현황
+UIT0546: 기본 정보
+UIT0547: 컬럼
+UIT0548: 진단 항목
+UIT0549: 진단율
+UIT0550: 진단 항목별 불일치 건수
+UIT0551: 월별 진단 현황
+UIT0552: 컬럼별 도메인 설정
+UIT0553: 도메인 ID

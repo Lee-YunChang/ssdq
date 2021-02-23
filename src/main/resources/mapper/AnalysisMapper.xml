@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.dqsys.mngr.mapper.AnalysisMapper">
+	<select id="selectTableAnalysisTotalCnt" parameterType="map" resultType="int">
+		SELECT
+			COUNT(*) AS CNT 
+		FROM 
+		INFORMATION_SCHEMA.TABLES A 
+		, (SELECT
+		   C.TABLE_NAME
+		   , C.TABLE_SCHEMA
+		   , COUNT(C.COLUMN_KEY) COLUMNKEYCNT
+		 FROM INFORMATION_SCHEMA.COLUMNS C
+		 WHERE C.COLUMN_key = 'PRI'
+		 AND C.TABLE_SCHEMA = #{tableSchema}
+		 GROUP BY C.TABLE_NAME, C.TABLE_SCHEMA
+		 )  B
+		WHERE A.TABLE_NAME = B.TABLE_NAME
+		AND A.TABLE_SCHEMA = B.TABLE_SCHEMA
+		AND A.TABLE_TYPE = 'BASE TABLE'
+		AND A.TABLE_SCHEMA = #{tableSchema}
+		
+		ORDER BY A.TABLE_NAME
+	</select>
+	
+	<select id="selectTableAnalysis" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				T1.*, (@rownum2 := @rownum2+1) AS RNUM
+			FROM
+				(
+				SELECT
+					A.TABLE_NAME AS tableName
+					, A.TABLE_ROWS AS numRows
+					, A.AVG_ROW_LENGTH AS avgRowLen
+					, A.INDEX_LENGTH AS indexCnt
+					, A.TABLE_COMMENT AS comments
+					, B.COLUMNKEYCNT AS pkCnt
+				FROM 
+				INFORMATION_SCHEMA.TABLES A 
+				, (SELECT
+				   C.TABLE_NAME
+				   , C.TABLE_SCHEMA
+				   , COUNT(C.COLUMN_KEY) COLUMNKEYCNT
+				 FROM INFORMATION_SCHEMA.COLUMNS C
+				 WHERE C.COLUMN_key = 'PRI'
+				 AND C.TABLE_SCHEMA = #{tableSchema}
+				 GROUP BY C.TABLE_NAME, C.TABLE_SCHEMA
+				 )  B
+				
+				WHERE A.TABLE_NAME = B.TABLE_NAME
+				AND A.TABLE_SCHEMA = B.TABLE_SCHEMA
+				AND A.TABLE_TYPE = 'BASE TABLE'
+				AND A.TABLE_SCHEMA = #{tableSchema}
+				ORDER BY A.TABLE_NAME
+				) T1 ,(SELECT @rownum2 :=0) AS T2
+			) T3
+		WHERE 1=1		
+	    AND RNUM BETWEEN #{start_row} AND #{end_row}
+	</select>
+	
+	<select id="selectSchema" parameterType="map" resultType="map">
+		SELECT
+		    TABLE_SCHEMA AS OWNER
+		FROM 
+			INFORMATION_SCHEMA.TABLES
+	        GROUP BY TABLE_SCHEMA
+	</select>
+	
+	
+	<select id="selectTable" parameterType="map" resultType="map">
+		SELECT 
+			TABLE_NAME AS TABLENAME
+		FROM INFORMATION_SCHEMA.TABLES  
+		WHERE TABLE_SCHEMA = #{tableSchema}
+	</select>
+	
+	<select id="selectColumnAnalysis" parameterType="map" resultType="map">
+		SELECT  
+			COLUMN_NAME AS columnName
+			, TABLE_SCHEMA as tableSchema
+			, DATA_TYPE AS dataType
+			, CHARACTER_MAXIMUM_LENGTH AS dataLength
+			, NUMERIC_PRECISION AS dataPrecision 
+			, NUMERIC_SCALE AS dataScale 
+			, IS_NULLABLE AS nullable
+			, COLUMN_DEFAULT AS dataDefault
+			, COLUMN_COMMENT AS comments
+			, TABLE_NAME AS tableName
+		FROM INFORMATION_SCHEMA.COLUMNS  
+		WHERE TABLE_NAME = #{tableName}
+		ORDER BY ORDINAL_POSITION
+	</select>
+	
+	<select id="selectPatternTotalCnt" parameterType="map" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT 
+		FROM 
+			ANALS T1 JOIN CMMN_CODE_DETAIL T2 ON T1.ANALS_SE = T2.CMMN_CODE
+		WHERE 1=1
+			<if test="dgnssDbmsId == null or dgnssDbmsId == ''">
+			AND T1.REGIST_DT IS NULL
+			</if>
+			<if test="searchValue != null and searchValue != ''">
+				<if test="searchType == 'groupNm'">
+					AND T2.CMMN_CODE_NM LIKE CONCAT('%', #{searchValue} ,'%')
+				</if>
+				<if test="searchType == 'analsNm'">
+					AND T1.ANALS_NM LIKE CONCAT('%', #{searchValue} ,'%')
+				</if>
+				
+			</if>
+			<if test="insttCode != null and insttCode != ''">
+				AND T1.INSTT_CODE = #{insttCode}
+			</if>
+			<if test="dbmsKnd != null and dbmsKnd != ''">
+				AND T1.DBMS_KND = #{dbmsKnd}
+			</if>
+			<if test="dgnssDbmsId != null and dgnssDbmsId != ''">
+				
+			</if>
+			AND T1.ANALS_FRMLA IS NOT NULL
+	</select>
+	
+	<select id="selectPattern" parameterType="map" resultType="map">
+		SELECT
+			*
+		FROM
+			(
+			SELECT
+				G1.*
+			FROM
+				(
+				SELECT
+					 T1.INSTT_CODE AS insttCode
+					, T1.ANALS_ID AS analsId
+					, T1.ANALS_SE AS analsSe
+					, T1.ANALS_TY AS analsTy
+					, T1.PTTRN_SE AS pttrnSe
+					, (SELECT B.CMMN_CODE_NM FROM CMMN_CODE_DETAIL B WHERE B.CMMN_CODE = T1.PTTRN_SE ) AS pttrnSeNm
+					, T1.ANALS_NM AS analsNm
+					, REPLACE(T1.ANALS_FRMLA, '\b', '\\\\b') AS analsFrmla
+					, REPLACE(IFNULL(T1.VIEW_FRMLA,T1.ANALS_FRMLA), '\b', '\\\\b') AS viewFrmla
+					, T1.BEGIN_VALUE AS beginValue
+					, T1.END_VALUE AS endValue
+					, T1.DBMS_KND AS dbmsKnd
+					, T1.DBMS_VER AS dbmsVer
+					, T1.RM AS rm
+					, T1.USE_AT AS useAt
+					, T1.REGIST_DT AS registDt
+					, T2.CMMN_CODE AS groupCode
+					, T2.CMMN_CODE_NM AS groupNm
+					, (@rownum := @rownum+1) AS RNUM
+				FROM
+					ANALS T1 
+					JOIN CMMN_CODE_DETAIL T2 ON T1.ANALS_SE = T2.CMMN_CODE
+					JOIN (SELECT @rownum :=0) AS R
+				WHERE 1=1
+					<if test="dgnssDbmsId == null or dgnssDbmsId == ''">
+					AND T1.REGIST_DT IS NULL
+					</if>
+					<if test="searchValue != null and searchValue != ''">
+						<if test="searchType == 'groupNm'">
+							AND T2.CMMN_CODE_NM LIKE CONCAT('%', #{searchValue} ,'%')
+						</if>
+						<if test="searchType == 'analsNm'">
+							AND T1.ANALS_NM LIKE CONCAT('%', #{searchValue} ,'%')
+						</if>
+						
+					</if>
+					<if test="insttCode != null and insttCode != ''">
+					AND T1.INSTT_CODE = #{insttCode}
+					</if>
+					<if test="dbmsKnd != null and dbmsKnd != ''">
+					AND T1.DBMS_KND = #{dbmsKnd}
+					</if>
+					AND T1.ANALS_FRMLA IS NOT NULL
+				ORDER BY T1.REGIST_DT DESC, T1.ANALS_SE, cast(T1.ANALS_ID as unsigned)
+				) G1
+			) G3
+			WHERE 1=1		
+		    AND RNUM BETWEEN #{start_row} AND #{end_row}
+		    ORDER BY RNUM
+			
+	</select>
+	
+	<select id="selectAnalsGroupList" resultType="SangsMap">
+		SELECT
+			SUBSTR(ANALS_SE, 6, 1) AS ANALS_GB,
+			COUNT(*) CNT
+		FROM
+			anals
+		WHERE
+			INSTT_CODE = #{insttCode}
+			AND ANALS_FRMLA IS NOT NULL
+		GROUP BY
+			SUBSTR(ANALS_SE, 6, 1)
+		ORDER BY
+			ANALS_GB
+	</select>
+	
+	<select id="selectDbList" parameterType="String" resultType="String">
+		SELECT 
+			I.DBMS_KND as dbmsKnd
+		FROM DGNSS_DBMS D, INSTT_DBMS I
+		WHERE D.DBMS_ID = I.DBMS_ID
+		AND DGNSS_DBMS_ID =  #{dgnssDbmsId}
+	</select>
+
+	<update id="UDTPattern">
+		UPDATE 
+			ANALS 
+		SET 
+			BEGIN_VALUE = #{beginValue }
+			, END_VALUE = #{endValue }
+			, ANALS_FRMLA = #{analsFrmla }
+			, RM = #{rm }
+			, USE_AT = CAST(#{useAt } as unsigned) 
+		WHERE 
+			ANALS_ID = #{analsId }
+	</update>
+	
+	<update id="UDTPatternUseAt">
+		UPDATE 
+			ANALS 
+		SET 
+			USE_AT = CAST(#{useAt } as unsigned) 
+		WHERE 
+			ANALS_ID = #{analsId }
+	</update>
+	
+	<select id="selectMaxVal" parameterType="map" resultType="String">
+		SELECT 
+			MAX(${columnName})
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+	<select id="selectMinVal" parameterType="map" resultType="String">
+		SELECT 
+			MIN(${columnName})
+		FROM ${tableSchema}.${tableName}
+	</select>
+	
+	<select id="selectMinMaxVal" parameterType="map" resultType="map">
+		SELECT 
+			${columnName}
+		FROM ${tableSchema}.${tableName}
+	</select>
+</mapper>

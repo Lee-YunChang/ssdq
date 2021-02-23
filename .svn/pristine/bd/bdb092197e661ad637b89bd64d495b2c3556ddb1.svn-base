@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html>
+	<div style="text-align:center;">
+		<img src="/img/error.png" alt="에러메세지" class="vtc_unset">
+	</div>
+</html>

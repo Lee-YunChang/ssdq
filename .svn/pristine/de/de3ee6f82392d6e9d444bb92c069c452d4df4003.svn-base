@@ -1,0 +1,426 @@
+<%--
+	Description : 
+	 
+	Modification Information
+	수정일		수정자			수정내용
+	-------		-----------------------------------
+	2015.04.01 	SANGS			최초작성
+
+--%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!-- 
+<footer class="sticky-footer bg-white">
+	<div class="container my-auto">
+		<div class="copyright text-center my-auto">
+			<span>Copyright &copy; 2019KISCA company ALL RIGHTS RESERVE.</span>
+		</div>
+	</div>
+</footer>
+ -->
+	<footer class="sticky-footer bg-white">
+		<div id="footer">
+	        <h2 class="bottomLogo">
+	            <a href="#">
+	                <img alt="" src="/resources/img/footerLogo.png">
+	            </a>
+	        </h2>
+	        <div class="companyInfoWrap">
+	            <div class="publishInfo">
+	                <span>(13814) 427-060 경기도 과천시 뒷골2로 66-1</span>&nbsp;&nbsp;&nbsp;( 과천동 388번지 )
+	            </div>
+	            <div class="publishInfo">
+	                <span>Tel. 02-3471-7771</span>
+	                <span>Fax. 02-3471-7773</span>
+					<span>E-mail. <a href="mailto:kisca@audit.co.kr">kisca@audit.co.kr</a></span>
+	            </div>
+	            <strong class="copyright">Copyright &copy; 2019KISCA company ALL RIGHTS RESERVE.</strong>
+	        </div>
+	    </div>
+    </footer>
+
+<script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="/resources/js/sb-admin-2.js"></script>
+<script type="text/javascript" src="/resources/js/common.js"></script>
+<!-- 
+<script src="/resources/vendor/chart.js/Chart.min.js"></script>
+<script src="/resources/js/demo/chart-area-demo.js"></script>
+<script src="/resources/js/demo/chart-pie-demo.js"></script>
+-->
+	
+<!-- 레이어 팝업 -->
+
+<!-- 상위이동 버튼-->
+<a class="scroll-to-top rounded" href="#page-top">
+	<i class="fas fa-angle-up"></i>
+</a>
+
+<!-- 로그아웃 모달창-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+				<button class="close" type="button" aria-label="Close" onclick="fn_modalClose();return false;">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+        	<div class="modal-body">현재 세션을 종료하시겠습니까?</div>
+			<div class="modal-footer">
+				<a class="btn btn-primary" href="/logout">로그아웃</a>
+        	</div>
+		</div>
+	</div>
+</div>
+
+<!-- 코드관리 상세 모달창-->
+<div class="modal fade" id="codeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">그룹코드 <span id="groupCodeChk"></span></h5>
+				<button class="close" type="button" aria-label="Close" onclick="fn_modalClose();return false;">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+        	
+        	<div class="modal-body">
+        		<div id="menuListDiv" style="display: block;">
+					<form id="groupCodeFrm">
+						<input type="hidden" id="mode" name="mode" value="" >
+						<input type="hidden" id="groupCodeVdi" name="groupCodeVdi" value="" >
+						<section class="l_box_type02">                                    
+	                         <div class="tb_type03">
+	                             <table>
+									<tbody>
+										<tr>
+											<th><span class="str">*</span> 그룹코드 </th>
+											<td><input type="text" id="groupCode" name="groupCode" maxlength="20"></td>
+										</tr>
+										<tr>
+											<th><span class="str">*</span> 그룹코드 명</th>
+											<td><input type="text" id="groupCodeNm" name="groupCodeNm" maxlength="50"></td>
+										</tr>
+										<tr>
+											<th> 사용여부</th>
+											<td style="text-align: left; ">
+												<select id="groupUseAt" name="useAt" style="width: 100px;">
+													<option value="Y">Y</option>
+													<option value="N">N</option>	
+												</select>
+											</td>
+										</tr>
+									</tbody>
+                                 </table>
+                             </div>
+                         </section>
+					</form>
+				</div>
+			</div>
+        	
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" id="groupCodeDelBtn"  data-delYn='Y' onclick="fn_saveCode(this);">삭제</button>
+				<button class="btn btn-primary" type="button"  id="groupCodeSaveBtn" onclick="fn_saveCode(this);">저장</button>
+        	</div>
+		</div>
+	</div>
+</div>
+
+<!-- 코드관리 디테일 상세 모달창-->
+<div class="modal fade" id="codeDetailModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document" style="max-width: 800px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">상세코드  <span id="detailCodeChk"></span></h5>
+				<button class="close" type="button"  aria-label="Close" onclick="fn_modalClose();return false;">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+        	
+        	<div class="modal-body">
+        		<div id="menuListDiv" style="display: block;">
+					<form id="detailCodeFrm">
+						<input type="hidden" id="detailMode" name="detailMode" value="">
+						<input type="hidden" id="detailCodeVdi" name="detailCodeVdi" value="" >
+						
+						<section class="l_box_type02">                                    
+	                         <div class="tb_type03">
+	                             <table>
+	                                 <tbody>
+	                                     <tr>
+	                                         <th>그룹코드</th>
+	                                         <td><input type="text" id="detailGroupCode" name="detailGroupCode" readonly="readonly"></td>
+	                                         <th><span class="str">*</span> 상세코드 </th>
+	                                         <td><input type="text" id="detailCmmnCode" name="detailCmmnCode" maxlength="20" placeholder="최대 20자리까지 입력가능 "></td>
+	                                     </tr>
+	                                     <tr>
+	                                     	 <th><span class="str">*</span> 상세코드 명</th>
+	                                         <td colspan="3"><input type="text" id="detailCmmnCodeNm" name="detailCmmnCodeNm" maxlength="50"></td>
+	                                     </tr>
+	                                     <tr>
+	                                     	 <th>설명</th>
+	                                         <td colspan="3"><!-- 텍스트 입력  -->
+	                                         <textarea rows="2" id="detailCmmnCodeDc" name="detailCmmnCodeDc"></textarea>
+	                                         </td>
+	                                     </tr>
+	                                     <tr>
+	                                         <th>순번</th>
+	                                         <td><input type="text" id="inqireOrdr" name="inqireOrdr" min="0" maxlength="4" oninput="maxLengthCheck(this)"></td>
+	                                         <th>사용여부</th>
+	                                         <td style="text-align: left;">
+	                                             <select id="detailUseAt" name="useAt" style="width: 100px;">
+	                                             <option value="Y">Y</option>
+												 <option value="N">N</option>
+                                             </select>
+                                            </td>
+                                         </tr>
+                                     </tbody>
+                                 </table>
+                             </div>
+                         </section>
+					</form>
+				</div>
+			</div>
+        	
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" id="detailCodeDelBtn"  data-delYn='Y' onclick="fn_saveDetailCode(this);">삭제</button>
+				<button class="btn btn-primary" type="button"  onclick="fn_saveDetailCode(this);">저장</button>
+				
+        	</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 사용자 정보 모달창-->
+<div class="modal fade" id="manageModal" tabindex="-1" role="dialog" aria-labelledby="manageModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document" style="max-width: 800px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">사용자 상세정보</h5>
+				<button class="close" type="button"  aria-label="Close" onclick="fn_modalClose();return false;">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+        	
+        	<div class="modal-body">
+        		<div id="manageListDiv" style="display: block;">
+					<form id="manageFrm">
+						<input type="hidden" id="manageMode" name="manageMode" value="">
+						
+						<section class="l_box_type02">                                    
+	                         <div class="tb_type03">
+	                             <table>
+	                                 <tbody>
+	                                 	<!-- 
+										<tr>
+											<th>기관코드 명</th>
+											<td><input type="text" id="insttCode" name="insttCode" readonly="readonly"></td>
+											<th>담당부서</th>
+											<td><input type="text" id="chrgDept" name="chrgDept"></td>
+										</tr>
+										<tr>
+											<th>기관 명</th>
+										    <td colspan="3"><input type="text" id="insttNm" name="insttNm" readonly="readonly"></td>
+										</tr>
+	                                     --> 
+										<tr>
+											<th>사용자 아이디</th>
+											<td><input type="text" id="userId" name="userId" readonly="readonly"></td>
+											<th><span class="str">*</span> 사용자 명</th>
+											<td><input type="text" id="userNm" name="userNm" maxlength="20"></td>
+										</tr>
+										<tr>
+											<th>생성일자</th>
+											<td><input type="text" id="recentConnectDt" name="recentConnectDt" readonly="readonly"></td>											
+											<th><span class="str">*</span> 사용여부</th>
+											<td style="text-align: left;">
+												<select id="udtUseAt" name="useAt" style="width: 100px;">
+													<option value="Y">Y</option>
+													<option value="N">N</option>
+												</select>
+											</td>
+										</tr>
+                                     </tbody>
+                                 </table>
+                             </div>
+                         </section>
+					</form>
+				</div>
+			</div>
+        	
+			<div class="modal-footer">
+				<button class="btn btn-primary" type="button"  onclick="fn_saveManage(this);">수정</button>
+				
+        	</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 사용자 등록 모달창-->
+<div class="modal fade" id="userInsModal" tabindex="-1" role="dialog" aria-labelledby=userInsModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document" style="max-width: 800px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">사용자 등록</h5>
+				<button class="close" type="button"  aria-label="Close" onclick="fn_modalClose();return false;"> 
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+        	
+        	<div class="modal-body">
+        		<div id="manageListDiv" style="display: block;">
+					<form id="manageInsFrm">
+						<input type="hidden" id="uInsMode" name="uInsMode" value="">
+						<input type="hidden" id="uSubmitChk" name="uSubmitChk" value="">
+						
+						<section class="l_box_type02">                                    
+	                         <div class="tb_type05">
+	                             <table>
+	                                 <tbody>
+	                                     <tr>
+	                                     	 <th><span class="str">* </span><label id="uIdChk">사용자 아이디</label></th>
+	                                         <td><input type="text" id="uId" name="uId" maxlength="20" oninput="inputCheck(this)"></td>
+	                                         <th><span class="str">*</span> 패스워드</th>
+	                                         <td><input type="password" id="uPw" name="uPw" maxlength="20" ></td>
+	                                     </tr>
+	                                     <tr>
+	                                     	 <th><span class="str">*</span> 사용자 명</th>
+	                                         <td colspan="3"><input type="text" id="uNm" name="uNm" maxlength="20"></td>
+	                                     </tr>
+	                                     <tr>
+	                                         <th><span class="str">*</span> 사용자 권한</th>
+	                                         <td>
+	                                         	<select id="uAuthorCode" name="uAuthorCode">
+	                                         	<c:forEach items="${authorList }" var="item">
+	                                         		<option value="${item.authorCode }">${item.authorCodeNm }</option>
+	                                         	</c:forEach>
+	                                         	</select>
+	                                         </td>
+	                                         <th> 사용여부</th>
+	                                         <td style="text-align: left;">
+	                                             <select id="insUseAt" name="useAt" style="width: 100px;">
+		                                             <option value="Y">Y</option>
+													 <option value="N">N</option>
+                                             	</select>
+                                            </td>
+                                         </tr>
+                                     </tbody>
+                                 </table>
+                             </div>
+                         </section>
+					</form>
+				</div>
+			</div>
+        	
+			<div class="modal-footer">
+				<button class="btn btn-primary" type="button"  onclick="fn_saveUser(this);">저장</button>
+				
+        	</div>
+		</div>
+	</div>
+</div>
+
+<!-- patten check 모달창-->
+<div class="modal fade" id="pattenCheckModal" tabindex="-1" role="dialog" aria-labelledby="pattenCheckModal" aria-hidden="true">
+	<div class="modal-dialog" role="document" style="max-width: 800px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="pattenCheckModalLabel">유효성 체크</h5>
+				<button class="close" type="button"  aria-label="Close" onclick="fn_modalClose();return false;">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+        	
+        	<div class="modal-body">
+        		<div id="pattenCheckDiv" style="display: block;">
+					<form id="pattenFrm">
+						
+						<section class="l_box_type02">                                    
+	                         <div class="tb_type03">
+	                             <table>
+	                                 <tbody>
+	                                 	<tr>
+                                             <th><span class="str">*</span> 정규식</th>
+                                             <td colspan="3">
+                                                 <textarea type="text" id="patten" name="patten" readonly="readonly"></textarea>
+                                             </td>
+                                         </tr>  
+                                         <tr>
+                                             <th><span class="str">*</span> 입력 값</th>
+                                             <td colspan="3">
+                                                 <textarea type="text" id="checkText" name="checkText" ></textarea>
+                                             </td>
+                                         </tr>
+                                     </tbody>
+                                 </table>
+                             </div>
+                         </section>
+					</form>
+				</div>
+			</div>
+        	
+			<div class="modal-footer">
+				<button class="btn btn-primary" type="button" onclick="fn_checkPatten(this);">확인</button>
+        	</div>
+		</div>
+	</div>
+</div>
+
+<!-- patten UDT 모달창-->
+<div class="modal fade" id="pattenUDTModal" tabindex="-1" role="dialog" aria-labelledby="pattenUDTModal" aria-hidden="true">
+	<div class="modal-dialog" role="document" style="max-width: 800px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button class="close" type="button"  aria-label="Close" onclick="fn_modalClose();return false;">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+        	
+        	<div class="modal-body">
+        		<div id="pattenUDTDiv" style="display: block;">
+					<form id="pattenUDTFrm">
+					<input type="hidden" id="analsId" name="analsId" />
+						<section class="l_box_type02">                                    
+	                         <div class="tb_type03">
+	                             <table>
+	                                 <tbody>
+	                                     <tr>
+	                                     	 <th><span class="str">*</span> FROM</th>
+	                                         <td><input type="text" id="beginValue" name="beginValue"></td>
+	                                         <th><span class="str">*</span> TO</th>
+	                                         <td><input type="text" id="endValue" name="endValue"></td>
+	                                     </tr>
+	                                     <tr>
+	                                     	 <th>규칙</th>
+	                                         <td colspan="3">
+                                                 <textarea id="analsFrmla" name="analsFrmla" ></textarea>
+                                             </td>
+	                                     </tr>
+	                                     <tr>
+	                                         <th>비고</th>
+	                                         <td><input type="text" id="rm" name="rm"></td>
+	                                         <th>활성여부</th>
+	                                         <td style="text-align: left;">
+	                                             <select id="ptUseAt" name="ptUseAt" style="width: 100px;">
+		                                             <option value="1"<c:if test="${ptUseAt eq '1'}">selected="selected"</c:if>>Y</option>
+													 <option value="0"<c:if test="${ptUseAt eq '0'}">selected="selected"</c:if>>N</option>
+                                             	</select>
+                                            </td>
+                                         </tr>
+                                     </tbody>
+                                 </table>
+                             </div>
+                         </section>
+					</form>
+				</div>
+			</div>
+        	
+			<div class="modal-footer">
+				<button class="btn btn-primary" type="button" onclick="fn_savePatten(this);">저장</button>
+        	</div>
+		</div>
+	</div>
+</div>
